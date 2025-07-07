@@ -5,10 +5,16 @@ import {DailyListResponse} from "../../../../../domain/DailyListResponse";
 import {Theme} from "@mui/material";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-  container: {
+  feedContainer: {
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
     marginBottom: theme.spacing(3),
+  },
+  contentWrapper: {
+    width: "100%",
+    maxWidth: "600px", // Adjust this value as needed for desired feed width
   }
 }));
 
@@ -18,14 +24,18 @@ export interface DailyListProps {
 
 const DailyList = ({ dailys }: DailyListProps) => {
   const classes = useStyles();
-  return <div className={classes.container}>
-    <div>
-      {dailys.map(daily => <EachDaily
-        key={daily.id}
-        daily={daily}
-      />)}
+  return (
+    <div className={classes.feedContainer}>
+      <div className={classes.contentWrapper}>
+        {dailys.map(daily => (
+          <EachDaily
+            key={daily.id}
+            daily={daily}
+          />
+        ))}
+      </div>
     </div>
-  </div>;
+  );
 };
 
 export default DailyList;

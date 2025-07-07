@@ -4,4 +4,5 @@ export interface DailyListResponse {
   date: string;
   uri: string;
   title: string;
+  content: string;
 }

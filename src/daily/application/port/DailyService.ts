@@ -31,6 +31,7 @@ export class DailyService implements DailyFindAllUseCase, DailyGetUseCase{
           date: it.attributes.date,
           uri: Daily.createUri({date: it.attributes.date, slug: it.attributes.slug}),
           title: it.attributes.title,
+          content: it.attributes.content,
         })),
         meta: data.meta,
       }));

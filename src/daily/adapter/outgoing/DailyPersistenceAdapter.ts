@@ -10,7 +10,7 @@ export class DailyPersistenceAdapter implements DailyLoadPort {
 
   constructor(private readonly axios: AxiosInstance) {}
 
-  private readonly listFields = ["seq", "title", "slug", "date"];
+  private readonly listFields = ["seq", "title", "slug", "date", "content"];
 
   public findAll = (page: number): Promise<StrapiResponse<DailyListStrapi>> =>
     this.axios.get<StrapiResponse<DailyListStrapi>>(Endpoints.daily, {
