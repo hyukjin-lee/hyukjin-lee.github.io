@@ -43,10 +43,8 @@ const DailyUpdatePageWrapper = (props: InferGetStaticPropsType<typeof getStaticP
   </SWRConfig>;
 };
 
-export const getStaticProps: GetStaticProps<Props> = async (context) => {
-  // https://nodejs.org/api/http.html#messageurl
-  const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
-  const slugFromPath = getSlug(pathname);
+export const getStaticProps: GetStaticProps<Props> = async ({params}) => {
+  const slugFromPath = decodeURIComponent(params?.slug as string);
 
   const props: DailyDetailResponse = await getBySlug(slugFromPath);
   const key = getApiKey(slugFromPath);

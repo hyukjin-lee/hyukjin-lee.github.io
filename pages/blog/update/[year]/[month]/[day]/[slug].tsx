@@ -46,10 +46,8 @@ const BlogUpdatePageWrapper = (props: InferGetStaticPropsType<typeof getStaticPr
   </SWRConfig>;
 };
 
-export const getStaticProps: GetStaticProps<Props> = async (context) => {
-  // https://nodejs.org/api/http.html#messageurl
-  const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
-  const slug = getSlug(pathname);
+export const getStaticProps: GetStaticProps<Props> = async ({params}) => {
+  const slug = decodeURIComponent(params?.slug as string);
 
   const props: BlogArticleDetailResponse = await container.get<BlogGetUseCase>(BlogGetUseCaseId).getBySlug(slug);
   const key = getApiKey(slug);
