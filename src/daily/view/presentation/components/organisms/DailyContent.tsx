@@ -9,10 +9,10 @@ import ShareIcon from "@mui/icons-material/Share";
 
 interface Props {
   content: string;
-  authorName: string;
-  authorHandle: string;
-  avatarSrc: string;
-  timestamp: string;
+  authorName?: string;
+  authorHandle?: string;
+  avatarSrc?: string;
+  timestamp?: string;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -72,7 +72,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-const DailyContent = ({ content, authorName, authorHandle, avatarSrc, timestamp }: Props) => {
+const DailyContent = ({
+  content,
+  authorName = "Hyuk's Daily",
+  authorHandle = "hyuk_daily",
+  avatarSrc = "/static/images/avatar.png",
+  timestamp = "",
+}: Props) => {
   const classes = useStyles();
   return (
     <Box className={classes.root}>

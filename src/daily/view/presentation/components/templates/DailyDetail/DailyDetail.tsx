@@ -38,21 +38,28 @@ const DailyDetail = ({ daily }: DailyDetailProps) => {
     content
   } = daily;
 
-  return <>
-    <HeadTitle title={title} />
-    <div className={classes.container}>
-      <div className={classes.center}>
-        <Link href={"/daily" + formatDateTime(date, "/YYYY/MM/DD/") + slug} shallow={true}>
-          <Typography className={clsx(classes.serif, classes.title)}>
-            {seq}. [{formatDateTime(date, "YYYY.MM.DD")}] {title}
-          </Typography>
-        </Link>
+  const timestamp = formatDateTime(date, "YYYY.MM.DD HH:mm");
+
+  return (
+    <>
+      <HeadTitle title={title} />
+      <div className={classes.container}>
+        <div className={classes.center}>
+          <Link href={"/daily" + formatDateTime(date, "/YYYY/MM/DD/") + slug} shallow={true}>
+            <Typography className={clsx(classes.serif, classes.title)}>
+              {seq}. [{formatDateTime(date, "YYYY.MM.DD")}] {title}
+            </Typography>
+          </Link>
+        </div>
+        <div>
+          <DailyContent
+            content={content}
+            timestamp={timestamp}
+          />
+        </div>
       </div>
-      <div>
-        <DailyContent content={content} />
-      </div>
-    </div>
-  </>;
+    </>
+  );
 };
 
 export default DailyDetail;
