@@ -54,9 +54,8 @@ const TechArticleListPageWrapper = (props: InferGetStaticPropsType<typeof getSta
   </SWRConfig>;
 };
 
-export const getStaticProps: GetStaticProps<Props> = async (context) => {
-  const {query} = context;
-  const page = parseInt("" + query["page"]) || 1;
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const page = 1;
 
   const props = await findAll(page);
   const key = getApiKey(page);
