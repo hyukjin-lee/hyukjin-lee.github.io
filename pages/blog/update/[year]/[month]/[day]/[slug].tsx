@@ -1,6 +1,6 @@
 import * as React from "react";
 import {BlogArticleForm} from "src/blog/view/presentation/components/templates";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
 import useSWR, {SWRConfig} from "swr";
 import {useRouter} from "next/router";
 import {
@@ -40,13 +40,13 @@ const BlogUpdatePage = () => {
   </div>;
 };
 
-const BlogUpdatePageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const BlogUpdatePageWrapper = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <SWRConfig value={{fallback: props.fallback}}>
     <BlogUpdatePage />
   </SWRConfig>;
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
   // https://nodejs.org/api/http.html#messageurl
   const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
   const slug = getSlug(pathname);

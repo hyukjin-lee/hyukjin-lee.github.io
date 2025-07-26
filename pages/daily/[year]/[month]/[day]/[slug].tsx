@@ -4,7 +4,7 @@ import {HeadTitle} from "src/common/view/presentation/components/molecules";
 import {Comment} from "src/common/view/presentation/components/organisms";
 import DailyDetail from "src/daily/view/presentation/components/templates/DailyDetail";
 import {formatDateTime} from "src/util";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
 import useSWR, {SWRConfig} from "swr";
 import {useRouter} from "next/router";
 import {DailyDetailResponse, defaultDailyDetailResponseDto} from "src/daily/domain/DailyDetailResponse";
@@ -44,7 +44,7 @@ const DailyDetailPage = () => {
   </div>;
 };
 
-const DailyDetailPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DailyDetailPageWrapper = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <SWRConfig value={{fallback: props.fallback}}>
     <DailyDetailPage />
   </SWRConfig>;
@@ -55,7 +55,7 @@ const getSlug = (asPath: string): string => {
   return decodeURIComponent(splitted[5]);
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
   // https://nodejs.org/api/http.html#messageurl
   const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
   const slugFromPath = getSlug(pathname);

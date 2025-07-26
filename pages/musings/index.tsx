@@ -3,7 +3,7 @@ import {HeadTitle, PageTitle} from "src/common/view/presentation/components/mole
 import Musings from "src/musing/view/presentation/components/templates/Musings";
 import {MusingsProps} from "src/musing/view/presentation/components/templates/Musings/Musings";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
 import useSWR, {SWRConfig} from "swr";
 import {MusingResponseDto} from "src/musing/domain";
 import {useTheme} from "@mui/material";
@@ -36,13 +36,13 @@ const MusingsPage = () => {
   </div>;
 };
 
-const MusingsPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const MusingsPageWrapper = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <SWRConfig value={{fallback: props.fallback}}>
     <MusingsPage />
   </SWRConfig>;
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async () => {
   const props: MusingResponseDto[] = await findAll();
 
   const key = getApiKey();

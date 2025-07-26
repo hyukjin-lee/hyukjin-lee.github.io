@@ -4,7 +4,7 @@ import DailyList from "src/daily/view/presentation/components/templates/DailyLis
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {strapiPaginationDefault} from "src/common/domain/StrapiPagination";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {StrapiResponse} from "src/common/domain/StrapiResponse";
 import useSWR, {SWRConfig} from "swr";
 import {useRouter} from "next/router";
@@ -48,13 +48,13 @@ const DailyListPage = () => {
   </div>;
 };
 
-const DailyListPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DailyListPageWrapper = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <SWRConfig value={{fallback: props.fallback}}>
     <DailyListPage />
   </SWRConfig>;
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const {query} = context;
   const page = parseInt("" + query["page"]) || 1;
 

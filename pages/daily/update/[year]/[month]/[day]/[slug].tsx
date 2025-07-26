@@ -1,6 +1,6 @@
 import * as React from "react";
 import {DailyForm} from "src/daily/view/presentation/components/templates";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
 import useSWR, {SWRConfig} from "swr";
 import {useRouter} from "next/router";
 import {DailyDetailResponse, defaultDailyDetailResponseDto} from "src/daily/domain/DailyDetailResponse";
@@ -37,13 +37,13 @@ const DailyUpdatePage = () => {
   </div>;
 };
 
-const DailyUpdatePageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DailyUpdatePageWrapper = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <SWRConfig value={{fallback: props.fallback}}>
     <DailyUpdatePage />
   </SWRConfig>;
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
   // https://nodejs.org/api/http.html#messageurl
   const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
   const slugFromPath = getSlug(pathname);

@@ -12,7 +12,9 @@
     "start:local": "NODE_ENV=production next start",
     "lint": "eslint . --ext .ts,.tsx --fix && tsc --noEmit",
     "test": "jest",
-    "report": "jest unit --coverage"
+    "report": "jest unit --coverage",
+    "export": "next build && next export",
+    "export:gh": "GITHUB_PAGES=true npm run export"
   },
   "dependencies": {
     "@emotion/cache": "^11.7.1",

@@ -4,7 +4,7 @@ import {TechArticleListProps} from "src/tech/view/presentation/components/templa
 import {HeadTitle, PageTitle} from "src/common/view/presentation/components/molecules";
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {strapiPaginationDefault} from "src/common/domain/StrapiPagination";
 import useSWR, {SWRConfig} from "swr";
 import {StrapiResponse} from "src/common/domain/StrapiResponse";
@@ -48,13 +48,13 @@ const TechArticleListPage = () => {
   </div>;
 };
 
-const TechArticleListPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const TechArticleListPageWrapper = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <SWRConfig value={{fallback: props.fallback}}>
     <TechArticleListPage />
   </SWRConfig>;
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const {query} = context;
   const page = parseInt("" + query["page"]) || 1;
 

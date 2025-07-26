@@ -3,7 +3,7 @@ import * as React from "react";
 import {DOMAIN, Endpoints} from "src/common/constants/Constants";
 import {Comment} from "src/common/view/presentation/components/organisms";
 import {formatDateTime} from "src/util";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
 import useSWR, {SWRConfig} from "swr";
 import {useRouter} from "next/router";
 import {
@@ -84,7 +84,7 @@ const BlogDetailPage = () => {
   </div>;
 };
 
-const BlogDetailPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const BlogDetailPageWrapper = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <SWRConfig value={{fallback: props.fallback}}>
     <BlogDetailPage />
   </SWRConfig>;
@@ -95,7 +95,7 @@ const getSlug = (asPath: string): string => {
   return decodeURIComponent(split[5]);
 };
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
   // https://nodejs.org/api/http.html#messageurl
   const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
   const slug = getSlug(pathname);
