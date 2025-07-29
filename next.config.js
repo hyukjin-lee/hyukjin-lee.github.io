@@ -7,7 +7,9 @@ module.exports = {
   images: {
     unoptimized: true
   },
-  // 커스텀 도메인 사용시 basePath와 assetPrefix 불필요
+  // GitHub Pages repository 이름이 terrace이므로 /terrace 경로 필요
+  assetPrefix: '/terrace',
+  basePath: '/terrace',
   experimental: {
     // 정적 생성을 위한 설정
     isrMemoryCacheSize: 0,

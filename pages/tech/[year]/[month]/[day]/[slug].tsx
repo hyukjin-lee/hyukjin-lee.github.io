@@ -3,66 +3,31 @@ import * as React from "react";
 import {DOMAIN, Endpoints} from "src/common/constants/Constants";
 import {Comment} from "src/common/view/presentation/components/organisms";
 import {formatDateTime} from "src/util";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import useSWR, {SWRConfig} from "swr";
-import {useRouter} from "next/router";
+import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
 import {
   TechArticleDetailResponse,
-  TechArticlePrevOrNext,
-  defaultTechArticleDetailResponseDto
+  TechArticlePrevOrNext
 } from "src/tech/domain/TechArticleDetailResponse";
 import {TechArticleDetail} from "src/tech/view/presentation/components/templates";
 import {useTheme} from "@mui/material";
-import {container} from "src/config/inversify";
-import {TechGetUseCase} from "src/tech/application/port/incoming/TechGetUseCase";
-import {TechGetPrevOrNextUseCase} from "src/tech/application/port/incoming/TechGetPrevOrNextUseCase";
-import {TechGetPrevOrNextUseCaseId, TechGetUseCaseId} from "src/tech/adapter/inversify";
-
-const {getBySlug} = container.get<TechGetUseCase>(TechGetUseCaseId);
-const {getPrevOf, getNextOf} = container.get<TechGetPrevOrNextUseCase>(TechGetPrevOrNextUseCaseId);
-
-const getApiKey = (slug: string) => `@tech/${slug}`;
-const getPrevApiKey = (seq: number) => `@techPrev/${seq}`;
-const getNextApiKey = (seq: number) => `@techNext/${seq}`;
-
-const useFetchToGetPrevAndNextWhenArticleIsLoadedBySSR = (article: TechArticleDetailResponse): {
-  prev: TechArticlePrevOrNext
-  next: TechArticlePrevOrNext
-} => {
-  const {seq} = article;
-  const defaultData = {
-    id: "",
-    date: "",
-    title: "",
-    uri: ""
-  };
-
-  const prevResponse = useSWR<TechArticlePrevOrNext>(getPrevApiKey(seq), () => getPrevOf(seq));
-  const nextResponse = useSWR<TechArticlePrevOrNext>(getNextApiKey(seq), () => getNextOf(seq));
-
-  return {
-    prev: prevResponse.data || defaultData,
-    next: nextResponse.data || defaultData
-  };
-};
+import {StaticDataLoader} from "src/data/staticDataLoader";
 
 interface Props {
-  fallback: {[x: string]: TechArticleDetailResponse}
+  techArticle: TechArticleDetailResponse;
+  prev: any | null;
+  next: any | null;
 }
 
-const TechDetailPage = () => {
-  const router = useRouter();
-  const slugFromPath = getSlug(router.asPath);
-
-  const res = useSWR<TechArticleDetailResponse>(getApiKey(slugFromPath), () => getBySlug(slugFromPath));
-  const techDetail = res.data || defaultTechArticleDetailResponseDto;
-
-  const {prev, next} = useFetchToGetPrevAndNextWhenArticleIsLoadedBySSR(techDetail);
-
-  const { title, content, date, slug } = techDetail;
+const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { techArticle, prev, next } = props;
+  const { title, content, date, slug } = techArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
   const theme = useTheme();
+
+  // prev/next 데이터는 이미 올바른 형태로 변환되어 전달됨
+  const prevData: TechArticlePrevOrNext = prev || { id: "", date: "", title: "", uri: "" };
+  const nextData: TechArticlePrevOrNext = next || { id: "", date: "", title: "", uri: "" };
 
   return <div>
     <NextSeo
@@ -72,7 +37,7 @@ const TechDetailPage = () => {
     />
 
     <TechArticleDetail
-      techArticle={{...techDetail, prev, next}}
+      techArticle={{...techArticle, prev: prevData, next: nextData}}
     />
     <Comment identifier={`tech${subPath}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
@@ -84,32 +49,58 @@ const TechDetailPage = () => {
   </div>;
 };
 
-const TechDetailPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <SWRConfig value={{fallback: props.fallback}}>
-    <TechDetailPage />
-  </SWRConfig>;
+export const getStaticPaths: GetStaticPaths = async () => {
+  const articles = StaticDataLoader.getTechArticles();
+  
+  const paths = articles.map((article) => {
+    const date = new Date(article.attributes.date);
+    return {
+      params: {
+        year: date.getFullYear().toString(),
+        month: (date.getMonth() + 1).toString().padStart(2, "0"),
+        day: date.getDate().toString().padStart(2, "0"),
+        slug: article.attributes.slug
+      }
+    };
+  });
+
+  return {
+    paths,
+    fallback: false
+  };
 };
 
-const getSlug = (asPath: string): string => {
-  const split = asPath.split("/");
-  return decodeURIComponent(split[5]);
-};
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const slug = params?.slug as string;
+  
+  const article = StaticDataLoader.getTechArticleBySlug(slug);
+  if (!article) {
+    return { notFound: true };
+  }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  // https://nodejs.org/api/http.html#messageurl
-  const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
-  const slug = getSlug(pathname);
+  // TechArticleDetailResponse 형태로 변환
+  const techArticle: TechArticleDetailResponse = {
+    id: article.id.toString(),
+    seq: article.attributes.seq,
+    title: article.attributes.title,
+    content: article.attributes.content,
+    date: article.attributes.date,
+    slug: article.attributes.slug,
+    updatedAt: article.attributes.updatedAt,
+    prev: { id: "", date: "", title: "", uri: "" },
+    next: { id: "", date: "", title: "", uri: "" }
+  };
 
-  const props: TechArticleDetailResponse = await getBySlug(slug);
-  const key = getApiKey(slug);
+  // prev/next 가져오기
+  const { prev, next } = StaticDataLoader.getTechPrevNext(article.attributes.seq);
 
   return {
     props: {
-      fallback: {
-        [key]: props
-      }
+      techArticle,
+      prev,
+      next
     }
   };
 };
 
-export default TechDetailPageWrapper;
+export default TechDetailPage;

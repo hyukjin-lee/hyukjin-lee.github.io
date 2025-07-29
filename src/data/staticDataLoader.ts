@@ -191,13 +191,26 @@ export class StaticDataLoader {
     return `/${year}/${month}/${day}`;
   }
 
-  static getTechPrevNext(seq: number): { prev: TechArticleListStrapi | null, next: TechArticleListStrapi | null } {
+  static getTechPrevNext(seq: number): { prev: any | null, next: any | null } {
     const allArticles = this.getTechArticles();
     const currentIndex = allArticles.findIndex(article => article.attributes.seq === seq);
     
+    const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
+    const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null;
+    
     return {
-      prev: currentIndex > 0 ? allArticles[currentIndex - 1] : null,
-      next: currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null
+      prev: prevArticle ? {
+        id: prevArticle.id.toString(),
+        date: prevArticle.attributes.date,
+        title: prevArticle.attributes.title,
+        uri: `/tech${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
+      } : null,
+      next: nextArticle ? {
+        id: nextArticle.id.toString(),
+        date: nextArticle.attributes.date,
+        title: nextArticle.attributes.title,
+        uri: `/tech${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
+      } : null
     };
   }
 
