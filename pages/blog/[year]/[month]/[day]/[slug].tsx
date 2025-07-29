@@ -3,66 +3,31 @@ import * as React from "react";
 import {DOMAIN, Endpoints} from "src/common/constants/Constants";
 import {Comment} from "src/common/view/presentation/components/organisms";
 import {formatDateTime} from "src/util";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import useSWR, {SWRConfig} from "swr";
-import {useRouter} from "next/router";
+import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
 import {
   BlogArticleDetailResponse,
-  BlogArticlePrevOrNext,
-  defaultBlogArticleDetailResponseDto
+  BlogArticlePrevOrNext
 } from "src/blog/domain/BlogArticleDetailResponse";
 import {BlogArticleDetail} from "src/blog/view/presentation/components/templates";
 import {useTheme} from "@mui/material";
-import {container} from "src/config/inversify";
-import {BlogGetUseCase} from "src/blog/application/port/incoming/BlogGetUseCase";
-import {BlogGetPrevOrNextUseCase} from "src/blog/application/port/incoming/BlogGetPrevOrNextUseCase";
-import {BlogGetPrevOrNextUseCaseId, BlogGetUseCaseId} from "src/blog/adapter/inversify";
-
-const {getBySlug} = container.get<BlogGetUseCase>(BlogGetUseCaseId);
-const {getPrevOf, getNextOf} = container.get<BlogGetPrevOrNextUseCase>(BlogGetPrevOrNextUseCaseId);
-
-const getApiKey = (slug: string) => `@blog/${slug}`;
-const getPrevApiKey = (seq: number) => `@blogPrev/${seq}`;
-const getNextApiKey = (seq: number) => `@blogNext/${seq}`;
-
-const useFetchToGetPrevAndNextWhenArticleIsLoadedBySSR = (article: BlogArticleDetailResponse): {
-  prev: BlogArticlePrevOrNext
-  next: BlogArticlePrevOrNext
-} => {
-  const {seq} = article;
-  const defaultData = {
-    id: "",
-    date: "",
-    title: "",
-    uri: ""
-  };
-
-  const prevResponse = useSWR<BlogArticlePrevOrNext>(getPrevApiKey(seq), () => getPrevOf(seq));
-  const nextResponse = useSWR<BlogArticlePrevOrNext>(getNextApiKey(seq), () => getNextOf(seq));
-
-  return {
-    prev: prevResponse.data || defaultData,
-    next: nextResponse.data || defaultData
-  };
-};
+import {StaticDataLoader} from "src/data/staticDataLoader";
 
 interface Props {
-  fallback: {[x: string]: BlogArticleDetailResponse}
+  blogArticle: BlogArticleDetailResponse;
+  prev: any | null;
+  next: any | null;
 }
 
-const BlogDetailPage = () => {
-  const router = useRouter();
-  const slugFromPath = getSlug(router.asPath);
-
-  const res = useSWR<BlogArticleDetailResponse>(getApiKey(slugFromPath), () => getBySlug(slugFromPath));
-  const blogDetail = res.data || defaultBlogArticleDetailResponseDto;
-
-  const {prev, next} = useFetchToGetPrevAndNextWhenArticleIsLoadedBySSR(blogDetail);
-
-  const { title, content, date, slug } = blogDetail;
+const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { blogArticle, prev, next } = props;
+  const { title, content, date, slug } = blogArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
   const theme = useTheme();
+
+  // prev/next 데이터는 이미 올바른 형태로 변환되어 전달됨
+  const prevData: BlogArticlePrevOrNext = prev || { id: "", date: "", title: "", uri: "" };
+  const nextData: BlogArticlePrevOrNext = next || { id: "", date: "", title: "", uri: "" };
 
   return <div>
     <NextSeo
@@ -72,7 +37,7 @@ const BlogDetailPage = () => {
     />
 
     <BlogArticleDetail
-      blogArticle={{...blogDetail, prev, next}}
+      blogArticle={{...blogArticle, prev: prevData, next: nextData}}
     />
     <Comment identifier={`blog${subPath}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
@@ -84,32 +49,58 @@ const BlogDetailPage = () => {
   </div>;
 };
 
-const BlogDetailPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <SWRConfig value={{fallback: props.fallback}}>
-    <BlogDetailPage />
-  </SWRConfig>;
+export const getStaticPaths: GetStaticPaths = async () => {
+  const articles = StaticDataLoader.getBlogArticles();
+  
+  const paths = articles.map((article) => {
+    const date = new Date(article.attributes.date);
+    return {
+      params: {
+        year: date.getFullYear().toString(),
+        month: (date.getMonth() + 1).toString().padStart(2, "0"),
+        day: date.getDate().toString().padStart(2, "0"),
+        slug: article.attributes.slug
+      }
+    };
+  });
+
+  return {
+    paths,
+    fallback: false
+  };
 };
 
-const getSlug = (asPath: string): string => {
-  const split = asPath.split("/");
-  return decodeURIComponent(split[5]);
-};
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const slug = params?.slug as string;
+  
+  const article = StaticDataLoader.getBlogArticleBySlug(slug);
+  if (!article) {
+    return { notFound: true };
+  }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  // https://nodejs.org/api/http.html#messageurl
-  const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
-  const slug = getSlug(pathname);
+  // BlogArticleDetailResponse 형태로 변환
+  const blogArticle: BlogArticleDetailResponse = {
+    id: article.id.toString(),
+    seq: article.attributes.seq,
+    title: article.attributes.title,
+    content: article.attributes.content,
+    date: article.attributes.date,
+    slug: article.attributes.slug,
+    updatedAt: article.attributes.updatedAt,
+    prev: { id: "", date: "", title: "", uri: "" },
+    next: { id: "", date: "", title: "", uri: "" }
+  };
 
-  const props: BlogArticleDetailResponse = await getBySlug(slug);
-  const key = getApiKey(slug);
+  // prev/next 가져오기
+  const { prev, next } = StaticDataLoader.getBlogPrevNext(article.attributes.seq);
 
   return {
     props: {
-      fallback: {
-        [key]: props
-      }
+      blogArticle,
+      prev,
+      next
     }
   };
 };
 
-export default BlogDetailPageWrapper;
+export default BlogDetailPage;

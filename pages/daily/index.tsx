@@ -3,35 +3,22 @@ import {HeadTitle, PageTitle} from "src/common/view/presentation/components/mole
 import DailyList from "src/daily/view/presentation/components/templates/DailyList";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
-import {strapiPaginationDefault} from "src/common/domain/StrapiPagination";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import {StrapiResponse} from "src/common/domain/StrapiResponse";
-import useSWR, {SWRConfig} from "swr";
-import {useRouter} from "next/router";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {DailyListProps} from "src/daily/view/presentation/components/templates/DailyList/DailyList";
-import {DailyListResponse} from "src/daily/domain/DailyListResponse";
-import {container} from "src/config/inversify";
-import {DailyFindAllUseCase} from "src/daily/application/port/incoming/DailyFindAllUseCase";
-import {DailyFindAllUseCaseId} from "src/daily/adapter/inversify";
-
-const {findAll} = container.get<DailyFindAllUseCase>(DailyFindAllUseCaseId);
+import {StaticDataLoader} from "src/data/staticDataLoader";
 
 interface Props {
-  fallback: {[x: string]: StrapiResponse<DailyListResponse>}
+  dailyData: any;
+  currentPage: number;
 }
 
-const getApiKey = (page: number) => `@dailyList/PAGE_${page}`;
-
-const DailyListPage = () => {
-  const router = useRouter();
-  const pageNumber = parseInt("" + router.query["page"]) || 1;
-
-  const res = useSWR<StrapiResponse<DailyListResponse>>(getApiKey(pageNumber), () => findAll(pageNumber));
+const DailyListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { dailyData } = props;
 
   const listProps: DailyListProps = {
-    dailys: res.data?.data || [],
+    dailys: dailyData.data || [],
   };
-  const pagination = res.data?.meta.pagination || strapiPaginationDefault;
+  const pagination = dailyData.meta.pagination;
 
   return <div style={pageContainerStyle}>
     <div style={pageContainerStyle}>
@@ -48,26 +35,16 @@ const DailyListPage = () => {
   </div>;
 };
 
-const DailyListPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <SWRConfig value={{fallback: props.fallback}}>
-    <DailyListPage />
-  </SWRConfig>;
-};
-
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const {query} = context;
-  const page = parseInt("" + query["page"]) || 1;
-
-  const props: StrapiResponse<DailyListResponse> = await findAll(page);
-  const key = getApiKey(page);
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const page = 1; // 첫 페이지만 정적 생성
+  const dailyData = StaticDataLoader.getDailyPostsPaginated(page);
 
   return {
     props: {
-      fallback: {
-        [key]: props
-      }
+      dailyData,
+      currentPage: page
     }
   };
 };
 
-export default DailyListPageWrapper;
+export default DailyListPage;

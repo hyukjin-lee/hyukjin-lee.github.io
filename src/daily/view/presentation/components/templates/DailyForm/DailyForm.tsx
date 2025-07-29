@@ -134,7 +134,15 @@ const DailyForm = ({ isUpdating, initialValues, onSubmit }: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.content}
-              PreviewComponent={DailyContent}
+              PreviewComponent={({ content }: { content: string }) => (
+                <DailyContent 
+                  content={content} 
+                  authorName="이혁진"
+                  authorHandle="hyukhyukk"
+                  avatarSrc=""
+                  timestamp={new Date().toLocaleDateString()}
+                />
+              )}
             />
             <ErrorMessageStyled
               name="content"

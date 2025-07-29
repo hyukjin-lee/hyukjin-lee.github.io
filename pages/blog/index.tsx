@@ -4,33 +4,20 @@ import {BlogArticleListProps} from "src/blog/view/presentation/components/templa
 import {HeadTitle, PageTitle} from "src/common/view/presentation/components/molecules";
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import {strapiPaginationDefault} from "src/common/domain/StrapiPagination";
-import useSWR, {SWRConfig} from "swr";
-import {StrapiResponse} from "src/common/domain/StrapiResponse";
-import {useRouter} from "next/router";
-import {BlogArticleListResponse} from "src/blog/domain/BlogArticleListResponse";
-import {container} from "src/config/inversify";
-import {BlogFindAllUseCase} from "src/blog/application/port/incoming/BlogFindAllUseCase";
-import {BlogFindAllUseCaseId} from "src/blog/adapter/inversify";
-
-const {findAll} = container.get<BlogFindAllUseCase>(BlogFindAllUseCaseId);
+import {GetStaticProps, InferGetStaticPropsType} from "next";
+import {StaticDataLoader} from "src/data/staticDataLoader";
 
 interface Props {
-  fallback: {[x: string]: StrapiResponse<BlogArticleListResponse>}
+  blogData: any;
+  currentPage: number;
 }
 
-const getApiKey = (page: number) => `@blogArticleList/PAGE_${page}`;
-
-const BlogArticleListPage = () => {
-  const router = useRouter();
-  const pageNumber = parseInt("" + router.query["page"]) || 1;
-
-  const res = useSWR<StrapiResponse<BlogArticleListResponse>>(getApiKey(pageNumber), () => findAll(pageNumber));
+const BlogArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { blogData } = props;
 
   const listProps: BlogArticleListProps = {
-    blogArticles: res.data?.data || [],
-    pagination: res.data?.meta.pagination || strapiPaginationDefault,
+    blogArticles: blogData.data || [],
+    pagination: blogData.meta.pagination,
   };
 
   return <div style={pageContainerStyle}>
@@ -48,26 +35,16 @@ const BlogArticleListPage = () => {
   </div>;
 };
 
-const BlogArticleListPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <SWRConfig value={{fallback: props.fallback}}>
-    <BlogArticleListPage />
-  </SWRConfig>;
-};
-
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const {query} = context;
-  const page = parseInt("" + query["page"]) || 1;
-
-  const props = await findAll(page);
-  const key = getApiKey(page);
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const page = 1; // 첫 페이지만 정적 생성
+  const blogData = StaticDataLoader.getBlogArticlesPaginated(page);
 
   return {
     props: {
-      fallback: {
-        [key]: props
-      }
+      blogData,
+      currentPage: page
     }
   };
 };
 
-export default BlogArticleListPageWrapper;
+export default BlogArticleListPage;

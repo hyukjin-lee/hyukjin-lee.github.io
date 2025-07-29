@@ -4,33 +4,20 @@ import {TechArticleListProps} from "src/tech/view/presentation/components/templa
 import {HeadTitle, PageTitle} from "src/common/view/presentation/components/molecules";
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import {strapiPaginationDefault} from "src/common/domain/StrapiPagination";
-import useSWR, {SWRConfig} from "swr";
-import {StrapiResponse} from "src/common/domain/StrapiResponse";
-import {useRouter} from "next/router";
-import {TechArticleListResponse} from "src/tech/domain/TechArticleListResponse";
-import {container} from "src/config/inversify";
-import {TechFindAllUseCase} from "src/tech/application/port/incoming/TechFindAllUseCase";
-import {TechFindAllUseCaseId} from "src/tech/adapter/inversify";
-
-const {findAll} = container.get<TechFindAllUseCase>(TechFindAllUseCaseId);
+import {GetStaticProps, InferGetStaticPropsType} from "next";
+import {StaticDataLoader} from "src/data/staticDataLoader";
 
 interface Props {
-  fallback: {[x: string]: StrapiResponse<TechArticleListResponse>}
+  techData: any;
+  currentPage: number;
 }
 
-const getApiKey = (page: number) => `@techArticleList/PAGE_${page}`;
-
-const TechArticleListPage = () => {
-  const router = useRouter();
-  const pageNumber = parseInt("" + router.query["page"]) || 1;
-
-  const res = useSWR<StrapiResponse<TechArticleListResponse>>(getApiKey(pageNumber), () => findAll(pageNumber));
+const TechArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { techData } = props;
 
   const listProps: TechArticleListProps = {
-    techArticles: res.data?.data || [],
-    pagination: res.data?.meta.pagination || strapiPaginationDefault,
+    techArticles: techData.data || [],
+    pagination: techData.meta.pagination,
   };
 
   return <div style={pageContainerStyle}>
@@ -48,26 +35,16 @@ const TechArticleListPage = () => {
   </div>;
 };
 
-const TechArticleListPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <SWRConfig value={{fallback: props.fallback}}>
-    <TechArticleListPage />
-  </SWRConfig>;
-};
-
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const {query} = context;
-  const page = parseInt("" + query["page"]) || 1;
-
-  const props = await findAll(page);
-  const key = getApiKey(page);
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const page = 1; // 첫 페이지만 정적 생성
+  const techData = StaticDataLoader.getTechArticlesPaginated(page);
 
   return {
     props: {
-      fallback: {
-        [key]: props
-      }
+      techData,
+      currentPage: page
     }
   };
 };
 
-export default TechArticleListPageWrapper;
+export default TechArticleListPage;

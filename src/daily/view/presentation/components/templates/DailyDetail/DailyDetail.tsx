@@ -49,7 +49,13 @@ const DailyDetail = ({ daily }: DailyDetailProps) => {
         </Link>
       </div>
       <div>
-        <DailyContent content={content} />
+        <DailyContent 
+          content={content} 
+          authorName="이혁진"
+          authorHandle="hyukhyukk"
+          avatarSrc=""
+          timestamp={formatDateTime(date, "YYYY.MM.DD HH:mm")}
+        />
       </div>
     </div>
   </>;

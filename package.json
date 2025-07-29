@@ -7,12 +7,15 @@
   ],
   "scripts": {
     "dev": "next dev",
-    "build": "npm run lint && npm run test && next build",
+    "build": "next build",
+    "build:static": "npm run fetch-data && npm run lint && npm run test && next build",
     "start": "NODE_ENV=production next start -p 8080",
     "start:local": "NODE_ENV=production next start",
     "lint": "eslint . --ext .ts,.tsx --fix && tsc --noEmit",
     "test": "jest",
-    "report": "jest unit --coverage"
+    "report": "jest unit --coverage",
+    "fetch-data": "node scripts/fetch-strapi-data.js",
+    "deploy": "npm run build:static && touch out/.nojekyll"
   },
   "dependencies": {
     "@emotion/cache": "^11.7.1",
