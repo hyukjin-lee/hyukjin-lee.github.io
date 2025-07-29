@@ -7,9 +7,7 @@ module.exports = {
   images: {
     unoptimized: true
   },
-  // GitHub Pages repository 이름이 terrace이므로 /terrace 경로 필요
-  assetPrefix: '/terrace',
-  basePath: '/terrace',
+  // Repository 이름 변경으로 루트 경로 사용
   experimental: {
     // 정적 생성을 위한 설정
     isrMemoryCacheSize: 0,
