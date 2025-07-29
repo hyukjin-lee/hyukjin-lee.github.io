@@ -7,8 +7,7 @@ module.exports = {
   images: {
     unoptimized: true
   },
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/terrace' : '',
-  basePath: process.env.NODE_ENV === 'production' ? '/terrace' : '',
+  // 커스텀 도메인 사용시 basePath와 assetPrefix 불필요
   experimental: {
     // 정적 생성을 위한 설정
     isrMemoryCacheSize: 0,
