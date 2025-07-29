@@ -4,29 +4,16 @@ import {HeadTitle} from "src/common/view/presentation/components/molecules";
 import {Comment} from "src/common/view/presentation/components/organisms";
 import DailyDetail from "src/daily/view/presentation/components/templates/DailyDetail";
 import {formatDateTime} from "src/util";
-import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import useSWR, {SWRConfig} from "swr";
-import {useRouter} from "next/router";
-import {DailyDetailResponse, defaultDailyDetailResponseDto} from "src/daily/domain/DailyDetailResponse";
-import {container} from "src/config/inversify";
-import {DailyGetUseCase} from "src/daily/application/port/incoming/DailyGetUseCase";
-import {DailyGetUseCaseId} from "src/daily/adapter/inversify";
-
-const {getBySlug} = container.get<DailyGetUseCase>(DailyGetUseCaseId);
-
-const getApiKey = (slug: string) => `@daily/${slug}`;
+import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
+import {DailyDetailResponse} from "src/daily/domain/DailyDetailResponse";
+import {StaticDataLoader} from "src/data/staticDataLoader";
 
 interface Props {
-  fallback: {[x: string]: DailyDetailResponse}
+  dailyDetail: DailyDetailResponse;
 }
 
-const DailyDetailPage = () => {
-  const router = useRouter();
-  const slugFromPath = getSlug(router.asPath);
-
-  const res = useSWR<DailyDetailResponse>(getApiKey(slugFromPath), () => getBySlug(slugFromPath));
-  const dailyDetail = res.data || defaultDailyDetailResponseDto;
-
+const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { dailyDetail } = props;
   const { date, slug } = dailyDetail;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
@@ -44,32 +31,51 @@ const DailyDetailPage = () => {
   </div>;
 };
 
-const DailyDetailPageWrapper = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <SWRConfig value={{fallback: props.fallback}}>
-    <DailyDetailPage />
-  </SWRConfig>;
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = StaticDataLoader.getDailyPosts();
+  
+  const paths = posts.map((post) => {
+    const date = new Date(post.attributes.date);
+    return {
+      params: {
+        year: date.getFullYear().toString(),
+        month: (date.getMonth() + 1).toString().padStart(2, "0"),
+        day: date.getDate().toString().padStart(2, "0"),
+        slug: post.attributes.slug
+      }
+    };
+  });
+
+  return {
+    paths,
+    fallback: false
+  };
 };
 
-const getSlug = (asPath: string): string => {
-  const splitted = asPath.split("/");
-  return decodeURIComponent(splitted[5]);
-};
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const slug = params?.slug as string;
+  
+  const post = StaticDataLoader.getDailyPostBySlug(slug);
+  if (!post) {
+    return { notFound: true };
+  }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  // https://nodejs.org/api/http.html#messageurl
-  const {pathname} = new URL(context.resolvedUrl || "", `https://${context.req.headers.host}`);
-  const slugFromPath = getSlug(pathname);
-
-  const props: DailyDetailResponse = await getBySlug(slugFromPath);
-  const key = getApiKey(slugFromPath);
+  // DailyDetailResponse 형태로 변환
+  const dailyDetail: DailyDetailResponse = {
+    id: post.id.toString(),
+    seq: post.attributes.seq,
+    title: post.attributes.title,
+    content: post.attributes.content,
+    date: post.attributes.date,
+    slug: post.attributes.slug,
+    updatedAt: post.attributes.updatedAt
+  };
 
   return {
     props: {
-      fallback: {
-        [key]: props
-      }
+      dailyDetail
     }
   };
 };
 
-export default DailyDetailPageWrapper;
+export default DailyDetailPage;
