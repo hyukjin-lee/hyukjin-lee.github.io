@@ -9,7 +9,7 @@ const Utterances = ({ identifier }: Props) => {
   const theme = useTheme();
 
   React.useEffect(() => {
-    initComment(theme.palette.mode);
+    initComment(theme.palette.mode, identifier);
   }, [identifier, theme.palette.mode]);
 
   return <div id="comment-container" style={{
@@ -25,7 +25,7 @@ const Comment = (props: Props) => {
 
 export default Comment;
 
-const initComment = (paletteType: "light" | "dark") => {
+const initComment = (paletteType: "light" | "dark", identifier: string) => {
   const utterancesContainer = document.querySelector("#comment-container");
   if (!utterancesContainer) {
     return;
@@ -35,7 +35,7 @@ const initComment = (paletteType: "light" | "dark") => {
   const utterances = document.createElement("script");
   utterances.setAttribute("src", "https://utteranc.es/client.js");
   utterances.setAttribute("repo", "hyukjin-lee/terrace-utterances");
-  utterances.setAttribute("issue-term", "pathname");
+  utterances.setAttribute("issue-term", identifier);
   utterances.setAttribute("theme", paletteType === "dark" ? "dark-blue" : "github-light");
   utterances.setAttribute("crossorigin", "anonymous");
   utterances.async = true;
