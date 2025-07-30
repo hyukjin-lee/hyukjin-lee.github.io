@@ -14,8 +14,7 @@ interface Props {
 
 const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { dailyDetail } = props;
-  const { date, slug } = dailyDetail;
-  const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
+  const { slug } = dailyDetail;
 
   const theme = useTheme();
   return <div>
