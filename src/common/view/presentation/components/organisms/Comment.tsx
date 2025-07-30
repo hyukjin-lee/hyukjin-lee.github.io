@@ -34,7 +34,7 @@ const initComment = (paletteType: "light" | "dark") => {
 
   const utterances = document.createElement("script");
   utterances.setAttribute("src", "https://utteranc.es/client.js");
-  utterances.setAttribute("repo", "myeongjae-kim/terrace-utterances");
+  utterances.setAttribute("repo", "hyukjin-lee/terrace-utterances");
   utterances.setAttribute("issue-term", "pathname");
   utterances.setAttribute("theme", paletteType === "dark" ? "dark-blue" : "github-light");
   utterances.setAttribute("crossorigin", "anonymous");
