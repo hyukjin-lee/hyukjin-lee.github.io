@@ -10,7 +10,7 @@ import {
 } from "src/tech/domain/TechArticleDetailResponse";
 import {TechArticleDetail} from "src/tech/view/presentation/components/templates";
 import {useTheme} from "@mui/material";
-import {StaticDataLoader} from "src/data/staticDataLoader";
+import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
   techArticle: TechArticleDetailResponse;

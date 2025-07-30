@@ -5,7 +5,7 @@ import {HeadTitle, PageTitle} from "src/common/view/presentation/components/mole
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
-import {StaticDataLoader} from "src/data/staticDataLoader";
+import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
   blogData: any;

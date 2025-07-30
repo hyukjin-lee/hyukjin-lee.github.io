@@ -5,7 +5,7 @@ import {pageContainerStyle} from "src/common/view/presentation/styles/pageContai
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {DailyListProps} from "src/daily/view/presentation/components/templates/DailyList/DailyList";
-import {StaticDataLoader} from "src/data/staticDataLoader";
+import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
   dailyData: any;

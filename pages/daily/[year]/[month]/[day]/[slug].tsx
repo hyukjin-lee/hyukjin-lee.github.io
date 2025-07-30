@@ -6,7 +6,7 @@ import DailyDetail from "src/daily/view/presentation/components/templates/DailyD
 import {formatDateTime} from "src/util";
 import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
 import {DailyDetailResponse} from "src/daily/domain/DailyDetailResponse";
-import {StaticDataLoader} from "src/data/staticDataLoader";
+import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
   dailyDetail: DailyDetailResponse;

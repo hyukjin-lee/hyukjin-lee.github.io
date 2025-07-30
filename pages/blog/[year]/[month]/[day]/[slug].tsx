@@ -10,7 +10,7 @@ import {
 } from "src/blog/domain/BlogArticleDetailResponse";
 import {BlogArticleDetail} from "src/blog/view/presentation/components/templates";
 import {useTheme} from "@mui/material";
-import {StaticDataLoader} from "src/data/staticDataLoader";
+import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
   blogArticle: BlogArticleDetailResponse;
