@@ -31,13 +31,7 @@ const items = [{
 }, {
   href: ["/daily"],
   label: "Daily"
-}, {
-  href: ["/musings"],
-  label: "Musings"
-}, {
-  href: ["/places"],
-  label: "Places"
-},];
+}];
 
 const TopBar = () => {
   const theme = useTheme();
