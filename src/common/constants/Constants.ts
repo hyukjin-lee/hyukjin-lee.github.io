@@ -5,17 +5,17 @@ export const Endpoints = {
 
   about: "/about",
 
-  tech: "/tech-articles",
+  tech: "/tech",
   "tech.detail": "/tech/detail",
   "tech.create": "/tech/create",
   "tech.update": "/tech/update",
 
-  blog: "/blog-articles",
+  blog: "/blog",
   "blog.detail": "/blog/detail",
   "blog.create": "/blog/create",
   "blog.update": "/blog/update",
 
-  daily: "/dailies",
+  daily: "/daily",
   "daily.detail": "/daily/detail",
   "daily.create": "/daily/create",
   "daily.update": "/daily/update",
