@@ -31,11 +31,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Fetch data from Strapi
-        run: npm run fetch-data
-        
       - name: Build static site
-        run: npm run build:static || true
+        run: npm run build
         
       - name: Create .nojekyll file
         run: touch out/.nojekyll
