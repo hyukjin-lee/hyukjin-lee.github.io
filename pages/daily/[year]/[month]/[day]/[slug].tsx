@@ -13,13 +13,13 @@ interface Props {
 
 const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { dailyDetail } = props;
-  const { slug } = dailyDetail;
+  const { seq } = dailyDetail;
 
   const theme = useTheme();
   return <div>
     <HeadTitle title="Daily" />
     <DailyDetail daily={dailyDetail} />
-    <Comment identifier={`daily-${slug}`} />
+    <Comment identifier={`daily-${seq}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
 #comment-container {

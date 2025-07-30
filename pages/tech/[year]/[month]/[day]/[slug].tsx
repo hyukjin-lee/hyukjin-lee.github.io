@@ -20,7 +20,7 @@ interface Props {
 
 const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { techArticle, prev, next } = props;
-  const { title, content, date, slug } = techArticle;
+  const { title, content, date, slug, seq } = techArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
   const theme = useTheme();
@@ -40,7 +40,7 @@ const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
       techArticle={{...techArticle, prev: prevData, next: nextData}}
     />
     <div style={{ marginTop: "40px", padding: "20px 0" }}>
-      <Comment identifier={`tech-${slug}`} />
+      <Comment identifier={`tech-${seq}`} />
     </div>
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`

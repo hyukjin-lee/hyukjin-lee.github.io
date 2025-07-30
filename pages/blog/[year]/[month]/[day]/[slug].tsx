@@ -20,7 +20,7 @@ interface Props {
 
 const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { blogArticle, prev, next } = props;
-  const { title, content, date, slug } = blogArticle;
+  const { title, content, date, slug, seq } = blogArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
   const theme = useTheme();
@@ -39,7 +39,7 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
     <BlogArticleDetail
       blogArticle={{...blogArticle, prev: prevData, next: nextData}}
     />
-    <Comment identifier={`blog-${slug}`} />
+    <Comment identifier={`blog-${seq}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
 #comment-container {
