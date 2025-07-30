@@ -1,4 +1,4 @@
-export const DOMAIN = "https://gogokow27.com";
+export const DOMAIN = "https://hyukjin-lee.github.io";
 
 export const Endpoints = {
   auth: "/auth",
