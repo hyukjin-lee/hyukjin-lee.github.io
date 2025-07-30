@@ -39,7 +39,7 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
     <BlogArticleDetail
       blogArticle={{...blogArticle, prev: prevData, next: nextData}}
     />
-    <Comment identifier={`blog${subPath}`} />
+    <Comment identifier={`blog-${slug}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
 #comment-container {

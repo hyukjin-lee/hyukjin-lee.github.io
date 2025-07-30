@@ -21,7 +21,7 @@ const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) 
   return <div>
     <HeadTitle title="Daily" />
     <DailyDetail daily={dailyDetail} />
-    <Comment identifier={`daily${subPath}`} />
+    <Comment identifier={`daily-${slug}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
 #comment-container {

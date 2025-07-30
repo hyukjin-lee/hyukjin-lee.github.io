@@ -40,7 +40,7 @@ const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
       techArticle={{...techArticle, prev: prevData, next: nextData}}
     />
     <div style={{ marginTop: "40px", padding: "20px 0" }}>
-      <Comment identifier={`tech${subPath}`} />
+      <Comment identifier={`tech-${slug}`} />
     </div>
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
