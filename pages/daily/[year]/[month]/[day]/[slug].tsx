@@ -3,7 +3,6 @@ import * as React from "react";
 import {HeadTitle} from "src/common/view/presentation/components/molecules";
 import {Comment} from "src/common/view/presentation/components/organisms";
 import DailyDetail from "src/daily/view/presentation/components/templates/DailyDetail";
-import {formatDateTime} from "src/util";
 import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
 import {DailyDetailResponse} from "src/daily/domain/DailyDetailResponse";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
