@@ -39,7 +39,9 @@ const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
     <TechArticleDetail
       techArticle={{...techArticle, prev: prevData, next: nextData}}
     />
-    <Comment identifier={`tech${subPath}`} />
+    <div style={{ marginTop: '40px', padding: '20px 0' }}>
+      <Comment identifier={`tech${subPath}`} />
+    </div>
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
 #comment-container {
