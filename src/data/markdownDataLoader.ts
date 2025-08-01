@@ -1,28 +1,58 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { BlogArticleListStrapi } from '../blog/application/port/outgoing/BlogArticleListStrapi';
-import { BlogArticleStrapi } from '../blog/application/port/outgoing/BlogArticleStrapi';
-import { TechArticleListStrapi } from '../tech/application/port/outgoing/TechArticleListStrapi';
-import { TechArticleStrapi } from '../tech/application/port/outgoing/TechArticleStrapi';
-import { DailyListStrapi } from '../daily/application/port/outgoing/DailyListStrapi';
-import { DailyStrapi } from '../daily/application/port/outgoing/DailyStrapi';
-import { StrapiResponse } from '../common/domain/StrapiResponse';
-import { StrapiPagination } from '../common/domain/StrapiPagination';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import { BlogArticleListStrapi } from "../blog/application/port/outgoing/BlogArticleListStrapi";
+import { BlogArticleStrapi } from "../blog/application/port/outgoing/BlogArticleStrapi";
+import { TechArticleListStrapi } from "../tech/application/port/outgoing/TechArticleListStrapi";
+import { TechArticleStrapi } from "../tech/application/port/outgoing/TechArticleStrapi";
+import { DailyListStrapi } from "../daily/application/port/outgoing/DailyListStrapi";
+import { DailyStrapi } from "../daily/application/port/outgoing/DailyStrapi";
+import { StrapiResponse } from "../common/domain/StrapiResponse";
+import { StrapiPagination } from "../common/domain/StrapiPagination";
 
-const POSTS_DIR = path.join(process.cwd(), '_posts');
+const POSTS_DIR = path.join(process.cwd(), "_posts");
+const LINK_PREVIEWS_FILE = path.join(process.cwd(), "data", "link-previews.json");
 
 export class MarkdownDataLoader {
+  // 링크 프리뷰 데이터 로드
+  private static loadLinkPreviews(): Record<string, any> {
+    try {
+      if (fs.existsSync(LINK_PREVIEWS_FILE)) {
+        const content = fs.readFileSync(LINK_PREVIEWS_FILE, "utf8");
+        return JSON.parse(content);
+      }
+    } catch (error) {
+      console.warn("Could not load link previews:", error);
+    }
+    return {};
+  }
+
+  // 컨텐츠에서 링크 프리뷰 데이터 추출
+  private static getLinkPreviewsForContent(content: string): Record<string, any> {
+    const linkPreviews = this.loadLinkPreviews();
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urls = content.match(urlRegex) || [];
+    
+    const result: Record<string, any> = {};
+    urls.forEach(url => {
+      if (linkPreviews[url]) {
+        result[url] = linkPreviews[url];
+      }
+    });
+    
+    return result;
+  }
+
   // Helper: Markdown 파일들을 읽어서 Strapi 형식으로 변환
   private static readMarkdownFiles(category: string): any[] {
     const categoryDir = path.join(POSTS_DIR, category);
     if (!fs.existsSync(categoryDir)) return [];
 
-    const files = fs.readdirSync(categoryDir).filter(file => file.endsWith('.md'));
+    const files = fs.readdirSync(categoryDir).filter(file => file.endsWith(".md"));
     
     return files.map(filename => {
       const filePath = path.join(categoryDir, filename);
-      const fileContent = fs.readFileSync(filePath, 'utf8');
+      const fileContent = fs.readFileSync(filePath, "utf8");
       const { data: frontmatter, content } = matter(fileContent);
       
       return {
@@ -33,7 +63,8 @@ export class MarkdownDataLoader {
           updatedAt: frontmatter.updatedAt,
           slug: frontmatter.slug,
           title: frontmatter.title,
-          content: content.trim()
+          content: content.trim(),
+          linkPreviews: this.getLinkPreviewsForContent(content.trim())
         }
       };
     }).sort((a, b) => b.attributes.seq - a.attributes.seq); // seq 내림차순 정렬
@@ -41,16 +72,16 @@ export class MarkdownDataLoader {
 
   // Blog 데이터 로더 (기존 인터페이스 유지)
   static getBlogArticles(): BlogArticleListStrapi[] {
-    return this.readMarkdownFiles('blog');
+    return this.readMarkdownFiles("blog");
   }
 
   static getBlogArticleBySlug(slug: string): BlogArticleStrapi | null {
-    const files = fs.readdirSync(path.join(process.cwd(), '_posts/blog'));
+    const files = fs.readdirSync(path.join(process.cwd(), "_posts/blog"));
     
     for (const file of files) {
-      if (file.endsWith('.md')) {
-        const filePath = path.join(process.cwd(), '_posts/blog', file);
-        const fileContent = fs.readFileSync(filePath, 'utf-8');
+      if (file.endsWith(".md")) {
+        const filePath = path.join(process.cwd(), "_posts/blog", file);
+        const fileContent = fs.readFileSync(filePath, "utf-8");
         const { data, content } = matter(fileContent);
         
         if (data.slug === slug) {
@@ -62,7 +93,8 @@ export class MarkdownDataLoader {
               updatedAt: data.updatedAt,
               slug: data.slug,
               title: data.title,
-              content: content
+              content: content,
+              linkPreviews: this.getLinkPreviewsForContent(content)
             }
           };
         }
@@ -102,16 +134,16 @@ export class MarkdownDataLoader {
 
   // Tech 데이터 로더 (기존 인터페이스 유지)
   static getTechArticles(): TechArticleListStrapi[] {
-    return this.readMarkdownFiles('tech');
+    return this.readMarkdownFiles("tech");
   }
 
   static getTechArticleBySlug(slug: string): TechArticleStrapi | null {
-    const files = fs.readdirSync(path.join(process.cwd(), '_posts/tech'));
+    const files = fs.readdirSync(path.join(process.cwd(), "_posts/tech"));
     
     for (const file of files) {
-      if (file.endsWith('.md')) {
-        const filePath = path.join(process.cwd(), '_posts/tech', file);
-        const fileContent = fs.readFileSync(filePath, 'utf-8');
+      if (file.endsWith(".md")) {
+        const filePath = path.join(process.cwd(), "_posts/tech", file);
+        const fileContent = fs.readFileSync(filePath, "utf-8");
         const { data, content } = matter(fileContent);
         
         if (data.slug === slug) {
@@ -123,7 +155,8 @@ export class MarkdownDataLoader {
               updatedAt: data.updatedAt,
               slug: data.slug,
               title: data.title,
-              content: content
+              content: content,
+              linkPreviews: this.getLinkPreviewsForContent(content)
             }
           };
         }
@@ -163,16 +196,16 @@ export class MarkdownDataLoader {
 
   // Daily 데이터 로더 (기존 인터페이스 유지)
   static getDailyPosts(): DailyListStrapi[] {
-    return this.readMarkdownFiles('daily');
+    return this.readMarkdownFiles("daily");
   }
 
   static getDailyPostBySlug(slug: string): DailyStrapi | null {
-    const files = fs.readdirSync(path.join(process.cwd(), '_posts/daily'));
+    const files = fs.readdirSync(path.join(process.cwd(), "_posts/daily"));
     
     for (const file of files) {
-      if (file.endsWith('.md')) {
-        const filePath = path.join(process.cwd(), '_posts/daily', file);
-        const fileContent = fs.readFileSync(filePath, 'utf-8');
+      if (file.endsWith(".md")) {
+        const filePath = path.join(process.cwd(), "_posts/daily", file);
+        const fileContent = fs.readFileSync(filePath, "utf-8");
         const { data, content } = matter(fileContent);
         
         if (data.slug === slug) {
@@ -184,7 +217,8 @@ export class MarkdownDataLoader {
               updatedAt: data.updatedAt,
               slug: data.slug,
               title: data.title,
-              content: content
+              content: content,
+              linkPreviews: this.getLinkPreviewsForContent(content)
             }
           };
         }
@@ -207,7 +241,8 @@ export class MarkdownDataLoader {
       date: post.attributes.date,
       uri: `/daily${this.formatDatePath(post.attributes.date)}/${post.attributes.slug}`,
       title: post.attributes.title,
-      content: post.attributes.content
+      content: post.attributes.content,
+      linkPreviews: post.attributes.linkPreviews
     }));
 
     const pagination: StrapiPagination = {
@@ -225,10 +260,10 @@ export class MarkdownDataLoader {
 
   // About 데이터 로더
   static getAbout(): any {
-    const aboutFile = path.join(POSTS_DIR, 'about.md');
+    const aboutFile = path.join(POSTS_DIR, "about.md");
     if (!fs.existsSync(aboutFile)) return null;
     
-    const fileContent = fs.readFileSync(aboutFile, 'utf8');
+    const fileContent = fs.readFileSync(aboutFile, "utf8");
     const { data: frontmatter, content } = matter(fileContent);
     
     return {
@@ -243,7 +278,7 @@ export class MarkdownDataLoader {
   }
 
   static getMusings(): any {
-    const musingsData = fs.readFileSync(path.join(process.cwd(), 'data/musings.json'), 'utf-8');
+    const musingsData = fs.readFileSync(path.join(process.cwd(), "data/musings.json"), "utf-8");
     return JSON.parse(musingsData);
   }
 
@@ -311,8 +346,8 @@ export class MarkdownDataLoader {
   private static formatDatePath(dateString: string): string {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
     return `/${year}/${month}/${day}`;
   }
 }

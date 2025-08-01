@@ -6,6 +6,7 @@ export interface DailyDetailResponse {
   title: string;
   slug: string;
   content: string;
+  linkPreviews?: Record<string, any>;
 }
 
 export const defaultDailyDetailResponseDto: DailyDetailResponse = {

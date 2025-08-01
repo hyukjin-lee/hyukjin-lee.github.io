@@ -1,0 +1,43 @@
+{
+  "https://www.youtube.com/embed/Jrrcs_AvDiU\"": {
+    "url": "https://www.youtube.com/embed/Jrrcs_AvDiU\"",
+    "title": "YouTube",
+    "description": "",
+    "image": "",
+    "siteName": "www.youtube.com",
+    "scrapedAt": "2025-08-01T02:28:16.718Z"
+  },
+  "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd": {
+    "url": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd",
+    "title": "Steve Jobs explains Object Oriented Programming",
+    "description": "One of the key aspects of selling something knowing what it is. Steve Jobs was prime example of that kind of salesman. For years he had…",
+    "image": "https://miro.medium.com/v2/da:true/resize:fit:1200/0*jCMIXoXivBUh63Tp",
+    "siteName": "Medium",
+    "scrapedAt": "2025-08-01T02:28:16.569Z"
+  },
+  "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd\")도": {
+    "url": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd\")도",
+    "title": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd\")도",
+    "description": "",
+    "image": "",
+    "siteName": "medium.com",
+    "error": "Request path contains unescaped characters",
+    "scrapedAt": "2025-08-01T02:28:16.015Z"
+  },
+  "https://codeopinion.com/": {
+    "url": "https://codeopinion.com/",
+    "title": "CodeOpinion",
+    "description": "Software Architecture & Design",
+    "image": "",
+    "siteName": "CodeOpinion",
+    "scrapedAt": "2025-08-01T02:28:20.797Z"
+  },
+  "https://codeopinion.com/database-migration-strategies/": {
+    "url": "https://codeopinion.com/database-migration-strategies/",
+    "title": "Database Migration Strategies",
+    "description": "Database migrations can be tricky, depending on your application and environment. The key is making backward-compatible changes!",
+    "image": "https://codeopinion.com/wp-content/uploads/2025/07/Twitter-1.png",
+    "siteName": "CodeOpinion",
+    "scrapedAt": "2025-08-01T10:42:51.465Z"
+  }
+}

@@ -7,6 +7,7 @@ import {useTheme} from "@mui/material";
 
 interface Props {
   content: string;
+  linkPreviews?: Record<string, any>;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -27,12 +28,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-const ArticleContent = ({ content }: Props) => {
+const ArticleContent = ({ content, linkPreviews }: Props) => {
   const classes = useStyles();
   const theme = useTheme();
   const smallWidth = useMediaQuery(theme.breakpoints.down("xs"));
 
-  return <MarkdownPreview className={clsx(classes.content, {[classes.contentSmallWidth]: smallWidth})} markdown={content} />;
+  return (
+    <MarkdownPreview 
+      className={clsx(classes.content, {[classes.contentSmallWidth]: smallWidth})} 
+      markdown={content} 
+      linkPreviews={linkPreviews}
+    />
+  );
 };
 
 export default ArticleContent;

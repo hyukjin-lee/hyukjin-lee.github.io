@@ -15,6 +15,7 @@ export interface BlogArticleDetailResponse {
   content: string;
   prev: BlogArticlePrevOrNext;
   next: BlogArticlePrevOrNext;
+  linkPreviews?: Record<string, any>;
 }
 
 export const defaultBlogArticleDetailResponseDto: BlogArticleDetailResponse = {

@@ -90,7 +90,8 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     slug: article.attributes.slug,
     updatedAt: article.attributes.updatedAt,
     prev: { id: "", date: "", title: "", uri: "" },
-    next: { id: "", date: "", title: "", uri: "" }
+    next: { id: "", date: "", title: "", uri: "" },
+    linkPreviews: article.attributes.linkPreviews
   };
 
   // prev/next 가져오기

@@ -5,4 +5,5 @@ export interface DailyListResponse {
   uri: string;
   title: string;
   content: string;
+  linkPreviews?: Record<string, any>;
 }

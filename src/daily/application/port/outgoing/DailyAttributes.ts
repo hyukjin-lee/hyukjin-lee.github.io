@@ -5,4 +5,5 @@ export interface DailyAttributes {
   slug: string;
   title: string;
   content: string;
+  linkPreviews?: Record<string, any>;
 }

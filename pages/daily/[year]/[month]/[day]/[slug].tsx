@@ -66,7 +66,8 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     content: post.attributes.content,
     date: post.attributes.date,
     slug: post.attributes.slug,
-    updatedAt: post.attributes.updatedAt
+    updatedAt: post.attributes.updatedAt,
+    linkPreviews: post.attributes.linkPreviews
   };
 
   return {

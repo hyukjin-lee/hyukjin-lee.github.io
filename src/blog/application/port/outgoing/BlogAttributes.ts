@@ -5,4 +5,5 @@ export interface BlogAttributes {
   slug: string;
   title: string;
   content: string;
+  linkPreviews?: Record<string, any>;
 }

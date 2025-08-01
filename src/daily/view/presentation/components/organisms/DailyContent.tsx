@@ -13,6 +13,9 @@ interface Props {
   authorHandle: string;
   avatarSrc: string;
   timestamp: string;
+  linkPreviews?: Record<string, any>;
+  uri?: string;
+  title?: string;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -22,6 +25,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
     backgroundColor: theme.palette.background.paper,
+    cursor: "pointer",
+    transition: "box-shadow 0.2s",
+    "&:hover": {
+      boxShadow: theme.shadows[2],
+    }
   },
   header: {
     display: "flex",
@@ -72,10 +80,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-const DailyContent = ({ content, authorName, authorHandle, avatarSrc, timestamp }: Props) => {
+const DailyContent = ({ content, authorName, authorHandle, avatarSrc, timestamp, linkPreviews, uri, title }: Props) => {
   const classes = useStyles();
+  
+  const handleClick = () => {
+    if (uri) {
+      window.location.href = uri;
+    }
+  };
+  
   return (
-    <Box className={classes.root}>
+    <Box className={classes.root} onClick={handleClick}>
       <Box className={classes.header}>
         <Avatar alt={authorName} src={avatarSrc} className={classes.avatar} />
         <Box className={classes.authorInfo}>
@@ -90,18 +105,23 @@ const DailyContent = ({ content, authorName, authorHandle, avatarSrc, timestamp 
           {timestamp}
         </Typography>
       </Box>
-      <MarkdownPreview className={classes.content} markdown={content} />
+      {title && (
+        <Typography variant="h6" fontWeight="bold" sx={{ marginBottom: 1 }}>
+          {title}
+        </Typography>
+      )}
+      <MarkdownPreview className={classes.content} markdown={content} linkPreviews={linkPreviews} />
       <Box className={classes.footer}>
-        <IconButton aria-label="comment">
+        <IconButton aria-label="comment" onClick={(e) => e.stopPropagation()}>
           <ChatBubbleOutlineIcon fontSize="small" />
         </IconButton>
-        <IconButton aria-label="retweet">
+        <IconButton aria-label="retweet" onClick={(e) => e.stopPropagation()}>
           <RepeatIcon fontSize="small" />
         </IconButton>
-        <IconButton aria-label="like">
+        <IconButton aria-label="like" onClick={(e) => e.stopPropagation()}>
           <FavoriteBorderIcon fontSize="small" />
         </IconButton>
-        <IconButton aria-label="share">
+        <IconButton aria-label="share" onClick={(e) => e.stopPropagation()}>
           <ShareIcon fontSize="small" />
         </IconButton>
       </Box>

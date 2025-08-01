@@ -20,12 +20,12 @@ export interface BlogArticleDetailProps {
 
 const BlogArticleDetail = ({ blogArticle }: BlogArticleDetailProps) => {
   const classes = useStyles();
-  const { title, slug, content, date, prev, next } = blogArticle;
+  const { title, slug, content, date, prev, next, linkPreviews } = blogArticle;
   return <>
     <HeadTitle title={title} />
     <div className={classes.container}>
       <ArticleHead title={title} slug={slug} date={date} />
-      <ArticleContent content={content} />
+      <ArticleContent content={content} linkPreviews={linkPreviews} />
       <ArticlePrevAndNext prev={prev} next={next} />
     </div>
   </>;

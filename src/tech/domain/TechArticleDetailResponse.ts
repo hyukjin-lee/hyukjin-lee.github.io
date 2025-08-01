@@ -15,6 +15,7 @@ export interface TechArticleDetailResponse {
   content: string;
   prev: TechArticlePrevOrNext;
   next: TechArticlePrevOrNext;
+  linkPreviews?: Record<string, any>;
 }
 
 export const defaultTechArticleDetailResponseDto: TechArticleDetailResponse = {

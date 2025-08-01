@@ -5,4 +5,5 @@ export interface TechAttributes {
   slug: string;
   title: string;
   content: string;
+  linkPreviews?: Record<string, any>;
 }
