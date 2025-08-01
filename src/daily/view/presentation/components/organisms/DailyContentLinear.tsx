@@ -15,7 +15,6 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     padding: `${theme.spacing(4)} ${theme.spacing(3)}`,
-    borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'}`,
     cursor: "pointer",
     transition: "all 0.15s cubic-bezier(0.4, 0, 0.2, 1)",
     position: "relative",
@@ -28,10 +27,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         opacity: 1,
         transform: "scaleY(1)",
       }
-    },
-    
-    "&:last-child": {
-      borderBottom: "none",
     },
     
     "&::before": {
@@ -216,7 +211,7 @@ const DailyContentLinear: React.FC<Props> = ({
   };
   
   const formatDate = (dateString: string) => {
-    return formatDateTime(dateString, "MMM DD");
+    return formatDateTime(dateString, "YYYY MMM DD");
   };
   
   return (

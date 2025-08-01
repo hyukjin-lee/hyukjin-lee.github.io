@@ -1,8 +1,7 @@
 import * as React from "react";
-import { Card, CardContent, Typography, Box, Link as MuiLink } from "@mui/material";
+import { Typography, Link as MuiLink } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Theme } from "@mui/material";
-import { Launch as LaunchIcon } from "@mui/icons-material";
 
 interface LinkPreviewData {
   url: string;
@@ -21,33 +20,31 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
-      maxWidth: "100%",
-      margin: `${theme.spacing(1.5)} 0`,
+      maxWidth: 480,
+      height: 200,
+      margin: `${theme.spacing(2)} auto`,
       cursor: "pointer",
-      transition: "border-color 0.2s ease",
-      border: `1px solid ${theme.palette.divider}`,
-      borderRadius: theme.spacing(0.75),
+      transition: "all 0.2s ease",
+      border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)'}`,
+      borderRadius: 16,
+      overflow: "hidden",
+      position: "relative",
+      backgroundColor: theme.palette.grey[100],
       "&:hover": {
-        borderColor: theme.palette.primary.main,
+        transform: "translateY(-2px)",
+        boxShadow: theme.palette.mode === 'dark' 
+          ? '0 8px 25px rgba(0, 0, 0, 0.4)'
+          : '0 8px 25px rgba(0, 0, 0, 0.15)',
       },
-    },
-    cardContent: {
-      padding: `${theme.spacing(1.5)} !important`,
-      "&:last-child": {
-        paddingBottom: `${theme.spacing(1.5)} !important`,
-      },
-    },
-    container: {
-      display: "flex",
-      gap: theme.spacing(2),
     },
     imageContainer: {
-      flexShrink: 0,
-      width: 120,
-      height: 80,
-      borderRadius: theme.spacing(0.5),
-      overflow: "hidden",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
       backgroundColor: theme.palette.grey[100],
+      overflow: "hidden",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -56,62 +53,50 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
       height: "100%",
       objectFit: "cover",
+      objectPosition: "center",
+      display: "block",
+      margin: 0,
+      padding: 0,
+      border: "none",
+      outline: "none",
     },
-    noImage: {
-      color: theme.palette.grey[400],
-      fontSize: "0.8rem",
+    noImagePlaceholder: {
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+      color: theme.palette.text.disabled,
+      fontSize: "0.875rem",
     },
-    content: {
-      flex: 1,
-      minWidth: 0, // flex item의 최소 너비를 0으로 설정
+    overlay: {
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      background: "linear-gradient(transparent, rgba(0, 0, 0, 0.85))",
+      padding: theme.spacing(2),
+      paddingTop: theme.spacing(4),
     },
     title: {
       fontWeight: 600,
-      marginBottom: theme.spacing(0.5),
-      color: theme.palette.text.primary,
+      fontSize: "0.875rem",
+      lineHeight: 1.3,
+      color: "#ffffff",
       overflow: "hidden",
       textOverflow: "ellipsis",
       display: "-webkit-box",
       WebkitLineClamp: 2,
       WebkitBoxOrient: "vertical",
-    },
-    description: {
-      color: theme.palette.text.secondary,
-      marginBottom: theme.spacing(1),
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      display: "-webkit-box",
-      WebkitLineClamp: 2,
-      WebkitBoxOrient: "vertical",
-    },
-    footer: {
-      display: "flex",
-      alignItems: "center",
-      gap: theme.spacing(0.5),
-      color: theme.palette.text.secondary,
+      textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
     },
     siteName: {
-      fontSize: "0.85rem",
-      fontWeight: 500,
-    },
-    url: {
-      fontSize: "0.8rem",
-      color: theme.palette.text.disabled,
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-    },
-    icon: {
-      fontSize: "1rem",
-    },
-    mobileContainer: {
-      flexDirection: "column",
-      [theme.breakpoints.down("sm")]: {
-        "& $imageContainer": {
-          width: "100%",
-          height: 150,
-        },
-      },
+      fontSize: "0.75rem",
+      fontWeight: 400,
+      color: "rgba(255, 255, 255, 0.8)",
+      marginTop: theme.spacing(0.5),
+      textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)",
     },
   })
 );
@@ -148,47 +133,43 @@ const LinkPreview: React.FC<Props> = ({ data, className }) => {
   }
 
   return (
-    <Card className={`${classes.card} ${className || ""}`} onClick={handleClick}>
-      <CardContent className={classes.cardContent}>
-        <Box className={classes.container}>
-          {data.image && (
-            <div className={classes.imageContainer}>
-              <img
-                src={data.image}
-                alt={data.title}
-                className={classes.image}
-                onError={(e) => {
-                  // 이미지 로드 실패 시 숨김
-                  (e.target as HTMLElement).style.display = "none";
-                }}
-              />
-            </div>
-          )}
-          
-          <div className={classes.content}>
-            <Typography variant="body1" className={classes.title}>
-              {data.title}
-            </Typography>
-            
-            {data.description && (
-              <Typography variant="body2" className={classes.description}>
-                {data.description}
-              </Typography>
-            )}
-            
-            <Box className={classes.footer}>
-              <LaunchIcon className={classes.icon} />
-              <Typography className={classes.siteName}>
-                {data.siteName || getDomain(data.url)}
-              </Typography>
-              <Typography className={classes.url}>
-                • {getDomain(data.url)}
-              </Typography>
-            </Box>
-          </div>
-        </Box>
-      </CardContent>
-    </Card>
+    <div className={`${classes.card} ${className || ""}`} onClick={handleClick}>
+      {/* Background Image or Placeholder */}
+      <div className={classes.imageContainer}>
+        {data.image ? (
+          <img
+            src={data.image}
+            alt={data.title}
+            className={classes.image}
+            onError={(e) => {
+              // 이미지 로드 실패 시 placeholder 표시
+              const target = e.target as HTMLElement;
+              target.style.display = "none";
+              const placeholder = target.parentElement?.querySelector('.no-image-placeholder');
+              if (placeholder) {
+                (placeholder as HTMLElement).style.display = "flex";
+              }
+            }}
+          />
+        ) : null}
+        <div 
+          className={`${classes.noImagePlaceholder} no-image-placeholder`}
+          style={{ display: data.image ? "none" : "flex" }}
+        >
+          {data.siteName || getDomain(data.url)}
+        </div>
+      </div>
+
+      {/* Overlay with Title */}
+      <div className={classes.overlay}>
+        <Typography className={classes.title}>
+          {data.title}
+        </Typography>
+        <Typography className={classes.siteName}>
+          {data.siteName || getDomain(data.url)}
+        </Typography>
+      </div>
+    </div>
   );
 };
 
