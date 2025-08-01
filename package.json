@@ -8,8 +8,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && npx next export",
-    "build:static": "npm run fetch-data && npm run generate-link-previews && next build && npx next export",
+    "build:static": "npm run fetch-data && npm run generate-link-previews && next build && npx next export && npm run postbuild",
     "generate-link-previews": "node scripts/generate-link-previews.js",
+    "postbuild": "next-sitemap --config next-sitemap.config.js",
     "start": "NODE_ENV=production next start -p 8080",
     "start:local": "NODE_ENV=production next start",
     "lint": "eslint . --ext .ts,.tsx --fix && tsc --noEmit",
@@ -37,6 +38,7 @@
     "moment-timezone": "^0.5.31",
     "next": "^12.1.0",
     "next-seo": "^4.11.0",
+    "next-sitemap": "^4.2.3",
     "nprogress": "^0.2.0",
     "optional-js": "^2.1.1",
     "prismjs": "^1.27.0",

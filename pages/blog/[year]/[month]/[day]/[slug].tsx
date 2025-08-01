@@ -29,11 +29,68 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
   const prevData: BlogArticlePrevOrNext = prev || { id: "", date: "", title: "", uri: "" };
   const nextData: BlogArticlePrevOrNext = next || { id: "", date: "", title: "", uri: "" };
 
+  // 더 나은 description 생성 (마크다운 제거)
+  const cleanDescription = content
+    .replace(/#{1,6}\s+/g, "") // 헤더 제거
+    .replace(/\*\*(.*?)\*\*/g, "$1") // 볼드 제거
+    .replace(/\*(.*?)\*/g, "$1") // 이탤릭 제거
+    .replace(/`(.*?)`/g, "$1") // 코드 제거
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // 링크 제거
+    .replace(/\n+/g, " ") // 줄바꿈을 공백으로
+    .trim()
+    .substring(0, 160); // Google 권장 길이
+
+  const publishedTime = new Date(date).toISOString();
+  const modifiedTime = new Date(blogArticle.updatedAt || date).toISOString();
+
   return <div>
     <NextSeo
       title={title}
-      description={content.substring(0, 512)}
+      description={cleanDescription}
       canonical={`${DOMAIN}${Endpoints.blog}${subPath}`}
+      openGraph={{
+        type: "article",
+        title: title,
+        description: cleanDescription,
+        url: `${DOMAIN}${Endpoints.blog}${subPath}`,
+        article: {
+          publishedTime: publishedTime,
+          modifiedTime: modifiedTime,
+          authors: ["https://github.com/hyukhyukk"],
+          tags: ["블로그", "기술", "개발"],
+        },
+        images: [{
+          url: "https://s.gravatar.com/avatar/afe249c2d2c2c95d078179a42a940c42?s=400",
+          width: 400,
+          height: 400,
+          alt: title,
+        }],
+      }}
+      twitter={{
+        cardType: "summary_large_image",
+      }}
+      additionalMetaTags={[
+        {
+          name: "keywords",
+          content: "개발, 프로그래밍, 기술블로그, 소프트웨어"
+        },
+        {
+          name: "author",
+          content: "이혁진"
+        },
+        {
+          property: "article:author",
+          content: "이혁진"
+        },
+        {
+          property: "article:published_time",
+          content: publishedTime
+        },
+        {
+          property: "article:modified_time",
+          content: modifiedTime
+        }
+      ]}
     />
 
     <BlogArticleDetail

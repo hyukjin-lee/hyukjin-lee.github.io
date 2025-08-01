@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+
+# *
+User-agent: *
+Disallow: /404
+
+# Host
+Host: https://hyukjin-lee.github.io
+
+# Sitemaps
+Sitemap: https://hyukjin-lee.github.io/sitemap.xml
