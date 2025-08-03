@@ -28,9 +28,6 @@ module.exports = {
         disallow: ['/404'],
       },
     ],
-    additionalSitemaps: [
-      'https://hyukjin-lee.github.io/sitemap.xml',
-    ],
   },
   transform: async (config, path) => {
     return {
