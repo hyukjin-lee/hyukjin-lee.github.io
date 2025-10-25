@@ -1,29 +1,4 @@
 {
-  "https://www.youtube.com/embed/Jrrcs_AvDiU\"": {
-    "url": "https://www.youtube.com/embed/Jrrcs_AvDiU\"",
-    "title": "YouTube",
-    "description": "",
-    "image": "",
-    "siteName": "www.youtube.com",
-    "scrapedAt": "2025-08-01T02:28:16.718Z"
-  },
-  "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd": {
-    "url": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd",
-    "title": "Steve Jobs explains Object Oriented Programming",
-    "description": "One of the key aspects of selling something knowing what it is. Steve Jobs was prime example of that kind of salesman. For years he had…",
-    "image": "https://miro.medium.com/v2/da:true/resize:fit:1200/0*jCMIXoXivBUh63Tp",
-    "siteName": "Medium",
-    "scrapedAt": "2025-08-01T02:28:16.569Z"
-  },
-  "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd\")도": {
-    "url": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd\")도",
-    "title": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd\")도",
-    "description": "",
-    "image": "",
-    "siteName": "medium.com",
-    "error": "Request path contains unescaped characters",
-    "scrapedAt": "2025-08-01T02:28:16.015Z"
-  },
   "https://codeopinion.com/": {
     "url": "https://codeopinion.com/",
     "title": "CodeOpinion",
@@ -40,12 +15,12 @@
     "siteName": "CodeOpinion",
     "scrapedAt": "2025-08-01T10:42:51.465Z"
   },
-  "https://aws.amazon.com/ko/blogs/tech/toss-securities-nasdaq-options-realtime-pipeline/": {
-    "url": "https://aws.amazon.com/ko/blogs/tech/toss-securities-nasdaq-options-realtime-pipeline/",
-    "title": "토스증권의 미국 Option 시세 실시간 제공 사례 | Amazon Web Services",
-    "description": "들어가며 Viva Republica의 모바일 금융 플랫폼 ‘토스’는 2015년 간편송금 서비스를 시작으로 누구에게나 평등한 금융을 선보이고 있습니다. 토스는 소비자의 관점에서 더 좋은 가치를 담은 서비스를 제공하겠다는 신념 아래 은행, 증권, 결제, 통신 등 다양한 영역에서 서비스를 선보이며 성장해 왔습니다. 그 결과 2024년 기준 월간 활성 이용자(MAU) 수 2,480만 명을 돌파하며 대한민국 대표 핀테크 플랫폼으로 자리매김했습니다. 2025년 […]",
-    "image": "https://d2908q01vomqb2.cloudfront.net/2a459380709e2fe4ac2dae5733c73225ff6cfee1/2025/04/21/toss-1144x630.png",
-    "siteName": "Amazon Web Services",
-    "scrapedAt": "2025-08-01T11:29:34.370Z"
+  "https://blog.fguy.com/2017/02/being-a-programmer-part-2.html": {
+    "url": "https://blog.fguy.com/2017/02/being-a-programmer-part-2.html",
+    "title": "프로그래머가 되기까지... - 2 -",
+    "description": "이전 이야기 보기   다음   미디어개발팀  입사 후 내가 속한 조직은 미디어본부 미디어개발팀이었다. 미디어다음을 주력으로 생활, 여성, 법률, 어린이 서비스 등 다음의 주요 컨텐츠 서비스를 담당하는 팀. 나와 같은 날 입사한 미디어본부 입사동기는 나...",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhquaE2mArOcon49qpakkYc4FMHI_82iDuOIQM3BArPFX9wTCI_N3FjYkh5K4HvMvjg5sWsGHLQUWw2TmRSLdYLIhtMeKH0MLrm9yerrI_6sm1KMug_7y6O7x3aMoiFcY1LR7kr8rcdHwE/w1200-h630-p-k-no-nu/124309765_cd406d91dc_o.jpg",
+    "siteName": "blog.fguy.com",
+    "scrapedAt": "2025-10-25T14:40:15.100Z"
   }
 }
