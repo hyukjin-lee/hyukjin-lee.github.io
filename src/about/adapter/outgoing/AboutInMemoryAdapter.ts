@@ -32,6 +32,10 @@ export class AboutInMemoryAdapter implements AboutLoadPort {
       icon: "Create",
       label: "normal-developer.facebook",
       href: "https://www.facebook.com/NormalDeveloper"
+    }, {
+      icon: "RssFeed",
+      label: "RSS",
+      href: "/rss.xml"
     },]
   });
 }

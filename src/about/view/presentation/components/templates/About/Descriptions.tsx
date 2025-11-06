@@ -2,7 +2,7 @@ import {createStyles, makeStyles} from "@mui/styles";
 import * as React from "react";
 import {Link, Maybe} from "src/common/view/presentation/components/molecules";
 import {Description, DescriptionIcon} from "src/about/domain/Description";
-import {Code, Create, DeveloperBoard, Email, EmojiPeople, Room, SvgIconComponent} from "@mui/icons-material";
+import {Code, Create, DeveloperBoard, Email, EmojiPeople, Room, RssFeed, SvgIconComponent} from "@mui/icons-material";
 
 const useStyles = makeStyles(createStyles({
   list: {
@@ -35,6 +35,8 @@ const getIcon = (icon: DescriptionIcon): SvgIconComponent => {
     return EmojiPeople;
   case "Room":
     return Room;
+  case "RssFeed":
+    return RssFeed;
   }
 };
 

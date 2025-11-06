@@ -1,5 +1,5 @@
 
-export type DescriptionIcon = "EmojiPeople" | "Room" | "DeveloperBoard" | "Code" | "Email" | "Create";
+export type DescriptionIcon = "EmojiPeople" | "Room" | "DeveloperBoard" | "Code" | "Email" | "Create" | "RssFeed";
 
 export interface Description {
   icon: DescriptionIcon;
