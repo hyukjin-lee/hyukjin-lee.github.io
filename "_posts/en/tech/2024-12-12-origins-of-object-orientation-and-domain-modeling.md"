@@ -1,0 +1,37 @@
+---
+id: 2
+seq: 1
+title: "Object Orientation & Domain Modeling: A Short History"
+date: "2024-12-12"
+updatedAt: "2024-12-12T15:34:19.212Z"
+slug: "객체지향과-도메인-모델링-소프트웨어-설계-사상의-역사적-흐름-1"
+category: "tech"
+---
+
+This is the condensed English version of the Korean deep dive. I wanted an English copy so non-Korean readers can follow the same train of thought.
+
+## 1. Why Objects Emerged
+
+By the late 1960s software projects were exploding in scope, and procedural programming struggled to keep up. Researchers started searching for abstractions that mirrored the real world so that data and behavior could travel together. That desire created the *object*.
+
+## 2. Simula
+
+Norway’s Ole-Johan Dahl and Kristen Nygaard built **Simula 67**, the first language to introduce classes and simulation-oriented objects. It proved that modeling domain concepts inside the programming language could tame complexity, even if industry ignored the idea at first.
+
+## 3. Alan Kay & Smalltalk
+
+At Xerox PARC, Alan Kay reframed object orientation as a mindset: autonomous objects exchanging messages, like living cells. His “Dynabook” vision, GUI experiments, and “everything is an object” philosophy directly shaped Smalltalk and later influenced Apple/NeXT.
+
+## 4. From Objects to Domain Models
+
+Eric Evans’ *Domain-Driven Design* connected OO design to business language. Concepts such as ubiquitous language, bounded contexts, and aggregates formalized what Simula and Smalltalk hinted at: software should mirror the domain’s mental model, not the infrastructure.
+
+## 5. Event Storming & Modern Collaboration
+
+Techniques like Event Storming (Alberto Brandolini) let domain experts and developers co-create models by exploring events first, then commands and read models. It keeps the model honest and prevents developers from inventing terminology the business never uses.
+
+## 6. Where This Series Is Going
+
+In future posts I’ll compare Smalltalk’s original message-passing ideas with today’s microservice and actor systems, and examine how modern DDD practices can still learn from the simplicity of those early pioneers.
+
+Thanks for reading—feedback from English speakers is welcome!

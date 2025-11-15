@@ -1,6 +1,6 @@
 import {NextSeo} from "next-seo";
 import * as React from "react";
-import {DOMAIN, Endpoints} from "src/common/constants/Constants";
+import {DEFAULT_LOCALE, Endpoints, SupportedLocale} from "src/common/constants/Constants";
 import {Comment} from "src/common/view/presentation/components/organisms";
 import {formatDateTime} from "src/util";
 import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
@@ -11,17 +11,23 @@ import {
 import {BlogArticleDetail} from "src/blog/view/presentation/components/templates";
 import {useTheme} from "@mui/material";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
+import {localeUrisToLanguageAlternates, buildCanonicalUrl} from "src/common/seo/seoUtils";
+import type { LocaleUri } from "src/data/markdownDataLoader";
 
 interface Props {
   blogArticle: BlogArticleDetailResponse;
   prev: any | null;
   next: any | null;
+  alternates: LocaleUri[];
+  currentLocale: SupportedLocale;
 }
 
 const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { blogArticle, prev, next } = props;
+  const { blogArticle, prev, next, alternates, currentLocale } = props;
   const { title, content, date, slug, seq } = blogArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
+  const canonicalPath = `${Endpoints.blog}${subPath}`;
+  const canonicalUrl = buildCanonicalUrl(currentLocale, canonicalPath);
 
   const theme = useTheme();
 
@@ -47,12 +53,13 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
     <NextSeo
       title={title}
       description={cleanDescription}
-      canonical={`${DOMAIN}${Endpoints.blog}${subPath}`}
+      canonical={canonicalUrl}
+      languageAlternates={localeUrisToLanguageAlternates(alternates)}
       openGraph={{
         type: "article",
         title: title,
         description: cleanDescription,
-        url: `${DOMAIN}${Endpoints.blog}${subPath}`,
+        url: canonicalUrl,
         article: {
           publishedTime: publishedTime,
           modifiedTime: modifiedTime,
@@ -106,20 +113,24 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
   </div>;
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const articles = StaticDataLoader.getBlogArticles();
-  
-  const paths = articles.map((article) => {
-    const date = new Date(article.attributes.date);
-    return {
-      params: {
-        year: date.getFullYear().toString(),
-        month: (date.getMonth() + 1).toString().padStart(2, "0"),
-        day: date.getDate().toString().padStart(2, "0"),
-        slug: article.attributes.slug
-      }
-    };
-  });
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
+  const paths = [];
+  const localeList = locales ?? [];
+  for (const locale of localeList) {
+    const articles = StaticDataLoader.getBlogArticles(locale);
+    for (const article of articles) {
+      const date = new Date(article.attributes.date);
+      paths.push({
+        params: {
+          year: date.getFullYear().toString(),
+          month: (date.getMonth() + 1).toString().padStart(2, "0"),
+          day: date.getDate().toString().padStart(2, "0"),
+          slug: article.attributes.slug
+        },
+        locale
+      });
+    }
+  }
 
   return {
     paths,
@@ -127,10 +138,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<Props> = async ({ params, locale }) => {
   const slug = params?.slug as string;
+  const currentLocale = (locale as SupportedLocale) || DEFAULT_LOCALE;
   
-  const article = StaticDataLoader.getBlogArticleBySlug(slug);
+  const article = StaticDataLoader.getBlogArticleBySlug(slug, currentLocale);
   if (!article) {
     return { notFound: true };
   }
@@ -150,13 +162,16 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 
   // prev/next 가져오기
-  const { prev, next } = StaticDataLoader.getBlogPrevNext(article.attributes.seq);
+  const { prev, next } = StaticDataLoader.getBlogPrevNext(article.attributes.seq, currentLocale);
+  const alternates = StaticDataLoader.getBlogAlternates(slug);
 
   return {
     props: {
       blogArticle,
       prev,
-      next
+      next,
+      alternates,
+      currentLocale
     }
   };
 };

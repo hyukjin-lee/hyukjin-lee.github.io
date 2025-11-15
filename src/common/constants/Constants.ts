@@ -1,4 +1,7 @@
 export const DOMAIN = "https://hyukjin-lee.github.io";
+export const SUPPORTED_LOCALES = ["ko", "en"] as const;
+export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
+export const DEFAULT_LOCALE: SupportedLocale = "ko";
 
 export const Endpoints = {
   auth: "/auth",

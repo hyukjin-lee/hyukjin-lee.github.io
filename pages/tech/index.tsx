@@ -6,14 +6,20 @@ import MyPagination from "src/common/view/presentation/components/organisms/MyPa
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
+import {NextSeo} from "next-seo";
+import {DEFAULT_LOCALE, Endpoints, SupportedLocale} from "src/common/constants/Constants";
+import {buildCanonicalUrl, buildLanguageAlternatesForAllLocales} from "src/common/seo/seoUtils";
 
 interface Props {
   techData: any;
   currentPage: number;
+  currentLocale: SupportedLocale;
 }
 
 const TechArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { techData } = props;
+  const { techData, currentLocale } = props;
+  const canonicalUrl = buildCanonicalUrl(currentLocale, Endpoints.tech);
+  const languageAlternates = buildLanguageAlternatesForAllLocales(Endpoints.tech);
 
   const listProps: TechArticleListProps = {
     techArticles: techData.data || [],
@@ -21,6 +27,11 @@ const TechArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProp
   };
 
   return <div style={pageContainerStyle}>
+    <NextSeo
+      title="Tech"
+      canonical={canonicalUrl}
+      languageAlternates={languageAlternates}
+    />
     <div style={pageContainerStyle}>
       <HeadTitle title="Tech" />
       <PageTitle title="articles" />
@@ -35,13 +46,15 @@ const TechArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProp
   </div>;
 };
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async ({ locale }) => {
   const page = 1; // 첫 페이지만 정적 생성
-  const techData = StaticDataLoader.getTechArticlesPaginated(page);
+  const currentLocale = (locale as SupportedLocale) || DEFAULT_LOCALE;
+  const techData = StaticDataLoader.getTechArticlesPaginated(page, 10, currentLocale);
 
   return {
     props: {
       techData,
+      currentLocale,
       currentPage: page
     }
   };

@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   contentWrapper: {
     backgroundColor: theme.palette.background.paper,
     borderRadius: theme.spacing(1.5),
-    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}`,
+    border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)"}`,
     overflow: "hidden",
-    boxShadow: theme.palette.mode === 'dark' 
-      ? '0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)'
-      : '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+    boxShadow: theme.palette.mode === "dark" 
+      ? "0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)"
+      : "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
     backdropFilter: "blur(8px)",
   }
 }));

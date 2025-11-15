@@ -6,23 +6,39 @@ import {About} from "src/about/domain/About";
 import {container} from "src/config/inversify";
 import {AboutGetUseCase} from "src/about/application/port/incoming/AboutGetUseCase";
 import {AboutGetUseCaseId} from "src/about/adapter/inversify";
+import {NextSeo} from "next-seo";
+import {buildCanonicalUrl, buildLanguageAlternatesForAllLocales} from "src/common/seo/seoUtils";
+import {DEFAULT_LOCALE, Endpoints, SupportedLocale} from "src/common/constants/Constants";
 
 interface Props {
-  about: About
+  about: About;
+  currentLocale: SupportedLocale;
 }
 
-const AboutPage = ({about}: InferGetStaticPropsType<typeof getStaticProps>) => <div>
-  <HeadTitle title="About" />
-  <AboutComponent about={about} />
-</div>;
+const AboutPage = ({about, currentLocale}: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const canonicalUrl = buildCanonicalUrl(currentLocale, Endpoints.about);
+  const languageAlternates = buildLanguageAlternatesForAllLocales(Endpoints.about);
+
+  return <div>
+    <NextSeo
+      title="About"
+      canonical={canonicalUrl}
+      languageAlternates={languageAlternates}
+    />
+    <HeadTitle title="About" />
+    <AboutComponent about={about} />
+  </div>;
+};
 
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async ({ locale }) => {
   const about = await container.get<AboutGetUseCase>(AboutGetUseCaseId).get();
+  const currentLocale = (locale as SupportedLocale) || DEFAULT_LOCALE;
 
   return {
     props: {
-      about
+      about,
+      currentLocale
     }
   };
 };

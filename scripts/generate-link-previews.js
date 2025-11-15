@@ -7,6 +7,7 @@ const matter = require('gray-matter');
 const POSTS_DIR = path.join(__dirname, '..', '_posts');
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const LINK_PREVIEWS_FILE = path.join(DATA_DIR, 'link-previews.json');
+const LOCALES = ['ko', 'en'];
 
 // URL 정규식 패턴
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
@@ -96,19 +97,21 @@ function collectAllUrls() {
   // blog, tech, daily 디렉토리 스캔
   const categories = ['blog', 'tech', 'daily'];
   
-  for (const category of categories) {
-    const categoryDir = path.join(POSTS_DIR, category);
-    if (!fs.existsSync(categoryDir)) continue;
-
-    const files = fs.readdirSync(categoryDir).filter(file => file.endsWith('.md'));
-    
-    for (const file of files) {
-      const filePath = path.join(categoryDir, file);
-      const fileContent = fs.readFileSync(filePath, 'utf8');
-      const { content } = matter(fileContent);
+  for (const locale of LOCALES) {
+    for (const category of categories) {
+      const categoryDir = path.join(POSTS_DIR, locale, category);
+      if (!fs.existsSync(categoryDir)) continue;
+  
+      const files = fs.readdirSync(categoryDir).filter(file => file.endsWith('.md'));
       
-      const urls = extractUrlsFromMarkdown(content);
-      urls.forEach(url => allUrls.add(url));
+      for (const file of files) {
+        const filePath = path.join(categoryDir, file);
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        const { content } = matter(fileContent);
+        
+        const urls = extractUrlsFromMarkdown(content);
+        urls.forEach(url => allUrls.add(url));
+      }
     }
   }
 

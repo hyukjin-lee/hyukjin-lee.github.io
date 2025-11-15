@@ -6,17 +6,42 @@ import DailyDetail from "src/daily/view/presentation/components/templates/DailyD
 import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
 import {DailyDetailResponse} from "src/daily/domain/DailyDetailResponse";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
+import {NextSeo} from "next-seo";
+import {DEFAULT_LOCALE, Endpoints, SupportedLocale} from "src/common/constants/Constants";
+import {formatDateTime} from "src/util";
+import {buildCanonicalUrl, localeUrisToLanguageAlternates} from "src/common/seo/seoUtils";
+import type { LocaleUri } from "src/data/markdownDataLoader";
 
 interface Props {
   dailyDetail: DailyDetailResponse;
+  alternates: LocaleUri[];
+  currentLocale: SupportedLocale;
 }
 
 const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { dailyDetail } = props;
-  const { seq } = dailyDetail;
+  const { dailyDetail, alternates, currentLocale } = props;
+  const { seq, slug, date, content, title } = dailyDetail;
+  const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
+  const canonicalPath = `${Endpoints.daily}${subPath}`;
+  const canonicalUrl = buildCanonicalUrl(currentLocale, canonicalPath);
+  const cleanDescription = content
+    .replace(/#{1,6}\s+/g, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/`(.*?)`/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\n+/g, " ")
+    .trim()
+    .substring(0, 160);
 
   const theme = useTheme();
   return <div>
+    <NextSeo
+      title={title}
+      description={cleanDescription}
+      canonical={canonicalUrl}
+      languageAlternates={localeUrisToLanguageAlternates(alternates)}
+    />
     <HeadTitle title="Daily" />
     <DailyDetail daily={dailyDetail} />
     <Comment identifier={`daily-${seq}`} />
@@ -29,20 +54,24 @@ const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) 
   </div>;
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = StaticDataLoader.getDailyPosts();
-  
-  const paths = posts.map((post) => {
-    const date = new Date(post.attributes.date);
-    return {
-      params: {
-        year: date.getFullYear().toString(),
-        month: (date.getMonth() + 1).toString().padStart(2, "0"),
-        day: date.getDate().toString().padStart(2, "0"),
-        slug: post.attributes.slug
-      }
-    };
-  });
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
+  const paths = [];
+  const localeList = locales ?? [];
+  for (const locale of localeList) {
+    const posts = StaticDataLoader.getDailyPosts(locale);
+    for (const post of posts) {
+      const date = new Date(post.attributes.date);
+      paths.push({
+        params: {
+          year: date.getFullYear().toString(),
+          month: (date.getMonth() + 1).toString().padStart(2, "0"),
+          day: date.getDate().toString().padStart(2, "0"),
+          slug: post.attributes.slug
+        },
+        locale
+      });
+    }
+  }
 
   return {
     paths,
@@ -50,10 +79,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<Props> = async ({ params, locale }) => {
   const slug = params?.slug as string;
-  
-  const post = StaticDataLoader.getDailyPostBySlug(slug);
+  const currentLocale = (locale as SupportedLocale) || DEFAULT_LOCALE;
+
+  const post = StaticDataLoader.getDailyPostBySlug(slug, currentLocale);
   if (!post) {
     return { notFound: true };
   }
@@ -70,9 +100,13 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     linkPreviews: post.attributes.linkPreviews
   };
 
+  const alternates = StaticDataLoader.getDailyAlternates(slug);
+
   return {
     props: {
-      dailyDetail
+      dailyDetail,
+      alternates,
+      currentLocale
     }
   };
 };
