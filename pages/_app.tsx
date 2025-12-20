@@ -15,7 +15,6 @@ import {isServer} from "src/util";
 import {NextComponentType} from "next";
 import {AppContext, AppInitialProps, AppProps} from "next/app";
 import ColorModeChangeButton from "src/common/view/presentation/components/molecules/ColorModeChangeButton";
-import LanguageSwitch from "src/common/view/presentation/components/molecules/LanguageSwitch";
 import {usePersistentDarkModePreference} from "src/common/view/presentation/hooks/usePersistentDarkModePreferences";
 import PrismjsThemeSupport from "src/common/view/presentation/components/molecules/PrismjsThemeSupport";
 import {isEditablePage} from "../src/util/isEditablePage";
@@ -128,7 +127,6 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, MyAppProps> = (props
         <PrismjsThemeSupport />
 
         <MainLayout>
-          <LanguageSwitch variant="floating" />
           <ColorModeChangeButton
             isDark={prefersDarkMode}
             toggle={toggleColorMode}

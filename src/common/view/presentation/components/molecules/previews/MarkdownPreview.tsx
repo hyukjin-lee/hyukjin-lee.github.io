@@ -58,11 +58,11 @@ function extractStandaloneUrls(markdown: string): Array<{url: string, index: num
     const markdownIndex = match.index;
     
     // 마크다운에서 해당 URL 주변 문맥 확인
-    const beforeChar = markdownIndex > 0 ? markdown[markdownIndex - 1] : "";
+    const beforeChar = markdownIndex > 0 ? markdown[markdownIndex - 1] : '';
     
     // 마크다운 링크 문법 [text](url) 또는 <url> 형태가 아닌 순수 텍스트 URL만 추출
-    const isInMarkdownLink = beforeChar === "(" || beforeChar === "<";
-    const isInIframe = markdown.slice(Math.max(0, markdownIndex - 50), markdownIndex).includes("<iframe");
+    const isInMarkdownLink = beforeChar === '(' || beforeChar === '<';
+    const isInIframe = markdown.slice(Math.max(0, markdownIndex - 50), markdownIndex).includes('<iframe');
     
     if (!isInMarkdownLink && !isInIframe) {
       urls.push({url, index: markdownIndex});

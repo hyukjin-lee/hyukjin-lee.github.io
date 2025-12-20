@@ -20,9 +20,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     position: "relative",
     
     "&:hover": {
-      backgroundColor: theme.palette.mode === "dark" 
-        ? "rgba(255, 255, 255, 0.02)" 
-        : "rgba(0, 0, 0, 0.015)",
+      backgroundColor: theme.palette.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.02)' 
+        : 'rgba(0, 0, 0, 0.015)',
       "&::before": {
         opacity: 1,
         transform: "scaleY(1)",
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     
     "&::before": {
-      content: "\"\"",
+      content: '""',
       position: "absolute",
       left: 0,
       top: 0,
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     fontSize: "0.8125rem",
     fontWeight: 600,
     color: theme.palette.text.secondary,
-    fontFamily: "\"JetBrains Mono\", \"SF Mono\", \"Monaco\", \"Cascadia Code\", monospace",
+    fontFamily: '"JetBrains Mono", "SF Mono", "Monaco", "Cascadia Code", monospace',
     letterSpacing: "0.025em",
     textTransform: "uppercase",
     minWidth: "60px",
@@ -72,12 +72,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     fontWeight: 600,
     color: theme.palette.text.primary,
     letterSpacing: "-0.025em",
-    fontFamily: "\"Inter\", -apple-system, BlinkMacSystemFont, sans-serif",
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
     lineHeight: 1.4,
   },
   
   content: {
-    fontFamily: "\"Inter\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     fontSize: "0.9375rem",
     lineHeight: 1.65,
     color: theme.palette.text.primary,
@@ -95,16 +95,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     
     "& pre": {
-      backgroundColor: theme.palette.mode === "dark" 
-        ? "rgba(255, 255, 255, 0.04)" 
-        : "rgba(0, 0, 0, 0.04)",
-      border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}`,
+      backgroundColor: theme.palette.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.04)' 
+        : 'rgba(0, 0, 0, 0.04)',
+      border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
       borderRadius: theme.spacing(1),
       padding: theme.spacing(2),
       fontSize: "0.8125rem",
       margin: `${theme.spacing(2)} 0`,
       overflow: "auto",
-      fontFamily: "\"JetBrains Mono\", \"SF Mono\", monospace",
+      fontFamily: '"JetBrains Mono", "SF Mono", monospace',
     },
     
     "& blockquote": {
@@ -113,9 +113,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       margin: `${theme.spacing(2)} 0`,
       color: theme.palette.text.secondary,
       fontStyle: "italic",
-      backgroundColor: theme.palette.mode === "dark" 
-        ? "rgba(255, 255, 255, 0.02)" 
-        : "rgba(0, 0, 0, 0.02)",
+      backgroundColor: theme.palette.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.02)' 
+        : 'rgba(0, 0, 0, 0.02)',
       borderRadius: `0 ${theme.spacing(0.5)} ${theme.spacing(0.5)} 0`,
       padding: `${theme.spacing(1.5)} ${theme.spacing(2.5)}`,
     },
@@ -134,7 +134,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       color: theme.palette.primary.main,
       textDecoration: "none",
       fontWeight: 500,
-      borderBottom: "1px solid transparent",
+      borderBottom: `1px solid transparent`,
       transition: "border-color 0.2s ease",
       "&:hover": {
         borderBottomColor: theme.palette.primary.main,
@@ -187,9 +187,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       
       "& th": {
         fontWeight: 600,
-        backgroundColor: theme.palette.mode === "dark" 
-          ? "rgba(255, 255, 255, 0.04)" 
-          : "rgba(0, 0, 0, 0.04)",
+        backgroundColor: theme.palette.mode === 'dark' 
+          ? 'rgba(255, 255, 255, 0.04)' 
+          : 'rgba(0, 0, 0, 0.04)',
       }
     }
   }
