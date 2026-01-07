@@ -10,7 +10,7 @@ export class AboutInMemoryAdapter implements AboutLoadPort {
     },
     descriptions: [{
       icon: "EmojiPeople",
-      label: "Programmer",
+      label: "Software Engineer",
       href: ""
     }, {
       icon: "Room",
@@ -19,7 +19,7 @@ export class AboutInMemoryAdapter implements AboutLoadPort {
     }, {
       icon: "DeveloperBoard",
       label: "Résumé",
-      href: "https://drive.google.com/file/d/17f6U-VfdXkTyQoNlLoAo4buR2myqsNDF/view?usp=sharing"
+      href: "https://drive.google.com/file/d/1WEeIOUoRfsky16DXRx6rKV2nJqDKbY5c/view?usp=sharing"
     }, {
       icon: "Code",
       label: "github/hyukjin-lee",
