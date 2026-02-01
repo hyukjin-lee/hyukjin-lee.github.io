@@ -1,4 +1,5 @@
 import {marked} from "marked";
+import {markedHighlight} from "marked-highlight";
 import Prism from "prismjs";
 import * as React from "react";
 import HtmlPreview from "./HtmlPreview";
@@ -15,15 +16,58 @@ import "prismjs/components/prism-typescript.min.js";
 import "prismjs/components/prism-vim.min.js";
 import "prismjs/components/prism-yaml.min.js";
 
-marked.setOptions({
-  highlight(code: string, lang: string): string | void {
+// marked-highlight 확장 사용 (marked v5+ 에서 highlight 옵션이 deprecated됨)
+marked.use(markedHighlight({
+  langPrefix: 'language-',
+  highlight(code: string, lang: string): string {
     if (Prism.languages[lang]) {
       return Prism.highlight(code, Prism.languages[lang], lang);
-    } else {
-      return code;
     }
+    return code;
   }
-});
+}));
+
+// 괄호, 따옴표 등 특수문자가 강조 마커에 바로 붙어있을 때 파싱이 안 되는 문제를 해결
+// CommonMark의 복잡한 flanking 규칙을 우회하여 직접 HTML로 변환
+function preprocessMarkdownEmphasis(markdown: string): string {
+  // 코드 블록은 건드리지 않도록 보호 (플레이스홀더에 언더스코어 대신 숫자만 사용)
+  const codeBlocks: string[] = [];
+  let processed = markdown.replace(/```[\s\S]*?```|`[^`]+`/g, (match) => {
+    codeBlocks.push(match);
+    return `\x00CB${codeBlocks.length - 1}CB\x00`;
+  });
+
+  // ***text*** → <strong><em>text</em></strong> (Bold + Italic 조합 먼저 처리)
+  processed = processed.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  
+  // ___text___ → <strong><em>text</em></strong>
+  processed = processed.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>');
+
+  // **text** → <strong>text</strong> 직접 변환
+  processed = processed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  
+  // __text__ → <strong>text</strong> 직접 변환
+  processed = processed.replace(/__(.+?)__/g, '<strong>$1</strong>');
+
+  // *text* → <em>text</em> 직접 변환 (앞뒤로 *가 하나만 있는 경우)
+  processed = processed.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+  
+  // _text_ → <em>text</em> 직접 변환 (단어 내부가 아닌 경우만)
+  // 플레이스홀더의 숫자 사이에는 언더스코어가 없으므로 안전
+  processed = processed.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em>$1</em>');
+
+  // 코드 블록 복원
+  processed = processed.replace(/\x00CB(\d+)CB\x00/g, (_, index) => {
+    return codeBlocks[parseInt(index)];
+  });
+
+  return processed;
+}
+
+// 마크다운 파싱 헬퍼 함수
+function parseMarkdown(text: string): string {
+  return marked.parse(preprocessMarkdownEmphasis(text), { async: false }) as string;
+}
 
 interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   markdown: string;
@@ -43,7 +87,7 @@ const MarkdownPreview = (props: Props) => {
   }
   
   // 기존 방식으로 렌더링
-  return <HtmlPreview {...otherProps} dangerouslySetInnerHTML={{ __html: marked(markdown) }} />;
+  return <HtmlPreview {...otherProps} dangerouslySetInnerHTML={{ __html: parseMarkdown(markdown) }} />;
 };
 
 
@@ -78,7 +122,7 @@ function renderMarkdownWithLinkPreviews(markdown: string, linkPreviews: Record<s
   
   // 독립적인 URL이 없으면 일반 마크다운 렌더링
   if (standaloneUrls.length === 0) {
-    return [<HtmlPreview key="content" dangerouslySetInnerHTML={{ __html: marked(markdown) }} />];
+    return [<HtmlPreview key="content" dangerouslySetInnerHTML={{ __html: parseMarkdown(markdown) }} />];
   }
   
   const parts: React.ReactNode[] = [];
@@ -91,7 +135,7 @@ function renderMarkdownWithLinkPreviews(markdown: string, linkPreviews: Record<s
       parts.push(
         <HtmlPreview 
           key={`text-${lastIndex}`}
-          dangerouslySetInnerHTML={{ __html: marked(beforeText) }} 
+          dangerouslySetInnerHTML={{ __html: parseMarkdown(beforeText) }} 
         />
       );
     }
@@ -117,7 +161,7 @@ function renderMarkdownWithLinkPreviews(markdown: string, linkPreviews: Record<s
     parts.push(
       <HtmlPreview 
         key={`text-${lastIndex}`}
-        dangerouslySetInnerHTML={{ __html: marked(afterText) }} 
+        dangerouslySetInnerHTML={{ __html: parseMarkdown(afterText) }} 
       />
     );
   }
