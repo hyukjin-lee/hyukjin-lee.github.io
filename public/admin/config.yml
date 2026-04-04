@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: hyukjin-lee/terrace
+  repo: hyukjin-lee/hyukjin-lee.github.io
   branch: main
   # Sveltia CMS의 OAuth 프록시 사용 (GitHub OAuth App 필요)
   base_url: https://api.sveltia.app
