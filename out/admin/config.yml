@@ -1,10 +1,11 @@
 backend:
   name: github
-  repo: hyukjin-lee/terrace
+  repo: hyukjin-lee/hyukjin-lee.github.io
   branch: main
   # Sveltia CMS의 OAuth 프록시 사용 (GitHub OAuth App 필요)
   base_url: https://api.sveltia.app
   auth_endpoint: auth
+  client_id: YOUR_CLIENT_ID_HERE  # ← 여기를 GitHub OAuth App의 Client ID로 교체
 
 locale: ko
 
@@ -29,7 +30,8 @@ collections:
         widget: string
       - label: "날짜"
         name: date
-        widget: date
+        widget: datetime
+        type: date
         format: YYYY-MM-DD
         default: "{{now}}"
       - label: "수정일"
@@ -66,7 +68,8 @@ collections:
         widget: string
       - label: "날짜"
         name: date
-        widget: date
+        widget: datetime
+        type: date
         format: YYYY-MM-DD
         default: "{{now}}"
       - label: "수정일"
@@ -103,7 +106,8 @@ collections:
         widget: string
       - label: "날짜"
         name: date
-        widget: date
+        widget: datetime
+        type: date
         format: YYYY-MM-DD
         default: "{{now}}"
       - label: "수정일"
