@@ -1,0 +1,49 @@
+media:
+  input: public/images/uploads
+  output: /images/uploads
+
+content:
+  - name: blog
+    label: Blog
+    type: collection
+    path: _posts/blog
+    filename: "{year}-{month}-{day}-{fields.slug}.md"
+    view:
+      fields: [title, date]
+    fields:
+      - { name: title, label: "제목", type: string, required: true }
+      - { name: date, label: "날짜", type: date }
+      - { name: updatedAt, label: "수정일", type: date }
+      - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
+      - { name: category, label: "카테고리", type: string, hidden: true, default: "blog" }
+      - { name: body, label: "내용", type: rich-text }
+
+  - name: tech
+    label: Tech
+    type: collection
+    path: _posts/tech
+    filename: "{year}-{month}-{day}-{fields.slug}.md"
+    view:
+      fields: [title, date]
+    fields:
+      - { name: title, label: "제목", type: string, required: true }
+      - { name: date, label: "날짜", type: date }
+      - { name: updatedAt, label: "수정일", type: date }
+      - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
+      - { name: category, label: "카테고리", type: string, hidden: true, default: "tech" }
+      - { name: body, label: "내용", type: rich-text }
+
+  - name: daily
+    label: Daily
+    type: collection
+    path: _posts/daily
+    filename: "{year}-{month}-{day}-{fields.slug}.md"
+    view:
+      fields: [title, date]
+    fields:
+      - { name: title, label: "제목", type: string, required: true }
+      - { name: date, label: "날짜", type: date }
+      - { name: updatedAt, label: "수정일", type: date }
+      - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
+      - { name: category, label: "카테고리", type: string, hidden: true, default: "daily" }
+      - { name: body, label: "내용", type: rich-text }
