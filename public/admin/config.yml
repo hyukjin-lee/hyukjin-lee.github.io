@@ -5,7 +5,7 @@ backend:
   # Sveltia CMS의 OAuth 프록시 사용 (GitHub OAuth App 필요)
   base_url: https://api.sveltia.app
   auth_endpoint: auth
-  client_id: YOUR_CLIENT_ID_HERE  # ← 여기를 GitHub OAuth App의 Client ID로 교체
+  client_id: Ov23liFrCGY7xUPprh3E
 
 locale: ko
 
