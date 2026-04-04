@@ -5,5 +5,10 @@
     "source.fixAll": "explicit",
     "source.fixAll.eslint": "explicit"
   },
-  "eslint.alwaysShowStatus": true
+  "eslint.alwaysShowStatus": true,
+
+  // VS Code 내장 이미지 붙여넣기 설정 (Cmd+V로 바로 붙여넣기)
+  "markdown.copyFiles.destination": {
+    "**/*.md": "/public/images/posts/${fileName}.png"
+  }
 }
