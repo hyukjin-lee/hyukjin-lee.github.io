@@ -50,15 +50,15 @@ export class MarkdownDataLoader {
 
     const files = fs.readdirSync(categoryDir).filter(file => file.endsWith(".md"));
     
-    return files.map(filename => {
+    const articles = files.map(filename => {
       const filePath = path.join(categoryDir, filename);
       const fileContent = fs.readFileSync(filePath, "utf8");
       const { data: frontmatter, content } = matter(fileContent);
-      
+
       return {
-        id: frontmatter.id || 1,
+        id: frontmatter.id as number | undefined,
         attributes: {
-          seq: frontmatter.seq || 1,
+          seq: frontmatter.seq as number | undefined,
           date: frontmatter.date,
           updatedAt: frontmatter.updatedAt,
           slug: frontmatter.slug,
@@ -67,7 +67,33 @@ export class MarkdownDataLoader {
           linkPreviews: this.getLinkPreviewsForContent(content.trim())
         }
       };
-    }).sort((a, b) => b.attributes.seq - a.attributes.seq); // seq 내림차순 정렬
+    });
+
+    // 날짜 내림차순 정렬 (최신 글이 먼저)
+    articles.sort((a, b) =>
+      new Date(b.attributes.date).getTime() - new Date(a.attributes.date).getTime()
+    );
+
+    // frontmatter에 seq가 없는 글에 자동 할당 (기존 seq보다 높은 값으로)
+    const maxExplicitSeq = articles.reduce((max, a) => Math.max(max, a.attributes.seq ?? 0), 0);
+    let nextSeq = maxExplicitSeq;
+    // 오래된 글부터 seq를 올려가며 할당하기 위해 역방향 순회
+    const reversedForSeq = [...articles].reverse();
+    reversedForSeq.forEach(article => {
+      if (article.attributes.seq === undefined) {
+        nextSeq++;
+        article.attributes.seq = nextSeq;
+      }
+    });
+
+    return articles.map((article, index) => ({
+      ...article,
+      id: article.id ?? (index + 1),
+      attributes: {
+        ...article.attributes,
+        seq: article.attributes.seq as number
+      }
+    }));
   }
 
   // Blog 데이터 로더 (기존 인터페이스 유지)
@@ -283,9 +309,9 @@ export class MarkdownDataLoader {
   }
 
   // Prev/Next 헬퍼 함수들 (기존과 동일)
-  static getBlogPrevNext(seq: number): { prev: any | null, next: any | null } {
+  static getBlogPrevNext(slug: string): { prev: any | null, next: any | null } {
     const allArticles = this.getBlogArticles();
-    const currentIndex = allArticles.findIndex(article => article.attributes.seq === seq);
+    const currentIndex = allArticles.findIndex(article => article.attributes.slug === slug);
     
     const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
     const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null;
@@ -306,9 +332,9 @@ export class MarkdownDataLoader {
     };
   }
 
-  static getTechPrevNext(seq: number): { prev: any | null, next: any | null } {
+  static getTechPrevNext(slug: string): { prev: any | null, next: any | null } {
     const allArticles = this.getTechArticles();
-    const currentIndex = allArticles.findIndex(article => article.attributes.seq === seq);
+    const currentIndex = allArticles.findIndex(article => article.attributes.slug === slug);
     
     const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
     const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null;

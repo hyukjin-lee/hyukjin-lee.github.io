@@ -20,7 +20,7 @@ interface Props {
 
 const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { blogArticle, prev, next } = props;
-  const { title, content, date, slug, seq } = blogArticle;
+  const { title, content, date, slug } = blogArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
   const theme = useTheme();
@@ -96,7 +96,7 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
     <BlogArticleDetail
       blogArticle={{...blogArticle, prev: prevData, next: nextData}}
     />
-    <Comment identifier={`blog-${seq}`} />
+    <Comment identifier={`blog-${slug}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
 #comment-container {
@@ -150,7 +150,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 
   // prev/next 가져오기
-  const { prev, next } = StaticDataLoader.getBlogPrevNext(article.attributes.seq);
+  const { prev, next } = StaticDataLoader.getBlogPrevNext(article.attributes.slug);
 
   return {
     props: {

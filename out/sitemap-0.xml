@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>https://hyukjin-lee.github.io/</loc><lastmod>2026-02-01T12:35:03.871Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/about/</loc><lastmod>2026-02-01T12:35:03.871Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/blog/</loc><lastmod>2026-02-01T12:35:03.871Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/daily/</loc><lastmod>2026-02-01T12:35:03.871Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/tech/</loc><lastmod>2026-02-01T12:35:03.871Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/daily/2026/01/07/Having-Kids/</loc><lastmod>2026-02-01T12:35:03.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/daily/2026/01/04/buy-a-real-record-or-cd/</loc><lastmod>2026-02-01T12:35:03.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/daily/2025/10/17/story-about-fguy-career/</loc><lastmod>2026-02-01T12:35:03.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/daily/2023/09/15/codeopinion/</loc><lastmod>2026-02-01T12:35:03.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/blog/2025/10/24/waste-of-life/</loc><lastmod>2026-02-01T12:35:03.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/blog/2025/09/28/think-about-change-of-consuming-information-method-and-my-life/</loc><lastmod>2026-02-01T12:35:03.871Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/tech/2025/12/21/the-era-of-LLM/</loc><lastmod>2026-02-01T12:35:03.871Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://hyukjin-lee.github.io/tech/2024/12/12/객체지향과-도메인-모델링-소프트웨어-설계-사상의-역사적-흐름-1/</loc><lastmod>2026-02-01T12:35:03.871Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/about/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/blog/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/daily/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/tech/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/blog/2025/10/24/waste-of-life/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/blog/2025/09/28/think-about-change-of-consuming-information-method-and-my-life/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/tech/2025/12/21/how-to-live-in-the-era-of-LLM/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/tech/2024/12/12/객체지향과-도메인-모델링-소프트웨어-설계-사상의-역사적-흐름-1/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/daily/2026/01/07/Having-Kids/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/daily/2026/01/04/buy-a-real-record-or-cd/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/daily/2025/10/17/story-about-fguy-career/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://hyukjin-lee.github.io/daily/2023/09/15/codeopinion/</loc><lastmod>2026-04-04T12:58:36.745Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>

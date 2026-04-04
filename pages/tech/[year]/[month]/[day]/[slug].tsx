@@ -20,7 +20,7 @@ interface Props {
 
 const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
   const { techArticle, prev, next } = props;
-  const { title, content, date, slug, seq } = techArticle;
+  const { title, content, date, slug } = techArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
   const theme = useTheme();
@@ -40,7 +40,7 @@ const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
       techArticle={{...techArticle, prev: prevData, next: nextData}}
     />
     <div style={{ marginTop: "40px", padding: "20px 0" }}>
-      <Comment identifier={`tech-${seq}`} />
+      <Comment identifier={`tech-${slug}`} />
     </div>
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
@@ -95,7 +95,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 
   // prev/next 가져오기
-  const { prev, next } = StaticDataLoader.getTechPrevNext(article.attributes.seq);
+  const { prev, next } = StaticDataLoader.getTechPrevNext(article.attributes.slug);
 
   return {
     props: {

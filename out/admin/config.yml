@@ -1,0 +1,124 @@
+backend:
+  name: github
+  repo: hyukjin-lee/terrace
+  branch: main
+  # Sveltia CMS의 OAuth 프록시 사용 (GitHub OAuth App 필요)
+  base_url: https://api.sveltia.app
+  auth_endpoint: auth
+
+locale: ko
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: blog
+    label: "Blog"
+    label_singular: "Blog 글"
+    folder: _posts/blog
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
+    preview_path: "blog/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
+    summary: "{{title}} ({{date}})"
+    sort_field: date
+    sort_direction: Descending
+    fields:
+      - label: "제목"
+        name: title
+        widget: string
+      - label: "날짜"
+        name: date
+        widget: date
+        format: YYYY-MM-DD
+        default: "{{now}}"
+      - label: "수정일"
+        name: updatedAt
+        widget: datetime
+        default: "{{now}}"
+      - label: "Slug"
+        name: slug
+        widget: string
+        hint: "영문 소문자와 하이픈만 사용 (예: my-new-post)"
+        pattern: ['^[a-z0-9-]+$', "영문 소문자, 숫자, 하이픈만 허용"]
+      - label: "카테고리"
+        name: category
+        widget: hidden
+        default: blog
+      - label: "내용"
+        name: body
+        widget: markdown
+
+  - name: tech
+    label: "Tech"
+    label_singular: "Tech 글"
+    folder: _posts/tech
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
+    preview_path: "tech/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
+    summary: "{{title}} ({{date}})"
+    sort_field: date
+    sort_direction: Descending
+    fields:
+      - label: "제목"
+        name: title
+        widget: string
+      - label: "날짜"
+        name: date
+        widget: date
+        format: YYYY-MM-DD
+        default: "{{now}}"
+      - label: "수정일"
+        name: updatedAt
+        widget: datetime
+        default: "{{now}}"
+      - label: "Slug"
+        name: slug
+        widget: string
+        hint: "영문 소문자와 하이픈만 사용 (예: my-tech-post)"
+        pattern: ['^[a-z0-9-]+$', "영문 소문자, 숫자, 하이픈만 허용"]
+      - label: "카테고리"
+        name: category
+        widget: hidden
+        default: tech
+      - label: "내용"
+        name: body
+        widget: markdown
+
+  - name: daily
+    label: "Daily"
+    label_singular: "Daily 글"
+    folder: _posts/daily
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
+    preview_path: "daily/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
+    summary: "{{title}} ({{date}})"
+    sort_field: date
+    sort_direction: Descending
+    fields:
+      - label: "제목"
+        name: title
+        widget: string
+      - label: "날짜"
+        name: date
+        widget: date
+        format: YYYY-MM-DD
+        default: "{{now}}"
+      - label: "수정일"
+        name: updatedAt
+        widget: datetime
+        default: "{{now}}"
+      - label: "Slug"
+        name: slug
+        widget: string
+        hint: "영문 소문자와 하이픈만 사용 (예: my-daily-note)"
+        pattern: ['^[a-z0-9-]+$', "영문 소문자, 숫자, 하이픈만 허용"]
+      - label: "카테고리"
+        name: category
+        widget: hidden
+        default: daily
+      - label: "내용"
+        name: body
+        widget: markdown
