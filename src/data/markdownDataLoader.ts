@@ -43,6 +43,12 @@ export class MarkdownDataLoader {
     return result;
   }
 
+  // gray-matter는 따옴표 없는 YAML 날짜를 JS Date 객체로 파싱함 → 문자열로 변환
+  private static toDateString(value: unknown): string {
+    if (value instanceof Date) return value.toISOString().split("T")[0];
+    return (value as string) ?? "";
+  }
+
   // Helper: Markdown 파일들을 읽어서 Strapi 형식으로 변환
   private static readMarkdownFiles(category: string): any[] {
     const categoryDir = path.join(POSTS_DIR, category);
@@ -59,8 +65,8 @@ export class MarkdownDataLoader {
         id: frontmatter.id as number | undefined,
         attributes: {
           seq: frontmatter.seq as number | undefined,
-          date: frontmatter.date,
-          updatedAt: frontmatter.updatedAt,
+          date: MarkdownDataLoader.toDateString(frontmatter.date),
+          updatedAt: MarkdownDataLoader.toDateString(frontmatter.updatedAt),
           slug: frontmatter.slug,
           title: frontmatter.title,
           content: content.trim(),
@@ -102,32 +108,7 @@ export class MarkdownDataLoader {
   }
 
   static getBlogArticleBySlug(slug: string): BlogArticleStrapi | null {
-    const files = fs.readdirSync(path.join(process.cwd(), "_posts/blog"));
-    
-    for (const file of files) {
-      if (file.endsWith(".md")) {
-        const filePath = path.join(process.cwd(), "_posts/blog", file);
-        const fileContent = fs.readFileSync(filePath, "utf-8");
-        const { data, content } = matter(fileContent);
-        
-        if (data.slug === slug) {
-          return {
-            id: data.id,
-            attributes: {
-              seq: data.seq,
-              date: data.date,
-              updatedAt: data.updatedAt,
-              slug: data.slug,
-              title: data.title,
-              content: content,
-              linkPreviews: this.getLinkPreviewsForContent(content)
-            }
-          };
-        }
-      }
-    }
-    
-    return null;
+    return this.readMarkdownFiles("blog").find(a => a.attributes.slug === slug) ?? null;
   }
 
   static getBlogArticlesPaginated(page: number, pageSize = 10): StrapiResponse<any> {
@@ -164,32 +145,7 @@ export class MarkdownDataLoader {
   }
 
   static getTechArticleBySlug(slug: string): TechArticleStrapi | null {
-    const files = fs.readdirSync(path.join(process.cwd(), "_posts/tech"));
-    
-    for (const file of files) {
-      if (file.endsWith(".md")) {
-        const filePath = path.join(process.cwd(), "_posts/tech", file);
-        const fileContent = fs.readFileSync(filePath, "utf-8");
-        const { data, content } = matter(fileContent);
-        
-        if (data.slug === slug) {
-          return {
-            id: data.id,
-            attributes: {
-              seq: data.seq,
-              date: data.date,
-              updatedAt: data.updatedAt,
-              slug: data.slug,
-              title: data.title,
-              content: content,
-              linkPreviews: this.getLinkPreviewsForContent(content)
-            }
-          };
-        }
-      }
-    }
-    
-    return null;
+    return this.readMarkdownFiles("tech").find(a => a.attributes.slug === slug) ?? null;
   }
 
   static getTechArticlesPaginated(page: number, pageSize = 10): StrapiResponse<any> {
@@ -226,32 +182,7 @@ export class MarkdownDataLoader {
   }
 
   static getDailyPostBySlug(slug: string): DailyStrapi | null {
-    const files = fs.readdirSync(path.join(process.cwd(), "_posts/daily"));
-    
-    for (const file of files) {
-      if (file.endsWith(".md")) {
-        const filePath = path.join(process.cwd(), "_posts/daily", file);
-        const fileContent = fs.readFileSync(filePath, "utf-8");
-        const { data, content } = matter(fileContent);
-        
-        if (data.slug === slug) {
-          return {
-            id: data.id,
-            attributes: {
-              seq: data.seq,
-              date: data.date,
-              updatedAt: data.updatedAt,
-              slug: data.slug,
-              title: data.title,
-              content: content,
-              linkPreviews: this.getLinkPreviewsForContent(content)
-            }
-          };
-        }
-      }
-    }
-    
-    return null;
+    return this.readMarkdownFiles("daily").find(p => p.attributes.slug === slug) ?? null;
   }
 
   static getDailyPostsPaginated(page: number, pageSize = 10): StrapiResponse<any> {
