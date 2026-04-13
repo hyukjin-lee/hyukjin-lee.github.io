@@ -44,6 +44,14 @@ function preprocessMarkdownEmphasis(markdown: string): string {
     return `«HT${htmlTags.length - 1}»`;
   });
 
+  // 마크다운 링크/이미지의 URL 부분 보호: ](url) 패턴에서 괄호 안만 보호
+  // ![alt](파일명_1_something.jpg) 또는 [text](url_with_underscores) 의 경로가 <em>으로 변환되지 않도록
+  const mdUrls: string[] = [];
+  processed = processed.replace(/(?<=\])\(([^)]*)\)/g, (match) => {
+    mdUrls.push(match);
+    return `«MU${mdUrls.length - 1}»`;
+  });
+
   // ***text*** → <strong><em>text</em></strong> (Bold + Italic 조합 먼저 처리)
   processed = processed.replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>");
   
@@ -62,6 +70,11 @@ function preprocessMarkdownEmphasis(markdown: string): string {
   // _text_ → <em>text</em> 직접 변환 (단어 내부가 아닌 경우만)
   // 플레이스홀더의 숫자 사이에는 언더스코어가 없으므로 안전
   processed = processed.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, "<em>$1</em>");
+
+  // 마크다운 링크/이미지 URL 복원
+  processed = processed.replace(/«MU(\d+)»/g, (_, index) => {
+    return mdUrls[parseInt(index)];
+  });
 
   // HTML 태그 복원
   processed = processed.replace(/«HT(\d+)»/g, (_, index) => {
