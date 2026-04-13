@@ -18,7 +18,7 @@ import "prismjs/components/prism-yaml.min.js";
 
 // marked-highlight 확장 사용 (marked v5+ 에서 highlight 옵션이 deprecated됨)
 marked.use(markedHighlight({
-  langPrefix: 'language-',
+  langPrefix: "language-",
   highlight(code: string, lang: string): string {
     if (Prism.languages[lang]) {
       return Prism.highlight(code, Prism.languages[lang], lang);
@@ -34,30 +34,42 @@ function preprocessMarkdownEmphasis(markdown: string): string {
   const codeBlocks: string[] = [];
   let processed = markdown.replace(/```[\s\S]*?```|`[^`]+`/g, (match) => {
     codeBlocks.push(match);
-    return `\x00CB${codeBlocks.length - 1}CB\x00`;
+    return `«CB${codeBlocks.length - 1}»`;
+  });
+
+  // HTML 태그도 보호 (이미지 파일명 등 속성값의 언더스코어가 <em>으로 변환되지 않도록)
+  const htmlTags: string[] = [];
+  processed = processed.replace(/<[^>]+>/g, (match) => {
+    htmlTags.push(match);
+    return `«HT${htmlTags.length - 1}»`;
   });
 
   // ***text*** → <strong><em>text</em></strong> (Bold + Italic 조합 먼저 처리)
-  processed = processed.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  processed = processed.replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>");
   
   // ___text___ → <strong><em>text</em></strong>
-  processed = processed.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>');
+  processed = processed.replace(/___(.+?)___/g, "<strong><em>$1</em></strong>");
 
   // **text** → <strong>text</strong> 직접 변환
-  processed = processed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  processed = processed.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   
   // __text__ → <strong>text</strong> 직접 변환
-  processed = processed.replace(/__(.+?)__/g, '<strong>$1</strong>');
+  processed = processed.replace(/__(.+?)__/g, "<strong>$1</strong>");
 
   // *text* → <em>text</em> 직접 변환 (앞뒤로 *가 하나만 있는 경우)
-  processed = processed.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+  processed = processed.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "<em>$1</em>");
   
   // _text_ → <em>text</em> 직접 변환 (단어 내부가 아닌 경우만)
   // 플레이스홀더의 숫자 사이에는 언더스코어가 없으므로 안전
-  processed = processed.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em>$1</em>');
+  processed = processed.replace(/(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, "<em>$1</em>");
+
+  // HTML 태그 복원
+  processed = processed.replace(/«HT(\d+)»/g, (_, index) => {
+    return htmlTags[parseInt(index)];
+  });
 
   // 코드 블록 복원
-  processed = processed.replace(/\x00CB(\d+)CB\x00/g, (_, index) => {
+  processed = processed.replace(/«CB(\d+)»/g, (_, index) => {
     return codeBlocks[parseInt(index)];
   });
 
@@ -102,11 +114,11 @@ function extractStandaloneUrls(markdown: string): Array<{url: string, index: num
     const markdownIndex = match.index;
     
     // 마크다운에서 해당 URL 주변 문맥 확인
-    const beforeChar = markdownIndex > 0 ? markdown[markdownIndex - 1] : '';
+    const beforeChar = markdownIndex > 0 ? markdown[markdownIndex - 1] : "";
     
     // 마크다운 링크 문법 [text](url) 또는 <url> 형태가 아닌 순수 텍스트 URL만 추출
-    const isInMarkdownLink = beforeChar === '(' || beforeChar === '<';
-    const isInIframe = markdown.slice(Math.max(0, markdownIndex - 50), markdownIndex).includes('<iframe');
+    const isInMarkdownLink = beforeChar === "(" || beforeChar === "<";
+    const isInIframe = markdown.slice(Math.max(0, markdownIndex - 50), markdownIndex).includes("<iframe");
     
     if (!isInMarkdownLink && !isInIframe) {
       urls.push({url, index: markdownIndex});
