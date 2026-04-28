@@ -99,16 +99,44 @@ function preprocessMarkdownEmphasis(markdown: string): string {
   return processed;
 }
 
+// 연속된 <figure> 2개 이상을 photo-gallery로 묶기
+// split 기반: 정규식 백트래킹이 figure 경계를 넘지 않도록 보장
+function groupGalleries(html: string): string {
+  const parts = html.split(/(<figure>[\s\S]*?<\/figure>)/);
+  const result: string[] = [];
+  const galleryItems: string[] = [];
+
+  const flushGallery = () => {
+    if (galleryItems.length >= 2) {
+      result.push(`<div class="photo-gallery">${galleryItems.join("")}</div>`);
+    } else if (galleryItems.length === 1) {
+      result.push(galleryItems[0]);
+    }
+    galleryItems.length = 0;
+  };
+
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 2 === 1) {
+      galleryItems.push(parts[i]);
+    } else {
+      if (parts[i].trim() !== "") {
+        flushGallery();
+        result.push(parts[i]);
+      }
+      // 공백만 있는 구간은 무시하고 계속 그룹핑
+    }
+  }
+  flushGallery();
+
+  return result.join("");
+}
+
 // 마크다운 파싱 헬퍼 함수
 function parseMarkdown(text: string): string {
   const html = marked.parse(preprocessMarkdownEmphasis(text), { async: false }) as string;
   // <p><figure>...</figure></p> → <figure>...</figure> (figure는 블록 요소라 p 안에 들어가면 안 됨)
   const unwrapped = html.replace(/<p>(<figure>[\s\S]*?<\/figure>)<\/p>/g, "$1");
-  // 연속된 <figure> 2개 이상 → <div class="photo-gallery"> 로 묶기
-  return unwrapped.replace(
-    /(<figure>[\s\S]*?<\/figure>)(\s*<figure>[\s\S]*?<\/figure>)+/g,
-    (match) => `<div class="photo-gallery">${match}</div>`
-  );
+  return groupGalleries(unwrapped);
 }
 
 interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
