@@ -25,16 +25,16 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: `${theme.spacing(2)} auto`,
       cursor: "pointer",
       transition: "all 0.2s ease",
-      border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)'}`,
+      border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.12)"}`,
       borderRadius: 16,
       overflow: "hidden",
       position: "relative",
       backgroundColor: theme.palette.grey[100],
       "&:hover": {
         transform: "translateY(-2px)",
-        boxShadow: theme.palette.mode === 'dark' 
-          ? '0 8px 25px rgba(0, 0, 0, 0.4)'
-          : '0 8px 25px rgba(0, 0, 0, 0.15)',
+        boxShadow: theme.palette.mode === "dark" 
+          ? "0 8px 25px rgba(0, 0, 0, 0.4)"
+          : "0 8px 25px rgba(0, 0, 0, 0.15)",
       },
     },
     imageContainer: {
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+      backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)",
       color: theme.palette.text.disabled,
       fontSize: "0.875rem",
     },
@@ -145,7 +145,7 @@ const LinkPreview: React.FC<Props> = ({ data, className }) => {
               // 이미지 로드 실패 시 placeholder 표시
               const target = e.target as HTMLElement;
               target.style.display = "none";
-              const placeholder = target.parentElement?.querySelector('.no-image-placeholder');
+              const placeholder = target.parentElement?.querySelector(".no-image-placeholder");
               if (placeholder) {
                 (placeholder as HTMLElement).style.display = "flex";
               }

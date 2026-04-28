@@ -4,11 +4,72 @@
         <description><![CDATA[hyukjin lee's dev blog]]></description>
         <link>https://hyukjin-lee.github.io</link>
         <generator>RSS for Node</generator>
-        <lastBuildDate>Tue, 07 Apr 2026 05:18:58 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 13 Apr 2026 04:43:42 GMT</lastBuildDate>
         <atom:link href="https://hyukjin-lee.github.io/rss.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Tue, 07 Apr 2026 05:18:58 GMT</pubDate>
+        <pubDate>Mon, 13 Apr 2026 04:43:42 GMT</pubDate>
         <copyright><![CDATA[2026 hyukjin lee]]></copyright>
         <language><![CDATA[ko]]></language>
+        <item>
+            <title><![CDATA[비즈니스의 본질은 제품이다]]></title>
+            <description><![CDATA[요즘 업계가 돌아가는 상황을 보면 참 이상하다고 느껴진다.
+VC의 트렌드가 'AI 생산성'이라 그런지, 여기저기서 직원 채용 대신 AI Agent를 도입하여 생산성을 높이는 이야기만 한다.
+그런데 대부분의 이야기에 '어떻게'가 없는 건 둘째치더라도, '무엇을' 만들고 있는지에 대한 이야기가 없는데도 다들 열광하는 게 신기하다.
+
+스타트업 비즈니스의 본질은 생산성 이전에 제품 아니었는가?
+제품이 있어야 생산성이 정의될 수 있는 게 아닌가?
+무엇을 만들고 있고, 사용자에게 어떤 가치를 주고 있으며, 시장 영향력은 어떠한지.
+
+AI를 직원으로 부려서 인건비를 줄이고 생산성을 높이는 것은 매우 좋다.
+그런데 스타트업이라면 그런 내부 혁신 이야기보다는, 인간 세상에 어떠한 실질적 영향을 주고 있는지, 어떤 비전을 가지고 있는지 이야기해야 하지 않을까?
+
+정작 기존 실물 경제를 떠받치고 있는 레거시 기업들이 AI 도입으로 인한 생산성 증대 이야기를 해야 할 시기에, AI 모델과 제품을 만들어 파는 기업을 제외하고는 해고의 정당성 확보와 주가 방어를 위한 재료로만 'AI'라는 용어를 활용할 뿐, 기술 블로그나 그 어떤 자료에서도 파괴적 혁신을 증명해내지 못하고 있다.
+
+코로나 이후부터 이미 실리콘밸리에 불어닥친 '해고'라는 단어에만 집중할 뿐, 남아있는 사람들이 얼마나 과중한 업무에 시달리며 이 과도기에 반쪽짜리 AI Agent와 함께 N명 분을 해내고 있는지에 대한 관심은 없다.]]></description>
+            <link>https://hyukjin-lee.github.io/daily/2026/04/the-essence-of-business-is-the-product</link>
+            <guid isPermaLink="false">https://hyukjin-lee.github.io/daily/2026/04/the-essence-of-business-is-the-product</guid>
+            <dc:creator><![CDATA[hyukjin lee]]></dc:creator>
+            <pubDate>Tue, 07 Apr 2026 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[[여행기] 나홀로 상하이]]></title>
+            <description><![CDATA[아내의 복직을 앞두고 우리 부부는 각자 번갈아 해외여행을 다녀오기로 했다. 아내는 조리원 동기들과 오사카로 떠나기로 했고, 나는 태국 빠이, 중국 상하이, 일본 후쿠오카 중 어디를 갈지 한참 고민하다가 가깝고 아직 가보지 못한 상하이를 택했다.
+
+사실 중국이라는 나라는 오래전부터 궁금했다. 특히 눈부시게 발전한 도시 상하이는 더욱 그랬다. 게다가 육아를 하는 동안 야경을 바라보며 술 한 잔 기울이는 소소한 낭만을 꽤 오래 누리지 못했던 터라, 불과 2시간 거리의 상하이가 저가형 뉴욕처럼 느껴지며 묘하게 매력적으로 다가왔다. 야경과 술, 그리고 중국에 대한 순수한 호기심만 품고 상하이행을 선언했다.
+
+평일인 데다 혼자 떠나는 여행이니 본래 스타일대로 무계획·즉흥 여행을 하려 했다. 호텔 예약도 일주일 전에야 했고, 짐도 옷 몇 벌과 속옷만 작은 캐리어에 대충 쑤셔 넣었다. 계획 같은 건 당연히 없었다. 그런데 중국은 그 폐쇄적인 특성답게 구글 지도가 무용지물이라는 것, 알리페이와 위챗으로 거의 모든 걸 해결해야 한다는 조언을 듣고, 어쩔 수 없이 한국에서 관련 앱을 미리 설치하고 설정까지 마친 뒤 출발했다.
+
+---
+
+새벽 4시에 일어나 인천공항으로 향했다. 평일 새벽이니 2시간 전 도착으로도 충분하겠거니 했는데, 막상 공항에 도착하니 비수기임에도 사람이 꽤 많았다. 인천공항에 올 때마다 드는 생각이지만, 세상에 노는 사람은 생각보다 훨씬 많다.
+
+<figure>
+  <img src="/images/uploads/blog/shanghai/7A419C86-4C41-43D9-BBBB-B590790AD33F_1_105_c.jpeg" style="width: 80%; border-radius: 8px;" />
+</figure>
+
+출국 심사를 마치니 탑승까지 40분 정도 남아 있었다. 오랜만에 카드사 라운지 혜택을 써봐야겠다 싶어 탑승 게이트 근처 라운지로 들렀다. 20분 만에 간단히 먹고 마신 뒤 시간에 맞춰 게이트로 이동했다.
+
+늘 탑승할 때 줄을 서서 빨리 타야 할 이유가 있나 싶었는데, 혼자인 김에 이번엔 거의 마지막으로 타보기로 했다. 결과는 만족스러웠다. 혼잡하지 않고, 좁은 기내에서 불필요하게 오래 앉아 있을 필요도 없었다.
+
+---
+
+<figure>
+  <img src="/images/uploads/blog/shanghai/0B21589A-88F9-4570-9113-F1D667DD63A6_1_105_c.jpeg" style="width: 80%; border-radius: 8px;" />
+</figure>
+
+공항에서 기다리는 동안 숙소까지 어떻게 가는지 찾아봤다. 마그레브 고속전철을 타고 지하철로 환승하면 된다. 마그레브에 올라타니 승객 대부분이 현지인이었고 여행객은 거의 보이지 않았다.
+
+<figure>
+  <img src="/images/uploads/blog/shanghai/0A2FB4BA-CF19-42DA-8D5F-74F710A9F3A5_1_105_c.jpeg" style="width: 80%; border-radius: 8px;" />
+</figure>
+
+내려서 지하철을 타러가야했지만 노선도를 보면서 티켓 발급할 생각을 하니 귀찮아져서 아무도 안가는 택시 승강장으로 향했다. 서있는 매니저에게 "알리페이 오케이?"라고 묻고 택시에 올랐다. 그런데 목적지를 알려줘도 소통이 전혀 되지 않았고, 차 안에는 담배 냄새가 진하게 배어 있었다. '아, 이게 중국이구나.' 파파고로 중국어를 번역해 가까스로 내비게이션에 목적지를 입력했다. 100년 역사로 유명한 호텔인데 모르는 상하이 택시기사라니. 중국 땅이 워낙 넓어서 그런가 보다 싶었다. 그렇게 호텔로 향했다.
+
+]]></description>
+            <link>https://hyukjin-lee.github.io/blog/2026/04/shanghai-alone</link>
+            <guid isPermaLink="false">https://hyukjin-lee.github.io/blog/2026/04/shanghai-alone</guid>
+            <dc:creator><![CDATA[hyukjin lee]]></dc:creator>
+            <pubDate>Fri, 20 Mar 2026 00:00:00 GMT</pubDate>
+        </item>
         <item>
             <title><![CDATA[Coding Horror, Paul Graham 이 말하는 육아]]></title>
             <description><![CDATA[
@@ -1122,6 +1183,13 @@ https://blog.fguy.com/2017/02/being-a-programmer-part-2.html]]></description>
             <guid isPermaLink="false">https://hyukjin-lee.github.io/blog/2025/09/정보 소비 방식의 변화와 나의 삶</guid>
             <dc:creator><![CDATA[hyukjin lee]]></dc:creator>
             <pubDate>Sun, 28 Sep 2025 00:00:00 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[No title]]></title>
+            <link>https://hyukjin-lee.github.io/blog/나홀로 상하이/undefined/</link>
+            <guid isPermaLink="false">https://hyukjin-lee.github.io/blog/나홀로 상하이/undefined/</guid>
+            <dc:creator><![CDATA[hyukjin lee]]></dc:creator>
+            <pubDate>Invalid Date</pubDate>
         </item>
         <item>
             <title><![CDATA[객체지향과 도메인 모델링 : 소프트웨어 설계 사상의 역사적 흐름]]></title>
