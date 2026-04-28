@@ -35,14 +35,16 @@ export default class MyDocument extends Document {
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
-            border-radius: 8px;
             margin: 16px 0;
+            gap: 8px;
+            -webkit-mask-image: linear-gradient(to right, black 70%, transparent 100%);
+            mask-image: linear-gradient(to right, black 70%, transparent 100%);
           }
           .photo-gallery::-webkit-scrollbar {
             display: none;
           }
           .photo-gallery figure {
-            flex: 0 0 100%;
+            flex: 0 0 80%;
             scroll-snap-align: start;
             margin: 0;
           }
