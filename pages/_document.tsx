@@ -53,6 +53,37 @@ export default class MyDocument extends Document {
             border-radius: 8px;
             display: block;
           }
+          .gallery-wrapper {
+            position: relative;
+          }
+          .gallery-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: opacity 0.2s, background 0.2s;
+          }
+          .gallery-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.65);
+          }
+          .gallery-nav-prev {
+            left: 8px;
+          }
+          .gallery-nav-next {
+            right: 8px;
+          }
           code, pre {
             font-family: Inconsolata; 
           }

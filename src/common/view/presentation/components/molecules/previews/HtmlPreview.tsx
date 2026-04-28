@@ -1,5 +1,12 @@
 import * as React from "react";
 
-export default (props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
-  return <div {...props} />;
-};
+const HtmlPreview = React.forwardRef<
+  HTMLDivElement,
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+>((props, ref) => {
+  return <div ref={ref} {...props} />;
+});
+
+HtmlPreview.displayName = "HtmlPreview";
+
+export default HtmlPreview;

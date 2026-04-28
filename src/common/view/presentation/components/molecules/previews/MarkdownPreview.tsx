@@ -2,6 +2,7 @@ import {marked} from "marked";
 import {markedHighlight} from "marked-highlight";
 import Prism from "prismjs";
 import * as React from "react";
+import { useRef, useEffect } from "react";
 import HtmlPreview from "./HtmlPreview";
 import { LinkPreview } from "../index";
 
@@ -145,19 +146,71 @@ interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElem
 }
 
 const MarkdownPreview = (props: Props) => {
-  const { markdown, linkPreviews, ...otherProps } = props;
-  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { markdown, linkPreviews, ref: _ref, ...otherProps } = props;
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const galleries = container.querySelectorAll<HTMLElement>(".photo-gallery");
+    galleries.forEach((gallery) => {
+      if (gallery.parentElement?.classList.contains("gallery-wrapper")) return;
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "gallery-wrapper";
+      gallery.parentNode!.insertBefore(wrapper, gallery);
+      wrapper.appendChild(gallery);
+
+      const prevBtn = document.createElement("button");
+      prevBtn.className = "gallery-nav-btn gallery-nav-prev";
+      prevBtn.setAttribute("aria-label", "이전 이미지");
+      prevBtn.innerHTML = "&#8249;";
+
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "gallery-nav-btn gallery-nav-next";
+      nextBtn.setAttribute("aria-label", "다음 이미지");
+      nextBtn.innerHTML = "&#8250;";
+
+      const itemWidth = () => gallery.clientWidth * 0.8 + 8;
+
+      const updateBtns = () => {
+        const atStart = gallery.scrollLeft <= 4;
+        const atEnd = gallery.scrollLeft >= gallery.scrollWidth - gallery.clientWidth - 4;
+        prevBtn.style.opacity = atStart ? "0" : "1";
+        prevBtn.style.pointerEvents = atStart ? "none" : "auto";
+        nextBtn.style.opacity = atEnd ? "0" : "1";
+        nextBtn.style.pointerEvents = atEnd ? "none" : "auto";
+      };
+
+      prevBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        gallery.scrollBy({ left: -itemWidth(), behavior: "smooth" });
+      });
+      nextBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        gallery.scrollBy({ left: itemWidth(), behavior: "smooth" });
+      });
+      gallery.addEventListener("scroll", updateBtns);
+      updateBtns();
+
+      wrapper.appendChild(prevBtn);
+      wrapper.appendChild(nextBtn);
+    });
+  }, [markdown, linkPreviews]);
+
   // 링크 프리뷰가 있는 경우 처리
   if (linkPreviews && Object.keys(linkPreviews).length > 0) {
     return (
-      <div {...otherProps}>
+      <div ref={containerRef} {...otherProps}>
         {renderMarkdownWithLinkPreviews(markdown, linkPreviews)}
       </div>
     );
   }
-  
+
   // 기존 방식으로 렌더링
-  return <HtmlPreview {...otherProps} dangerouslySetInnerHTML={{ __html: parseMarkdown(markdown) }} />;
+  return <HtmlPreview ref={containerRef} {...otherProps} dangerouslySetInnerHTML={{ __html: parseMarkdown(markdown) }} />;
 };
 
 
