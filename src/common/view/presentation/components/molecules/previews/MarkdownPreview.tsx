@@ -103,7 +103,12 @@ function preprocessMarkdownEmphasis(markdown: string): string {
 function parseMarkdown(text: string): string {
   const html = marked.parse(preprocessMarkdownEmphasis(text), { async: false }) as string;
   // <p><figure>...</figure></p> → <figure>...</figure> (figure는 블록 요소라 p 안에 들어가면 안 됨)
-  return html.replace(/<p>(<figure>[\s\S]*?<\/figure>)<\/p>/g, "$1");
+  const unwrapped = html.replace(/<p>(<figure>[\s\S]*?<\/figure>)<\/p>/g, "$1");
+  // 연속된 <figure> 2개 이상 → <div class="photo-gallery"> 로 묶기
+  return unwrapped.replace(
+    /(<figure>[\s\S]*?<\/figure>)(\s*<figure>[\s\S]*?<\/figure>)+/g,
+    (match) => `<div class="photo-gallery">${match}</div>`
+  );
 }
 
 interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

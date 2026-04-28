@@ -29,6 +29,28 @@ export default class MyDocument extends Document {
           img {
             max-width: 100%;
           }
+          .photo-gallery {
+            display: flex;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            border-radius: 8px;
+            margin: 16px 0;
+          }
+          .photo-gallery::-webkit-scrollbar {
+            display: none;
+          }
+          .photo-gallery figure {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            margin: 0;
+          }
+          .photo-gallery figure img {
+            width: 100% !important;
+            border-radius: 8px;
+            display: block;
+          }
           code, pre {
             font-family: Inconsolata; 
           }
