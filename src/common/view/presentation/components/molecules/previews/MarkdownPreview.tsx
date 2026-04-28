@@ -16,6 +16,16 @@ import "prismjs/components/prism-typescript.min.js";
 import "prismjs/components/prism-vim.min.js";
 import "prismjs/components/prism-yaml.min.js";
 
+// 마크다운 이미지를 <figure>로 자동 감싸는 커스텀 렌더러
+marked.use({
+  renderer: {
+    image({ href, title, text }: { href: string; title: string | null; text: string }): string {
+      const titleAttr = title ? ` title="${title}"` : "";
+      return `<figure><img src="${href}" alt="${text}"${titleAttr} style="width: 80%; border-radius: 8px;" /></figure>`;
+    }
+  }
+});
+
 // marked-highlight 확장 사용 (marked v5+ 에서 highlight 옵션이 deprecated됨)
 marked.use(markedHighlight({
   langPrefix: "language-",
@@ -91,7 +101,9 @@ function preprocessMarkdownEmphasis(markdown: string): string {
 
 // 마크다운 파싱 헬퍼 함수
 function parseMarkdown(text: string): string {
-  return marked.parse(preprocessMarkdownEmphasis(text), { async: false }) as string;
+  const html = marked.parse(preprocessMarkdownEmphasis(text), { async: false }) as string;
+  // <p><figure>...</figure></p> → <figure>...</figure> (figure는 블록 요소라 p 안에 들어가면 안 됨)
+  return html.replace(/<p>(<figure>[\s\S]*?<\/figure>)<\/p>/g, "$1");
 }
 
 interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
