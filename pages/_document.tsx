@@ -80,6 +80,8 @@ export default class MyDocument extends Document {
           }
           .gallery-nav-prev {
             left: 8px;
+            opacity: 0;
+            pointer-events: none;
           }
           .gallery-nav-next {
             right: 8px;

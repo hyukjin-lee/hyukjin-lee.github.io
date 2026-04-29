@@ -193,7 +193,9 @@ const MarkdownPreview = (props: Props) => {
         gallery.scrollBy({ left: itemWidth(), behavior: "smooth" });
       });
       gallery.addEventListener("scroll", updateBtns);
-      updateBtns();
+      // 초기 상태는 CSS로 처리 (gallery-nav-prev는 기본 hidden).
+      // 즉시 호출 시 DOM 조작 직후 레이아웃이 미계산되어 scrollWidth=0으로
+      // atEnd=true 오판 가능 → 스크롤 이벤트 시에만 업데이트.
 
       wrapper.appendChild(prevBtn);
       wrapper.appendChild(nextBtn);
