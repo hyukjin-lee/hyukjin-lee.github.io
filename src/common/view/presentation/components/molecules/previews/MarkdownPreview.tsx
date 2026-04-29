@@ -168,22 +168,25 @@ const MarkdownPreview = (props: Props) => {
       const imgs = Array.from(gallery.querySelectorAll<HTMLImageElement>("img"));
 
       const adjustGalleryHeight = () => {
-        const figureWidth = figures[0]?.clientWidth || gallery.clientWidth * 0.8;
+        const refWidth = figures[0]?.clientWidth || gallery.clientWidth * 0.8;
         const heights = imgs.map((img) =>
-          img.naturalWidth ? figureWidth * (img.naturalHeight / img.naturalWidth) : Infinity
+          img.naturalWidth ? refWidth * (img.naturalHeight / img.naturalWidth) : Infinity
         );
         const minHeight = Math.min(...heights);
         if (!isFinite(minHeight) || minHeight <= 0) return;
 
-        figures.forEach((fig) => {
+        figures.forEach((fig, i) => {
+          const img = imgs[i];
+          if (!img?.naturalWidth) return;
+          // 비율 유지: 높이를 minHeight로 고정하고 너비를 비율에 맞게 계산
+          const figWidth = Math.round(minHeight * (img.naturalWidth / img.naturalHeight));
+          fig.style.flex = "none";
+          fig.style.width = `${figWidth}px`;
           fig.style.height = `${Math.round(minHeight)}px`;
-          fig.style.overflow = "hidden";
           fig.style.borderRadius = "8px";
-        });
-        imgs.forEach((img) => {
+          fig.style.overflow = "hidden";
+          img.style.width = "100%";
           img.style.height = "100%";
-          img.style.objectFit = "cover";
-          img.style.objectPosition = "center";
         });
       };
 
@@ -208,7 +211,17 @@ const MarkdownPreview = (props: Props) => {
       nextBtn.setAttribute("aria-label", "다음 이미지");
       nextBtn.innerHTML = "&#8250;";
 
-      const itemWidth = () => gallery.clientWidth * 0.8 + 8;
+      const itemWidth = () => {
+        // 현재 스크롤 위치에서 가장 가까운 figure의 실제 너비를 기준으로 이동
+        const scrollPos = gallery.scrollLeft;
+        let bestFig: HTMLElement | null = null;
+        let minDist = Infinity;
+        for (const fig of figures) {
+          const dist = Math.abs(fig.offsetLeft - scrollPos);
+          if (dist < minDist) { minDist = dist; bestFig = fig; }
+        }
+        return (bestFig?.offsetWidth ?? gallery.clientWidth * 0.8) + 8;
+      };
 
       const updateBtns = () => {
         const atStart = gallery.scrollLeft <= 4;
