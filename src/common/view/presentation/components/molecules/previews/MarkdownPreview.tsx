@@ -163,6 +163,41 @@ const MarkdownPreview = (props: Props) => {
       gallery.parentNode!.insertBefore(wrapper, gallery);
       wrapper.appendChild(gallery);
 
+      // 이미지 로드 후 최소 높이(=가로 사진 높이)에 맞춰 모든 figure 통일
+      const figures = Array.from(gallery.querySelectorAll<HTMLElement>("figure"));
+      const imgs = Array.from(gallery.querySelectorAll<HTMLImageElement>("img"));
+
+      const adjustGalleryHeight = () => {
+        const figureWidth = figures[0]?.clientWidth || gallery.clientWidth * 0.8;
+        const heights = imgs.map((img) =>
+          img.naturalWidth ? figureWidth * (img.naturalHeight / img.naturalWidth) : Infinity
+        );
+        const minHeight = Math.min(...heights);
+        if (!isFinite(minHeight) || minHeight <= 0) return;
+
+        figures.forEach((fig) => {
+          fig.style.height = `${Math.round(minHeight)}px`;
+          fig.style.overflow = "hidden";
+          fig.style.borderRadius = "8px";
+        });
+        imgs.forEach((img) => {
+          img.style.height = "100%";
+          img.style.objectFit = "cover";
+          img.style.objectPosition = "center";
+        });
+      };
+
+      Promise.all(
+        imgs.map((img) =>
+          img.complete && img.naturalWidth > 0
+            ? Promise.resolve()
+            : new Promise<void>((resolve) => {
+                img.addEventListener("load", () => resolve(), { once: true });
+                img.addEventListener("error", () => resolve(), { once: true });
+              })
+        )
+      ).then(adjustGalleryHeight);
+
       const prevBtn = document.createElement("button");
       prevBtn.className = "gallery-nav-btn gallery-nav-prev";
       prevBtn.setAttribute("aria-label", "이전 이미지");
