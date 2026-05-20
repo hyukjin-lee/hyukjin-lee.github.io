@@ -311,10 +311,33 @@ const MarkdownPreview = (props: Props) => {
 };
 
 
+interface PreviewTarget {
+  url: string;
+  index: number;
+  rawLength: number;
+}
+
+function extractUrlOnlyMarkdownLinks(markdown: string): PreviewTarget[] {
+  const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+  const links: PreviewTarget[] = [];
+  let match;
+
+  while ((match = linkRegex.exec(markdown)) !== null) {
+    const label = normalizeExtractedUrl(match[1]);
+    const url = normalizeExtractedUrl(match[2]);
+
+    if (label === url) {
+      links.push({ url, index: match.index, rawLength: match[0].length });
+    }
+  }
+
+  return links;
+}
+
 // 마크다운에서 독립적인 URL 추출 (마크다운 링크 문법이 아닌 순수 텍스트 URL)
-function extractStandaloneUrls(markdown: string): Array<{url: string, index: number, rawLength: number}> {
+function extractStandaloneUrls(markdown: string): PreviewTarget[] {
   const urlRegex = /(https?:\/\/[^\s<>"'`\]]+)/g;
-  const urls: Array<{url: string, index: number, rawLength: number}> = [];
+  const urls: PreviewTarget[] = [];
   let match;
 
   while ((match = urlRegex.exec(markdown)) !== null) {
@@ -337,19 +360,28 @@ function extractStandaloneUrls(markdown: string): Array<{url: string, index: num
   return urls.sort((a, b) => a.index - b.index);
 }
 
+function extractPreviewTargets(markdown: string): PreviewTarget[] {
+  return [
+    ...extractUrlOnlyMarkdownLinks(markdown),
+    ...extractStandaloneUrls(markdown)
+  ].sort((a, b) => a.index - b.index);
+}
+
 // 마크다운과 링크 프리뷰를 함께 렌더링하는 함수
 function renderMarkdownWithLinkPreviews(markdown: string, linkPreviews: Record<string, any>) {
-  const standaloneUrls = extractStandaloneUrls(markdown);
+  const previewTargets = extractPreviewTargets(markdown);
   
   // 독립적인 URL이 없으면 일반 마크다운 렌더링
-  if (standaloneUrls.length === 0) {
+  if (previewTargets.length === 0) {
     return [<HtmlPreview key="content" dangerouslySetInnerHTML={{ __html: parseMarkdown(markdown) }} />];
   }
   
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 
-  standaloneUrls.forEach(({url, index, rawLength}) => {
+  previewTargets.forEach(({url, index, rawLength}) => {
+    if (index < lastIndex) return;
+
     // URL 이전의 텍스트를 마크다운으로 렌더링
     if (index > lastIndex) {
       const beforeText = markdown.slice(lastIndex, index);
