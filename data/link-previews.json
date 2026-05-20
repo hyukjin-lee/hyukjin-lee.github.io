@@ -23,14 +23,6 @@
     "siteName": "YouTube",
     "scrapedAt": "2026-05-20T05:19:06.905Z"
   },
-  "https://www.youtube.com/embed/anua-taEpvY?si=zORolk7FDGPoVeFR&start=106": {
-    "url": "https://www.youtube.com/embed/anua-taEpvY?si=zORolk7FDGPoVeFR&start=106",
-    "title": "YouTube",
-    "description": "",
-    "image": "",
-    "siteName": "www.youtube.com",
-    "scrapedAt": "2026-05-20T05:19:06.311Z"
-  },
   "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd": {
     "url": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd",
     "title": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd",
@@ -72,14 +64,6 @@
     "siteName": "YouTube",
     "scrapedAt": "2026-05-20T05:27:42.898Z"
   },
-  "https://lilys.ai/digest/9668310/11180648?s=1&noteVersionId=7707400": {
-    "url": "https://lilys.ai/digest/9668310/11180648?s=1&noteVersionId=7707400",
-    "title": "Summarize Videos, Audio, PDF & Websites - Lilys AI",
-    "description": "Get the best summaries with Lilys AI. Whether it's videos, audio, PDFs, websites, or text, we create the best summary notes.",
-    "image": "https://resource.lilys.ai/og_images/og-image.png",
-    "siteName": "Lilys AI",
-    "scrapedAt": "2026-05-20T05:27:42.073Z"
-  },
   "https://x.com/karpathy/status/2056753169888334312?s=46&t=xt4iv7HvKFmRstuGJaO5mA": {
     "url": "https://x.com/karpathy/status/2056753169888334312?s=46&t=xt4iv7HvKFmRstuGJaO5mA",
     "title": "",
@@ -87,5 +71,13 @@
     "image": "",
     "siteName": "X (formerly Twitter)",
     "scrapedAt": "2026-05-20T05:27:44.279Z"
+  },
+  "https://www.youtube.com/watch?v=julbw1JuAz0": {
+    "url": "https://www.youtube.com/watch?v=julbw1JuAz0",
+    "title": "Building Claude Code with Boris Cherny",
+    "description": "Boris Cherny is the creator and Head of Claude Code at Anthropic. He previously spent five years at Meta as a Principal Engineer and is the author of the boo...",
+    "image": "https://i.ytimg.com/vi/julbw1JuAz0/maxresdefault.jpg",
+    "siteName": "YouTube",
+    "scrapedAt": "2026-05-20T05:55:42.944Z"
   }
 }

@@ -71,8 +71,62 @@ function loadExistingPreviews() {
 
 // 마크다운 콘텐츠에서 URL 추출
 function extractUrlsFromMarkdown(content) {
-  const urls = content.match(URL_REGEX) || [];
-  return [...new Set(urls.map(normalizeExtractedUrl).filter(Boolean))]; // 중복 제거
+  const urls = [];
+  let match;
+
+  while ((match = URL_REGEX.exec(content)) !== null) {
+    const markdownIndex = match.index;
+    const isInIframe = content.slice(Math.max(0, markdownIndex - 50), markdownIndex).includes('<iframe');
+
+    if (!isInIframe) {
+      urls.push(normalizeExtractedUrl(match[0]));
+    }
+  }
+
+  return [...new Set(urls.filter(Boolean))]; // 중복 제거
+}
+
+function isYouTubeUrl(url) {
+  try {
+    const hostname = new URL(url).hostname.replace(/^www\./, '');
+    return hostname === 'youtube.com' || hostname === 'youtu.be';
+  } catch {
+    return false;
+  }
+}
+
+function isGenericYouTubeTitle(title) {
+  return !title || title === 'YouTube' || title === '- YouTube';
+}
+
+async function scrapeYouTubeOEmbed(url) {
+  const response = await axios.get('https://www.youtube.com/oembed', {
+    timeout: 10000,
+    params: { url, format: 'json' },
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+  });
+
+  return {
+    url,
+    title: response.data.title || url,
+    description: response.data.author_name ? `YouTube - ${response.data.author_name}` : '',
+    image: response.data.thumbnail_url || '',
+    siteName: response.data.provider_name || 'YouTube',
+    scrapedAt: new Date().toISOString()
+  };
+}
+
+function shouldRefreshPreview(url, preview) {
+  if (!preview) return true;
+  if (preview.error && !preview.title) return true;
+
+  if (isYouTubeUrl(url)) {
+    return isGenericYouTubeTitle(preview.title) || !preview.image;
+  }
+
+  return false;
 }
 
 // 웹페이지에서 메타데이터 추출
@@ -112,7 +166,7 @@ async function scrapeMetadata(url) {
       document.querySelector('meta[property="og:site_name"]')?.getAttribute('content') ||
       new URL(url).hostname;
 
-    return {
+    const metadata = {
       url,
       title: title.trim(),
       description: description.trim(),
@@ -121,7 +175,21 @@ async function scrapeMetadata(url) {
       scrapedAt: new Date().toISOString()
     };
 
+    if (isYouTubeUrl(url) && (isGenericYouTubeTitle(metadata.title) || !metadata.image)) {
+      return await scrapeYouTubeOEmbed(url);
+    }
+
+    return metadata;
+
   } catch (error) {
+    if (isYouTubeUrl(url)) {
+      try {
+        return await scrapeYouTubeOEmbed(url);
+      } catch (oEmbedError) {
+        console.error(`Error scraping YouTube oEmbed ${url}:`, oEmbedError.message);
+      }
+    }
+
     console.error(`Error scraping ${url}:`, error.message);
     return {
       url,
@@ -184,9 +252,7 @@ async function main() {
   );
 
   // 새로운 URL만 스크래핑
-  const newUrls = allUrls.filter(url => !existingPreviews[url] || 
-    (existingPreviews[url].error && !existingPreviews[url].title)
-  );
+  const newUrls = allUrls.filter(url => shouldRefreshPreview(url, existingPreviews[url]));
   
   console.log(`🆕 Need to scrape ${newUrls.length} new/failed URLs`);
 

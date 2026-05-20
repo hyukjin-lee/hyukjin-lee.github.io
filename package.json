@@ -7,8 +7,9 @@
   ],
   "scripts": {
     "dev": "next dev",
-    "build": "npm run generate-link-previews && npm run generate-rss && next build && npx next export",
-    "build:static": "npm run fetch-data && npm run generate-link-previews && npm run generate-rss && next build && npx next export && npm run postbuild",
+    "build": "npm run generate-link-previews && npm run build:export",
+    "build:export": "npm run generate-rss && next build && npx next export",
+    "build:static": "npm run fetch-data && npm run generate-link-previews && npm run build:export && npm run postbuild",
     "generate-rss": "node scripts/generate-rss.js",
     "generate-link-previews": "node scripts/generate-link-previews.js",
     "postbuild": "next-sitemap --config next-sitemap.config.js",
