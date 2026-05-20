@@ -9,7 +9,53 @@ const DATA_DIR = path.join(__dirname, '..', 'data');
 const LINK_PREVIEWS_FILE = path.join(DATA_DIR, 'link-previews.json');
 
 // URL 정규식 패턴
-const URL_REGEX = /(https?:\/\/[^\s]+)/g;
+const URL_REGEX = /(https?:\/\/[^\s<>"'`\]]+)/g;
+const KOREAN_POSTPOSITIONS = [
+  '으로', '에서', '에게', '부터', '까지', '처럼',
+  '은', '는', '이', '가', '을', '를', '와', '과', '도', '에', '로', '만', '의'
+];
+
+function trimUnmatchedClosingParens(url) {
+  let result = url;
+
+  while (result.endsWith(')')) {
+    const openCount = (result.match(/\(/g) || []).length;
+    const closeCount = (result.match(/\)/g) || []).length;
+    if (closeCount <= openCount) break;
+    result = result.slice(0, -1);
+  }
+
+  return result;
+}
+
+function normalizeExtractedUrl(rawUrl) {
+  let url = rawUrl
+    .replace(/&amp;/g, '&')
+    .trim()
+    .split('](')[0]
+    .replace(/[.,!?;:]+$/g, '');
+
+  let changed = true;
+  while (changed) {
+    changed = false;
+
+    for (const particle of KOREAN_POSTPOSITIONS) {
+      if (url.endsWith(particle) && /[)\]}]$/.test(url.slice(0, -particle.length))) {
+        url = url.slice(0, -particle.length);
+        changed = true;
+        break;
+      }
+    }
+
+    const trimmed = trimUnmatchedClosingParens(url).replace(/[\]}]+$/g, '');
+    if (trimmed !== url) {
+      url = trimmed;
+      changed = true;
+    }
+  }
+
+  return url;
+}
 
 // 기존 링크 프리뷰 데이터 로드
 function loadExistingPreviews() {
@@ -26,7 +72,7 @@ function loadExistingPreviews() {
 // 마크다운 콘텐츠에서 URL 추출
 function extractUrlsFromMarkdown(content) {
   const urls = content.match(URL_REGEX) || [];
-  return [...new Set(urls)]; // 중복 제거
+  return [...new Set(urls.map(normalizeExtractedUrl).filter(Boolean))]; // 중복 제거
 }
 
 // 웹페이지에서 메타데이터 추출
@@ -125,12 +171,17 @@ async function main() {
   }
 
   // 기존 링크 프리뷰 데이터 로드
-  const existingPreviews = loadExistingPreviews();
-  console.log(`📋 Loaded ${Object.keys(existingPreviews).length} existing previews`);
+  const loadedPreviews = loadExistingPreviews();
+  console.log(`📋 Loaded ${Object.keys(loadedPreviews).length} existing previews`);
 
   // 모든 URL 수집
   const allUrls = collectAllUrls();
   console.log(`🔍 Found ${allUrls.length} unique URLs`);
+
+  const allUrlSet = new Set(allUrls);
+  const existingPreviews = Object.fromEntries(
+    Object.entries(loadedPreviews).filter(([url]) => allUrlSet.has(url))
+  );
 
   // 새로운 URL만 스크래핑
   const newUrls = allUrls.filter(url => !existingPreviews[url] || 

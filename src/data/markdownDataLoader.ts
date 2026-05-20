@@ -12,8 +12,54 @@ import { StrapiPagination } from "../common/domain/StrapiPagination";
 
 const POSTS_DIR = path.join(process.cwd(), "_posts");
 const LINK_PREVIEWS_FILE = path.join(process.cwd(), "data", "link-previews.json");
+const KOREAN_POSTPOSITIONS = [
+  "으로", "에서", "에게", "부터", "까지", "처럼",
+  "은", "는", "이", "가", "을", "를", "와", "과", "도", "에", "로", "만", "의"
+];
 
 export class MarkdownDataLoader {
+  private static trimUnmatchedClosingParens(url: string): string {
+    let result = url;
+
+    while (result.endsWith(")")) {
+      const openCount = (result.match(/\(/g) || []).length;
+      const closeCount = (result.match(/\)/g) || []).length;
+      if (closeCount <= openCount) break;
+      result = result.slice(0, -1);
+    }
+
+    return result;
+  }
+
+  private static normalizeExtractedUrl(rawUrl: string): string {
+    let url = rawUrl
+      .replace(/&amp;/g, "&")
+      .trim()
+      .split("](")[0]
+      .replace(/[.,!?;:]+$/g, "");
+
+    let changed = true;
+    while (changed) {
+      changed = false;
+
+      for (const particle of KOREAN_POSTPOSITIONS) {
+        if (url.endsWith(particle) && /[)\]}]$/.test(url.slice(0, -particle.length))) {
+          url = url.slice(0, -particle.length);
+          changed = true;
+          break;
+        }
+      }
+
+      const trimmed = this.trimUnmatchedClosingParens(url).replace(/[\]}]+$/g, "");
+      if (trimmed !== url) {
+        url = trimmed;
+        changed = true;
+      }
+    }
+
+    return url;
+  }
+
   // 링크 프리뷰 데이터 로드
   private static loadLinkPreviews(): Record<string, any> {
     try {
@@ -30,8 +76,8 @@ export class MarkdownDataLoader {
   // 컨텐츠에서 링크 프리뷰 데이터 추출
   private static getLinkPreviewsForContent(content: string): Record<string, any> {
     const linkPreviews = this.loadLinkPreviews();
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const urls = content.match(urlRegex) || [];
+    const urlRegex = /(https?:\/\/[^\s<>"'`\]]+)/g;
+    const urls = (content.match(urlRegex) || []).map(url => this.normalizeExtractedUrl(url));
     
     const result: Record<string, any> = {};
     urls.forEach(url => {

@@ -145,6 +145,53 @@ interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElem
   linkPreviews?: Record<string, any>;
 }
 
+const KOREAN_POSTPOSITIONS = [
+  "으로", "에서", "에게", "부터", "까지", "처럼",
+  "은", "는", "이", "가", "을", "를", "와", "과", "도", "에", "로", "만", "의"
+];
+
+function trimUnmatchedClosingParens(url: string): string {
+  let result = url;
+
+  while (result.endsWith(")")) {
+    const openCount = (result.match(/\(/g) || []).length;
+    const closeCount = (result.match(/\)/g) || []).length;
+    if (closeCount <= openCount) break;
+    result = result.slice(0, -1);
+  }
+
+  return result;
+}
+
+function normalizeExtractedUrl(rawUrl: string): string {
+  let url = rawUrl
+    .replace(/&amp;/g, "&")
+    .trim()
+    .split("](")[0]
+    .replace(/[.,!?;:]+$/g, "");
+
+  let changed = true;
+  while (changed) {
+    changed = false;
+
+    for (const particle of KOREAN_POSTPOSITIONS) {
+      if (url.endsWith(particle) && /[)\]}]$/.test(url.slice(0, -particle.length))) {
+        url = url.slice(0, -particle.length);
+        changed = true;
+        break;
+      }
+    }
+
+    const trimmed = trimUnmatchedClosingParens(url).replace(/[\]}]+$/g, "");
+    if (trimmed !== url) {
+      url = trimmed;
+      changed = true;
+    }
+  }
+
+  return url;
+}
+
 const MarkdownPreview = (props: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { markdown, linkPreviews, ref: _ref, ...otherProps } = props;
@@ -265,24 +312,25 @@ const MarkdownPreview = (props: Props) => {
 
 
 // 마크다운에서 독립적인 URL 추출 (마크다운 링크 문법이 아닌 순수 텍스트 URL)
-function extractStandaloneUrls(markdown: string): Array<{url: string, index: number}> {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const urls: Array<{url: string, index: number}> = [];
+function extractStandaloneUrls(markdown: string): Array<{url: string, index: number, rawLength: number}> {
+  const urlRegex = /(https?:\/\/[^\s<>"'`\]]+)/g;
+  const urls: Array<{url: string, index: number, rawLength: number}> = [];
   let match;
 
   while ((match = urlRegex.exec(markdown)) !== null) {
-    const url = match[0];
+    const rawUrl = match[0];
+    const url = normalizeExtractedUrl(rawUrl);
     const markdownIndex = match.index;
     
     // 마크다운에서 해당 URL 주변 문맥 확인
     const beforeChar = markdownIndex > 0 ? markdown[markdownIndex - 1] : "";
     
     // 마크다운 링크 문법 [text](url) 또는 <url> 형태가 아닌 순수 텍스트 URL만 추출
-    const isInMarkdownLink = beforeChar === "(" || beforeChar === "<";
+    const isInMarkdownLink = beforeChar === "(" || beforeChar === "<" || beforeChar === "[";
     const isInIframe = markdown.slice(Math.max(0, markdownIndex - 50), markdownIndex).includes("<iframe");
     
     if (!isInMarkdownLink && !isInIframe) {
-      urls.push({url, index: markdownIndex});
+      urls.push({url, index: markdownIndex, rawLength: rawUrl.length});
     }
   }
   
@@ -301,7 +349,7 @@ function renderMarkdownWithLinkPreviews(markdown: string, linkPreviews: Record<s
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 
-  standaloneUrls.forEach(({url, index}) => {
+  standaloneUrls.forEach(({url, index, rawLength}) => {
     // URL 이전의 텍스트를 마크다운으로 렌더링
     if (index > lastIndex) {
       const beforeText = markdown.slice(lastIndex, index);
@@ -325,7 +373,7 @@ function renderMarkdownWithLinkPreviews(markdown: string, linkPreviews: Record<s
       );
     }
     
-    lastIndex = index + url.length;
+    lastIndex = index + rawLength;
   });
   
   // 마지막 URL 이후의 텍스트

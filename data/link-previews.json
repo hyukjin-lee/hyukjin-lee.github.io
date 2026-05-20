@@ -1,12 +1,4 @@
 {
-  "https://codeopinion.com/": {
-    "url": "https://codeopinion.com/",
-    "title": "CodeOpinion",
-    "description": "Software Architecture & Design",
-    "image": "",
-    "siteName": "CodeOpinion",
-    "scrapedAt": "2025-08-01T02:28:20.797Z"
-  },
   "https://codeopinion.com/database-migration-strategies/": {
     "url": "https://codeopinion.com/database-migration-strategies/",
     "title": "Database Migration Strategies",
@@ -22,5 +14,78 @@
     "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhquaE2mArOcon49qpakkYc4FMHI_82iDuOIQM3BArPFX9wTCI_N3FjYkh5K4HvMvjg5sWsGHLQUWw2TmRSLdYLIhtMeKH0MLrm9yerrI_6sm1KMug_7y6O7x3aMoiFcY1LR7kr8rcdHwE/w1200-h630-p-k-no-nu/124309765_cd406d91dc_o.jpg",
     "siteName": "blog.fguy.com",
     "scrapedAt": "2025-10-25T14:40:15.100Z"
+  },
+  "https://www.youtube.com/watch?v=dzFYUrwsdvw": {
+    "url": "https://www.youtube.com/watch?v=dzFYUrwsdvw",
+    "title": "실리콘밸리의 한국인 미니 컨퍼런스 - 05 강태훈 '실리콘밸리의 흙수저 개발자'",
+    "description": "실리콘밸리의 한국인 미니 컨퍼런스 - 05 강태훈 '실리콘밸리의 흙수저 개발자'홈페이지: http://startupall.kr페이스북: www.facebook.com/startup.alliance.korea트위터(Twitter): @StartupAllKorea",
+    "image": "https://i.ytimg.com/vi/dzFYUrwsdvw/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEggRyhlMA8=&rs=AOn4CLBAJw0M-UglZtJ4nrGWioLhB25mdA",
+    "siteName": "YouTube",
+    "scrapedAt": "2026-05-20T05:19:06.905Z"
+  },
+  "https://www.youtube.com/embed/anua-taEpvY?si=zORolk7FDGPoVeFR&start=106": {
+    "url": "https://www.youtube.com/embed/anua-taEpvY?si=zORolk7FDGPoVeFR&start=106",
+    "title": "YouTube",
+    "description": "",
+    "image": "",
+    "siteName": "www.youtube.com",
+    "scrapedAt": "2026-05-20T05:19:06.311Z"
+  },
+  "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd": {
+    "url": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd",
+    "title": "https://medium.com/curious-burrows/steve-jobs-explains-object-oriented-programming-d29451775afd",
+    "description": "",
+    "image": "",
+    "siteName": "medium.com",
+    "error": "Request failed with status code 403",
+    "scrapedAt": "2026-05-20T05:19:05.929Z"
+  },
+  "https://dylayed.com/posts/becoming-a-parent/": {
+    "url": "https://dylayed.com/posts/becoming-a-parent/",
+    "title": "아빠가 된 개발자",
+    "description": "육아가 가져온 일, 삶, 행복의 재정의",
+    "image": "",
+    "siteName": "dylayed",
+    "scrapedAt": "2026-05-20T05:19:08.562Z"
+  },
+  "https://www.paulgraham.com/kids.html": {
+    "url": "https://www.paulgraham.com/kids.html",
+    "title": "Having Kids",
+    "description": "",
+    "image": "",
+    "siteName": "www.paulgraham.com",
+    "scrapedAt": "2026-05-20T05:19:08.946Z"
+  },
+  "https://blog.codinghorror.com/on-parenthood/": {
+    "url": "https://blog.codinghorror.com/on-parenthood/",
+    "title": "On Parenthood",
+    "description": "Our son was born March 12th, 2009. He’s a little over two and a half years old. Now, I am the wussiest wuss to ever wuss up the joint, so take everything I’m about to say with a grain of salt – but choosing to become a parent is",
+    "image": "https://storage.ghost.io/c/eb/aa/ebaa2665-01a8-4415-8825-69d1f0e8fd19/content/images/2026/02/on-parenthood-joy-vs-pita-pie-chart-3.png",
+    "siteName": "Coding Horror",
+    "scrapedAt": "2026-05-20T05:19:08.146Z"
+  },
+  "https://www.youtube.com/watch?v=mrA99flVsfU": {
+    "url": "https://www.youtube.com/watch?v=mrA99flVsfU",
+    "title": "Spot Interview(좌표 인터뷰): NAUL(나얼) _ Feel Like(널 부르는 밤)",
+    "description": "Spot Interview(좌표 인터뷰): NAUL(나얼) _ Feel Like(널 부르는 밤)*English subtitles are now available.   (Please click on 'CC' button or activate 'Interactive Transcript...",
+    "image": "https://i.ytimg.com/vi/mrA99flVsfU/hqdefault.jpg",
+    "siteName": "YouTube",
+    "scrapedAt": "2026-05-20T05:27:42.898Z"
+  },
+  "https://lilys.ai/digest/9668310/11180648?s=1&noteVersionId=7707400": {
+    "url": "https://lilys.ai/digest/9668310/11180648?s=1&noteVersionId=7707400",
+    "title": "Summarize Videos, Audio, PDF & Websites - Lilys AI",
+    "description": "Get the best summaries with Lilys AI. Whether it's videos, audio, PDFs, websites, or text, we create the best summary notes.",
+    "image": "https://resource.lilys.ai/og_images/og-image.png",
+    "siteName": "Lilys AI",
+    "scrapedAt": "2026-05-20T05:27:42.073Z"
+  },
+  "https://x.com/karpathy/status/2056753169888334312?s=46&t=xt4iv7HvKFmRstuGJaO5mA": {
+    "url": "https://x.com/karpathy/status/2056753169888334312?s=46&t=xt4iv7HvKFmRstuGJaO5mA",
+    "title": "",
+    "description": "",
+    "image": "",
+    "siteName": "X (formerly Twitter)",
+    "scrapedAt": "2026-05-20T05:27:44.279Z"
   }
 }
