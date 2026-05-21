@@ -79,5 +79,53 @@
     "image": "https://i.ytimg.com/vi/julbw1JuAz0/maxresdefault.jpg",
     "siteName": "YouTube",
     "scrapedAt": "2026-05-20T05:55:42.944Z"
+  },
+  "https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide?utm_source=chatgpt.com": {
+    "url": "https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide?utm_source=chatgpt.com",
+    "title": "Codex Prompting Guide",
+    "description": "Codex models advance the frontier of intelligence and efficiency and our recommended agentic coding model. Follow this guide closely to ensu",
+    "image": "https://developers.openai.com/open-graph.png",
+    "siteName": "developers.openai.com",
+    "scrapedAt": "2026-05-21T06:29:34.706Z"
+  },
+  "https://aider.chat/docs/repomap.html?utm_source=chatgpt.com": {
+    "url": "https://aider.chat/docs/repomap.html?utm_source=chatgpt.com",
+    "title": "Repository map",
+    "description": "Aider uses a map of your git repository to provide code context to LLMs.",
+    "image": "https://aider.chat/assets/robot-ast.png",
+    "siteName": "aider",
+    "scrapedAt": "2026-05-21T06:29:34.133Z"
+  },
+  "https://aider.chat/docs/config/options.html?utm_source=chatgpt.com": {
+    "url": "https://aider.chat/docs/config/options.html?utm_source=chatgpt.com",
+    "title": "Options reference",
+    "description": "Details about all of aider’s settings.",
+    "image": "https://aider.chat/assets/aider.jpg",
+    "siteName": "aider",
+    "scrapedAt": "2026-05-21T06:29:34.301Z"
+  },
+  "https://developers.openai.com/codex/skills?utm_source=chatgpt.com": {
+    "url": "https://developers.openai.com/codex/skills?utm_source=chatgpt.com",
+    "title": "Agent Skills – Codex | OpenAI Developers",
+    "description": "Give Codex new capabilities and expertise",
+    "image": "https://developers.openai.com/og/codex/skills.png",
+    "siteName": "developers.openai.com",
+    "scrapedAt": "2026-05-21T06:29:36.230Z"
+  },
+  "https://code.claude.com/docs/en/hooks-guide?utm_source=chatgpt.com": {
+    "url": "https://code.claude.com/docs/en/hooks-guide?utm_source=chatgpt.com",
+    "title": "",
+    "description": "",
+    "image": "",
+    "siteName": "code.claude.com",
+    "scrapedAt": "2026-05-21T06:29:35.928Z"
+  },
+  "https://github.com/openai/codex/issues/14113?utm_source=chatgpt.com": {
+    "url": "https://github.com/openai/codex/issues/14113?utm_source=chatgpt.com",
+    "title": "Rework the `apply_patch` edit/create developer prompt guardrail · Issue #14113 · openai/codex",
+    "description": "Currently, the GPT-5.4 developer prompt is: You are Codex, a coding agent based on GPT-5. You and the user share the same workspace and collaborate to achieve the user's goals. # Personality You ar...",
+    "image": "https://opengraph.githubassets.com/04d2d5439d8a3afbcc930787f5b72bbcba62baaee7a89740579c2315618dcc0a/openai/codex/issues/14113",
+    "siteName": "GitHub",
+    "scrapedAt": "2026-05-21T06:29:37.069Z"
   }
 }
