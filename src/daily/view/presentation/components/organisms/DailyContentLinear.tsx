@@ -198,7 +198,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginTop: theme.spacing(1),
     padding: 0,
     minWidth: "auto",
-    color: theme.palette.text.secondary,
+    color: theme.palette.info.main,
     fontSize: "0.875rem",
     fontWeight: 600,
     lineHeight: 1.5,
@@ -206,7 +206,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
     "&:hover": {
       backgroundColor: "transparent",
-      color: theme.palette.primary.main,
+      color: theme.palette.info.dark,
       textDecoration: "underline",
     }
   }
@@ -325,7 +325,7 @@ const DailyContentLinear: React.FC<Props> = ({
         />
         {shouldCollapse && !expanded && (
           <Button className={classes.moreButton} onClick={handleMoreClick}>
-            더보기...
+            more...
           </Button>
         )}
       </Box>
