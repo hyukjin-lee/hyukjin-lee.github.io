@@ -1,7 +1,7 @@
 import * as React from "react";
 import { MarkdownPreview } from "src/common/view/presentation/components/molecules";
 import { makeStyles, createStyles } from "@mui/styles";
-import { Theme, Typography, Box } from "@mui/material";
+import { Theme, Typography, Box, Button } from "@mui/material";
 import { formatDateTime } from "src/util";
 
 interface Props {
@@ -192,8 +192,88 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
           : "rgba(0, 0, 0, 0.04)",
       }
     }
+  },
+
+  moreButton: {
+    marginTop: theme.spacing(1),
+    padding: 0,
+    minWidth: "auto",
+    color: theme.palette.text.secondary,
+    fontSize: "0.875rem",
+    fontWeight: 600,
+    lineHeight: 1.5,
+    textTransform: "none",
+
+    "&:hover": {
+      backgroundColor: "transparent",
+      color: theme.palette.primary.main,
+      textDecoration: "underline",
+    }
   }
 }));
+
+const CONTENT_PREVIEW_LENGTH = 600;
+
+interface MarkdownTokenRange {
+  start: number;
+  end: number;
+}
+
+function findUrlTokenRanges(content: string): MarkdownTokenRange[] {
+  const markdownLinkRanges = Array.from(
+    content.matchAll(/\[[^\]]+\]\(https?:\/\/[^\s)]+\)/g),
+    (match) => ({
+      start: match.index ?? 0,
+      end: (match.index ?? 0) + match[0].length,
+    })
+  );
+
+  const standaloneUrlRanges = Array.from(
+    content.matchAll(/https?:\/\/[^\s<>"'`\]]+/g),
+    (match) => ({
+      start: match.index ?? 0,
+      end: (match.index ?? 0) + match[0].length,
+    })
+  ).filter((range) => (
+    !markdownLinkRanges.some((markdownLinkRange) => (
+      range.start >= markdownLinkRange.start && range.start < markdownLinkRange.end
+    ))
+  ));
+
+  return [...markdownLinkRanges, ...standaloneUrlRanges].sort((a, b) => a.start - b.start);
+}
+
+function getSafePreviewEnd(content: string) {
+  return findUrlTokenRanges(content).reduce((previewEnd, range) => {
+    if (range.start < previewEnd && previewEnd < range.end) {
+      return range.end;
+    }
+
+    return previewEnd;
+  }, CONTENT_PREVIEW_LENGTH);
+}
+
+function getPreviewContent(content: string) {
+  if (content.length <= CONTENT_PREVIEW_LENGTH) {
+    return {
+      content,
+      isTruncated: false,
+    };
+  }
+
+  const previewEnd = getSafePreviewEnd(content);
+  if (previewEnd >= content.length) {
+    return {
+      content,
+      isTruncated: false,
+    };
+  }
+
+  return {
+    content: `${content.slice(0, previewEnd).trimEnd()}...`,
+    isTruncated: true,
+  };
+}
 
 const DailyContentLinear: React.FC<Props> = ({ 
   content, 
@@ -203,11 +283,23 @@ const DailyContentLinear: React.FC<Props> = ({
   date 
 }) => {
   const classes = useStyles();
+  const [expanded, setExpanded] = React.useState(false);
+  const previewContent = React.useMemo(() => getPreviewContent(content), [content]);
+  const shouldCollapse = previewContent.isTruncated;
+  const displayContent = shouldCollapse && !expanded
+    ? previewContent.content
+    : content;
   
   const handleClick = () => {
     if (uri) {
       window.location.href = uri;
     }
+  };
+
+  const handleMoreClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setExpanded(true);
   };
   
   const formatDate = (dateString: string) => {
@@ -228,9 +320,14 @@ const DailyContentLinear: React.FC<Props> = ({
       
       <Box className={classes.content}>
         <MarkdownPreview 
-          markdown={content} 
+          markdown={displayContent} 
           linkPreviews={linkPreviews}
         />
+        {shouldCollapse && !expanded && (
+          <Button className={classes.moreButton} onClick={handleMoreClick}>
+            더보기...
+          </Button>
+        )}
       </Box>
     </Box>
   );
