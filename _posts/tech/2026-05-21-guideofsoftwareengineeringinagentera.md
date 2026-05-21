@@ -1,29 +1,280 @@
 ---
-title: 에이전트 시대의 엔지니어링 가이드
+title: 에이전트 시대의 브라운필드 엔지니어링
 date: 2026-05-21
 updatedAt: 2026-05-21
 slug: guideofsoftwareengineeringinagentera
 category: tech
 ---
-# 에이전트 시대의 엔지니어링 가이드
+# Codebase-as-Harness
 
-## 1. 기본 관점: 코드베이스는 “에이전트가 탐색하는 작업 공간”이다
+## 에이전트 시대의 브라운필드 소프트웨어 엔지니어링
 
-기존 소프트웨어 엔지니어링은 주로 인간 개발자의 이해, 협업, 유지보수를 중심으로 발전했습니다. 에이전트 시대에도 본질은 유지됩니다. 다만 판단 기준이 더 구체화됩니다.
+### 부제: 인간이 읽기 좋은 코드에서 에이전트가 조작 가능한 시스템으로
 
-좋은 코드베이스는 이제 다음 조건을 만족해야 합니다.
+---
 
-사람이 읽기 쉬워야 합니다. 에이전트가 검색하기 쉬워야 합니다. 작은 컨텍스트만으로도 의미가 드러나야 합니다. 변경 영향 범위가 예측 가능해야 합니다. 수정 후 자동 검증이 가능해야 합니다. 실패했을 때 에이전트가 에러 메시지를 보고 복구할 수 있어야 합니다.
+# 서문
 
-즉, 좋은 설계란 “지적인 사람이 잘 이해하는 구조”를 넘어 “제한된 컨텍스트를 가진 에이전트도 안전하게 조작할 수 있는 구조”입니다.
+소프트웨어 개발에서 인공지능 에이전트는 이미 단순한 자동완성 도구의 범위를 넘어섰다. 최신 코딩 에이전트는 저장소를 검색하고, 파일을 읽고, 코드를 수정하고, 테스트를 실행하고, 실패 로그를 해석하고, 다시 패치를 생성한다. 어떤 경우에는 이슈를 받아 pull request를 만들고, CI 피드백을 보고 재수정하기도 한다.
 
-# 2. 에이전트 친화적 코드베이스의 10대 원칙
+하지만 대규모 IT 서비스 기업의 현실은 훨씬 복잡하다. 대부분의 핵심 시스템은 greenfield가 아니라 brownfield다. 오래된 도메인 모델, 누적된 기술부채, 여러 팀의 암묵지, 불완전한 테스트, 중복된 정책, 불명확한 소유권, 복잡한 배포 파이프라인, 레거시 데이터, 운영 장애 이력, 외부 API 의존성이 함께 얽혀 있다.
 
-## 원칙 1. 유비쿼터스 언어를 검색 인덱스로 다뤄라
+이런 환경에서 에이전트의 한계는 단순히 “아직 모델이 덜 똑똑하다”가 아니다. 더 근본적인 문제는 코드베이스가 에이전트가 일하기 좋은 형태로 설계되어 있지 않다는 데 있다.
 
-DDD의 유비쿼터스 언어는 이제 단순한 커뮤니케이션 원칙이 아닙니다. 에이전트가 `rg`, semantic search, symbol search로 관련 코드를 찾기 위한 인덱스 품질입니다.
+에이전트는 전체 시스템을 인간처럼 장기적으로 기억하지 않는다. 에이전트는 주어진 프롬프트, 검색 결과, 열어 본 파일, 테스트 출력, 도구 결과를 바탕으로 다음 행동을 선택한다. 따라서 에이전트의 생산성은 모델 성능뿐 아니라 코드베이스가 얼마나 탐색 가능하고, 변경 가능하고, 검증 가능하고, 안전하게 되돌릴 수 있는지에 의해 결정된다.
 
-나쁜 예시는 다음과 같습니다.
+이 책은 그 문제를 다룬다.
+
+주장은 간단하다.
+
+**에이전트 시대의 병목은 코드 생성 능력이 아니라, 브라운필드 코드베이스가 에이전트에게 조작 가능한 작업 환경으로 설계되어 있지 않다는 점이다.**
+
+따라서 앞으로의 소프트웨어 엔지니어링은 “사람이 읽기 좋은 코드”를 넘어 “에이전트가 안전하게 조작할 수 있는 시스템”을 목표로 발전해야 한다.
+
+이 책에서는 이를 **Agentic Brownfield Engineering**, 줄여서 **ABE**라고 부른다. 더 직접적으로는 **Agent-Operable Maintainability Engineering**, 즉 **에이전트 조작 가능 유지보수 공학**이라고 부를 수 있다.
+
+---
+
+# 1부. 문제 정의
+
+## 1장. 코딩 에이전트의 착시
+
+코딩 에이전트는 빠르게 발전하고 있다. 과거의 코드 자동완성은 함수 몇 줄을 제안하는 수준이었다. 지금의 에이전트는 명령을 받고, 저장소를 탐색하고, 관련 파일을 찾고, 코드를 고치고, 테스트를 실행하고, 실패를 수정한다.
+
+이 변화는 실제로 크다. 작은 버그 수정, 반복적인 API 마이그레이션, 테스트 보강, 문서 업데이트, 타입 추가, lint 수정 같은 작업에서는 이미 큰 생산성 향상이 가능하다.
+
+그러나 여기에는 착시가 있다.
+
+작은 작업에서 성공한다고 해서 대규모 브라운필드 유지보수에서도 동일하게 성공하는 것은 아니다. 단일 파일 또는 단일 모듈 수준의 수정과, 여러 서비스·도메인·데이터 계약·운영 제약이 얽힌 변경은 완전히 다른 문제다.
+
+코딩 에이전트가 가장 잘하는 일은 다음과 같다.
+
+- 명확한 입력과 출력이 있는 함수 구현
+- 국소적인 버그 수정
+- 기존 패턴을 따르는 반복 코드 작성
+- 테스트 케이스 추가
+- 단순한 리팩터링
+- 명확한 컴파일 오류 또는 테스트 실패 수정
+
+반대로 에이전트가 어려워하는 일은 다음과 같다.
+
+- 어떤 코드가 authoritative한 정책 위치인지 판단하기
+- 여러 중복 구현 중 진짜 규칙을 구분하기
+- 암묵적인 비즈니스 불변조건 추론하기
+- 과거의 설계 의도 파악하기
+- 테스트가 없는 운영 리스크 판단하기
+- 서비스 간 계약 변경의 파급효과 계산하기
+- 장기 리팩터링 과정에서 목표를 유지하기
+- “멈춰야 할 시점”을 판단하기
+
+이 차이를 보지 못하면 조직은 AI 도입 효과를 과대평가한다. 에이전트가 코드를 빠르게 만들수록 실제 병목은 코드 작성에서 리뷰, 검증, 회귀 방지, 운영 안정성으로 이동한다.
+
+결국 질문은 “에이전트가 코드를 쓸 수 있는가?”가 아니다.
+
+질문은 이것이다.
+
+**에이전트가 만든 변경을 대규모 브라운필드 시스템에 안전하게 통합할 수 있는가?**
+
+## 2장. 브라운필드가 어려운 이유
+
+브라운필드는 단순히 오래된 코드가 아니다. 브라운필드는 시간이 축적된 사회기술적 시스템이다.
+
+그 안에는 코드만 있는 것이 아니다.
+
+- 도메인 지식
+- 장애 이력
+- 운영 관행
+- 팀 간 소유권
+- 고객별 예외
+- 데이터 마이그레이션 이력
+- 테스트되지 않은 불변조건
+- deprecated API
+- 임시 workaround
+- 과거 의사결정의 흔적
+- 문서화되지 않은 제약
+
+브라운필드 유지보수가 어려운 이유는 코드량이 많아서가 아니다. 진짜 문제는 변경 하나를 안전하게 수행하기 위해 알아야 할 맥락이 너무 많다는 데 있다.
+
+예를 들어 “구독 갱신 정책을 바꾸라”는 요청을 생각해 보자.
+
+겉보기에는 간단하다. 하지만 실제 시스템에서는 다음을 모두 확인해야 할 수 있다.
+
+- subscription 상태 모델
+- customer 상태 모델
+- invoice 생성 정책
+- payment provider mapping
+- renewal batch job
+- webhook 처리
+- idempotency key
+- retry policy
+- coupon과 discount
+- tax calculation
+- mobile API 응답
+- admin tool 표시
+- CS 운영 화면
+- 데이터 분석 파이프라인
+- notification 발송 조건
+- 장애 runbook
+- 기존 테스트 fixture
+
+사람도 어렵다. 에이전트는 더 어렵다. 에이전트는 이 모든 것을 자동으로 알고 있지 않다. 검색해야 하고, 읽어야 하고, 해석해야 한다. 일부만 놓쳐도 버그가 생긴다.
+
+따라서 브라운필드에서 에이전트를 잘 쓰기 위한 핵심은 코드 생성량을 늘리는 것이 아니다. 변경에 필요한 맥락을 줄이고, 명시화하고, 검증 가능하게 만드는 것이다.
+
+## 3장. LLM과 에이전트의 구조적 한계
+
+에이전트 시대의 엔지니어링은 모델의 실제 동작 원리에 기반해야 한다. 막연히 “AI가 더 똑똑해질 것”이라는 기대 위에 방법론을 세우면 실패한다.
+
+### 3.1 LLM은 저장소의 진실을 모른다
+
+LLM은 저장소 전체의 진실을 본질적으로 알고 있지 않다. 모델은 학습된 일반 지식과 현재 컨텍스트에 들어온 정보로 답한다. 저장소에 대한 진실은 검색, 파일 읽기, 테스트 출력, 빌드 결과, 문서, CI 로그를 통해 공급된다.
+
+따라서 에이전트에게 중요한 것은 “모델이 똑똑한가”만이 아니다. 더 중요한 것은 “모델에게 올바른 진실을 공급하는 경로가 있는가”다.
+
+코드베이스 안에 같은 정책이 세 곳에 중복되어 있고, 테스트는 한 곳만 검증하며, 문서는 예전 내용을 담고 있다면 에이전트는 잘못된 진실을 바탕으로 그럴듯한 패치를 만든다.
+
+### 3.2 에이전트는 탐색-수정-검증 루프를 돈다
+
+현대 코딩 에이전트의 기본 동작은 대략 다음과 같다.
+
+1. 요청을 해석한다.
+2. 관련 파일을 검색한다.
+3. 파일 일부를 읽는다.
+4. 수정 계획을 세운다.
+5. 패치를 적용한다.
+6. 테스트, lint, typecheck를 실행한다.
+7. 실패하면 로그를 읽고 다시 수정한다.
+8. 성공하면 결과를 요약한다.
+
+이 루프의 각 단계에는 실패 가능성이 있다.
+
+검색어가 틀리면 관련 파일을 못 찾는다. 파일명과 심볼명이 불명확하면 잘못된 코드를 읽는다. 기존 abstraction이 숨겨져 있으면 중복 구현을 만든다. 테스트가 약하면 틀린 변경도 통과한다. 실패 메시지가 애매하면 엉뚱한 수정으로 이어진다. 컨텍스트가 너무 크면 중요한 부분을 놓친다.
+
+따라서 에이전트 성능은 모델만의 함수가 아니다.
+
+에이전트 성능은 다음의 함수다.
+
+```text
+Agent Performance = f(Model Capability,
+                      Tool Quality,
+                      Retrieval Quality,
+                      Codebase Structure,
+                      Test Oracle Quality,
+                      Feedback Clarity,
+                      Human Governance)
+```
+
+이 책은 특히 Codebase Structure, Test Oracle Quality, Feedback Clarity, Human Governance에 집중한다.
+
+### 3.3 긴 컨텍스트는 근본 해법이 아니다
+
+컨텍스트 윈도우가 커지면 많은 문제가 완화된다. 더 많은 파일, 문서, 로그를 한 번에 볼 수 있다. 하지만 긴 컨텍스트는 근본 해법이 아니다.
+
+왜냐하면 브라운필드 문제는 “정보가 부족한 문제”만이 아니라 “어떤 정보가 authoritative한지 모르는 문제”이기 때문이다.
+
+긴 컨텍스트에 오래된 문서, 중복 구현, deprecated 코드, 임시 workaround, 실패한 실험의 흔적을 모두 넣으면 오히려 판단이 어려워진다.
+
+브라운필드에서 필요한 것은 단순한 context expansion이 아니라 context governance다.
+
+어떤 정보가 최신인가. 어떤 코드가 진짜 정책인가. 어떤 테스트가 핵심 불변조건을 검증하는가. 어떤 문서는 더 이상 신뢰하면 안 되는가. 어떤 변경은 사람 승인을 받아야 하는가.
+
+이런 구조 없이는 긴 컨텍스트도 쓰레기 더미가 된다.
+
+### 3.4 테스트 통과는 정답이 아니다
+
+에이전트는 테스트를 통과시키는 데 능숙해지고 있다. 하지만 테스트 통과는 현실에서 충분조건이 아니다.
+
+테스트가 없을 수 있다. 테스트가 잘못되었을 수 있다. 테스트가 구현 세부사항만 확인할 수 있다. 운영 데이터 분포를 반영하지 못할 수 있다. 보안, 성능, 개인정보, backward compatibility, 장애 대응 조건은 테스트에 없을 수 있다.
+
+따라서 브라운필드에서 필요한 것은 단순한 테스트 실행이 아니다. 필요한 것은 변경 유형별로 무엇을 검증해야 하는지 정의한 실행 가능한 계약이다. 이 책에서는 이를 Change Contract라고 부른다.
+
+---
+
+# 2부. 핵심 개념
+
+## 4장. Context Surface Area
+
+### 4.1 정의
+
+**Context Surface Area, CSA**는 어떤 변경을 안전하게 수행하기 위해 에이전트가 회수하고 이해해야 하는 정보의 총량이다.
+
+여기에는 코드 파일만 포함되지 않는다.
+
+- 관련 파일 수
+- 관련 심볼 수
+- 도메인 개념 수
+- 서비스 경계 수
+- DB 테이블 수
+- API contract 수
+- 이벤트 타입 수
+- 테스트 수
+- 문서 수
+- 로그와 metric 수
+- 운영 runbook 수
+- 암묵적 정책 수
+
+변경에 필요한 CSA가 클수록 에이전트의 실패 확률은 올라간다.
+
+### 4.2 유지보수성의 재정의
+
+기존의 유지보수성은 보통 가독성, 모듈성, 테스트 가능성, 낮은 결합도, 높은 응집도 같은 개념으로 설명되었다. 이들은 여전히 중요하다. 다만 에이전트 시대에는 하나의 더 직접적인 질문으로 통합할 수 있다.
+
+**이 변경을 안전하게 수행하기 위해 에이전트가 얼마나 많은 맥락을 읽고 이해해야 하는가?**
+
+좋은 설계는 CSA를 줄인다. 나쁜 설계는 CSA를 늘린다.
+
+고응집은 관련 맥락을 가까이 둔다. 저결합은 변경 전파를 줄인다. DDD의 bounded context는 탐색 경계를 제공한다. 테스트는 검증 부담을 줄인다. 명확한 타입은 추론 부담을 줄인다. 일관된 이름은 검색 비용을 줄인다.
+
+즉, 기존의 좋은 소프트웨어 엔지니어링 원칙은 CSA를 줄이는 장치로 재해석될 수 있다.
+
+### 4.3 CSA가 큰 시스템의 증상
+
+CSA가 큰 시스템에서는 다음 현상이 나타난다.
+
+- 작은 변경에도 많은 파일을 열어야 한다.
+- 정책이 여러 레이어에 흩어져 있다.
+- 같은 개념이 여러 이름으로 불린다.
+- 테스트가 어디에 있는지 찾기 어렵다.
+- 로그와 코드의 용어가 다르다.
+- 문서가 실제 코드와 다르다.
+- 한 모듈 수정이 예상치 못한 다른 모듈 실패를 만든다.
+- 에이전트가 자주 중복 helper를 만든다.
+- 리뷰어가 “이거 다른 데도 고쳐야 하지 않나?”라고 반복해서 묻는다.
+
+이런 조직에서 AI 도구를 도입하면 처음에는 속도가 오르는 것처럼 보인다. 하지만 시간이 지나면 리뷰 병목, 회귀 버그, 중복 코드, 테스트 약화가 늘어날 수 있다.
+
+### 4.4 CSA를 줄이는 방법
+
+CSA를 줄이는 방법은 다음과 같다.
+
+1. 변경 단위 중심으로 모듈을 재구성한다.
+2. 도메인 정책을 authoritative location에 둔다.
+3. 중복 정책을 제거한다.
+4. 테스트를 정책 가까이에 둔다.
+5. 로그, metric, 테스트명, 코드 심볼의 용어를 맞춘다.
+6. 외부 시스템 mapping을 adapter에 격리한다.
+7. public API를 작게 유지한다.
+8. Change Contract를 만든다.
+9. 위험 파일과 변경 금지 규칙을 명시한다.
+10. AGENTS.md와 architecture manifest를 유지한다.
+
+CSA는 완전히 없앨 수 없다. 대규모 시스템에는 본질적 복잡성이 있다. 목표는 복잡성을 숨기는 것이 아니라, 변경별로 필요한 맥락을 작고 명확한 경계 안에 가두는 것이다.
+
+## 5장. Semantic Addressability
+
+### 5.1 정의
+
+**Semantic Addressability**는 도메인 개념, 정책, 상태, 이벤트, 실패 케이스가 일관된 이름을 통해 검색 가능하고, 코드·문서·테스트·로그에서 같은 의미 주소로 회수되는 성질이다.
+
+에이전트가 무언가를 고치려면 먼저 찾아야 한다. 따라서 검색 가능한 의미 주소는 에이전트 시대 유지보수성의 핵심이다.
+
+### 5.2 유비쿼터스 언어의 확장
+
+DDD의 유비쿼터스 언어는 원래 도메인 전문가와 개발자가 같은 언어를 쓰게 하는 개념이었다. 에이전트 시대에는 여기에 새로운 의미가 추가된다.
+
+유비쿼터스 언어는 인간 커뮤니케이션 도구이자 에이전트 검색 인덱스다.
+
+예를 들어 같은 개념을 다음처럼 섞어 쓰면 안 된다.
 
 ```text
 user
@@ -33,140 +284,388 @@ account
 client
 ```
 
-이 단어들이 같은 개념을 가리킨다면 에이전트는 검색 단계에서 이미 혼란에 빠집니다. “고객 구독 상태 변경” 작업을 맡겼을 때 `customer`, `user`, `member`, `account` 중 무엇을 검색해야 할지 추론해야 합니다. 일부 파일만 읽고 잘못 수정할 가능성이 커집니다.
-
-좋은 방식은 하나의 도메인 개념에 하나의 대표 이름을 부여하는 것입니다.
+결제 도메인에서 실제로는 paying entity를 의미한다면 하나의 이름을 정해야 한다. 예를 들어 Customer로 통일한다.
 
 ```text
 Customer
 CustomerId
 CustomerStatus
 CustomerRepository
-CustomerCreatedEvent
+CustomerSuspendedEvent
 ```
 
-외부 시스템이 다른 이름을 쓰는 경우에도 내부 도메인 언어는 유지해야 합니다.
+외부 시스템이 다른 이름을 쓰는 경우에도 내부 도메인 언어는 유지한다.
 
 ```ts
-// 외부 결제사는 client_id라고 부르지만 내부에서는 customerId로 통일
 function mapProviderClientToCustomer(input: ProviderClient): CustomerId {
   return CustomerId.from(input.client_id);
 }
 ```
 
-실무 규칙은 명확합니다.
+여기서 중요한 점은 외부 용어와 내부 용어의 경계를 명시하는 것이다. alias를 방치하지 않고 mapping을 코드로 드러내야 한다.
 
-같은 개념은 코드, DB, API, 이벤트, 테스트, 문서에서 같은 이름으로 부릅니다. 약어를 남발하지 않습니다. `usr`, `cust`, `acct` 같은 축약어는 피합니다. 외부 용어와 내부 용어가 다르면 변환 계층을 명시적으로 둡니다. 테스트 이름에도 같은 도메인 용어를 씁니다.
+### 5.3 의미 주소의 대상
 
-에이전트 시대의 네이밍은 미학이 아니라 검색 정확도입니다.
+Semantic Addressability는 코드명에만 적용되지 않는다. 다음 모든 곳에 적용되어야 한다.
 
-## 원칙 2. 디렉터리 구조는 변경 단위 기준으로 설계하라
+- class name
+- function name
+- file name
+- directory name
+- DB column
+- API field
+- event name
+- log event name
+- metric name
+- test name
+- ADR 제목
+- runbook keyword
+- alert name
 
-에이전트는 보통 다음 순서로 작업합니다.
+운영 로그에 `user_id`가 나오고, 코드에는 `customerId`가 있고, DB에는 `member_no`가 있으면 에이전트는 장애 로그에서 관련 코드를 추적하기 어렵다. 사람도 어렵다.
 
-관련 파일 검색. 파일 일부 읽기. 수정할 위치 판단. patch 생성. 테스트 실행. 실패 시 재검색. 재수정.
+### 5.4 Domain Term Registry
 
-이 흐름에서 디렉터리 구조는 에이전트의 지도입니다. Codex CLI와 Aider 같은 도구가 저장소 구조, 검색 결과, repo map을 바탕으로 작업한다는 점을 고려하면, 파일 배치는 생산성에 직접 영향을 줍니다. ([aider.chat][2])
+대규모 브라운필드에서는 하루아침에 모든 이름을 바꿀 수 없다. 따라서 먼저 Domain Term Registry를 만든다.
 
-나쁜 구조는 기술 레이어만 기준으로 나눈 형태입니다.
+```yaml
+terms:
+  Customer:
+    preferred: Customer
+    aliases:
+      - User
+      - Member
+      - Account
+      - Client
+    forbidden_in:
+      - billing
+    canonical_files:
+      - services/billing/domain/customer.ts
+    log_fields:
+      - customer_id
+    notes: "Paying entity. Use Customer in billing context."
+
+  SubscriptionRenewal:
+    preferred: SubscriptionRenewal
+    aliases:
+      - AutoRenewal
+      - RecurringPayment
+      - RenewalJob
+    canonical_files:
+      - services/billing/subscription/domain/subscription-renewal-policy.ts
+```
+
+이 registry는 문서로만 존재하면 안 된다. 에이전트 검색, AGENTS.md, lint rule, observability query, PR review checklist와 연결되어야 한다.
+
+### 5.5 Semantic Addressability를 높이는 실천
+
+1. 주요 도메인 용어 20개를 선정한다.
+2. 각 용어의 preferred name과 alias를 정리한다.
+3. 코드, 테스트, 로그, 문서에서 불일치를 조사한다.
+4. 새 코드에서는 preferred name만 허용한다.
+5. legacy alias는 mapping layer에 격리한다.
+6. 테스트명과 로그명부터 먼저 통일한다.
+7. 큰 rename은 기능 변경과 분리한다.
+
+완벽한 통일보다 중요한 것은 authoritative한 용어 지도를 만드는 것이다.
+
+## 6장. Change Contract
+
+### 6.1 정의
+
+**Change Contract**는 특정 변경 유형이 반드시 보존해야 하는 도메인 불변조건, API 호환성, 데이터 호환성, 보안 조건, 운영 조건을 기계적으로 검증 가능한 형태로 표현한 계약이다.
+
+테스트는 Change Contract의 일부다. 하지만 Change Contract는 테스트보다 넓다.
+
+Change Contract에는 다음이 포함될 수 있다.
+
+- unit test
+- integration test
+- contract test
+- schema compatibility check
+- migration validation
+- idempotency test
+- authorization policy check
+- observability assertion
+- security scan
+- performance budget
+- rollback condition
+
+### 6.2 왜 Change Contract가 필요한가
+
+브라운필드에서 “테스트를 돌렸다”는 말은 충분하지 않다. 어떤 테스트를 돌렸는가. 그 테스트가 어떤 비즈니스 불변조건을 보장하는가. 테스트가 없는 조건은 무엇인가. 이런 질문이 중요하다.
+
+예를 들어 subscription renewal 정책 변경의 Change Contract는 다음과 같을 수 있다.
+
+```yaml
+change_contracts:
+  subscription_renewal_policy:
+    invariants:
+      - expired subscriptions must not renew
+      - suspended customers must not be charged
+      - renewal must be idempotent
+      - active paid subscriptions must continue to renew
+    compatibility:
+      - webhook payload schema must remain backward compatible
+      - invoice event schema must remain backward compatible
+    observability:
+      - skipped renewal must log skipped_reason
+      - duplicate renewal prevention must emit metric
+    required_checks:
+      - pnpm test services/billing/subscription
+      - pnpm test services/billing/invoice
+      - pnpm test:contract billing
+      - pnpm typecheck
+    forbidden_changes:
+      - provider status mapping
+      - existing migration edits
+```
+
+에이전트에게 단순히 “고쳐라”가 아니라 “이 계약을 만족시켜라”라고 줄 수 있어야 한다.
+
+### 6.3 테스트와 계약의 차이
+
+테스트는 특정 예시를 검증한다. 계약은 변경의 성공 조건을 정의한다.
+
+테스트는 “이 입력에 대해 이 출력”이다. 계약은 “이 도메인에서 절대 깨지면 안 되는 조건”이다.
+
+예를 들어 다음 테스트는 좋다.
+
+```ts
+it('does not renew expired subscriptions', () => {});
+```
+
+하지만 Change Contract는 더 넓다.
+
+- expired subscription은 invoice를 만들지 않는다.
+- skipped reason이 기록된다.
+- retry해도 duplicate invoice가 생기지 않는다.
+- 기존 active subscription 동작은 유지된다.
+- provider mapping은 바뀌지 않는다.
+
+이 계약을 여러 테스트와 정적 검사로 나누어 검증해야 한다.
+
+### 6.4 Change Contract Catalog
+
+조직은 변경 유형별 catalog를 만들어야 한다.
+
+예시는 다음과 같다.
+
+- API schema change contract
+- DB migration contract
+- payment calculation contract
+- authorization policy contract
+- event schema contract
+- batch job contract
+- notification contract
+- privacy data handling contract
+- feature flag rollout contract
+
+각 contract에는 다음 필드가 필요하다.
+
+```yaml
+name:
+applicable_paths:
+required_invariants:
+required_tests:
+required_owners:
+forbidden_changes:
+observability_requirements:
+rollback_requirements:
+escalation_conditions:
+```
+
+이 catalog는 AGENTS.md, CI, PR bot, code review template과 연결되어야 한다.
+
+## 7장. Agent-Readable Architecture
+
+### 7.1 정의
+
+**Agent-Readable Architecture**는 아키텍처 경계, 의존 방향, 소유권, 금지된 import, 변경 절차, 테스트 명령, 위험 파일을 에이전트와 자동화 시스템이 읽을 수 있는 형식으로 표현한 것이다.
+
+기존 아키텍처 문서는 사람이 읽는 설명이었다. ABE에서 아키텍처는 실행 가능한 제약이어야 한다.
+
+### 7.2 Architecture Manifest
+
+예시는 다음과 같다.
+
+```yaml
+bounded_contexts:
+  billing:
+    owner: payments-platform
+    root: services/billing
+    domain_terms:
+      - Customer
+      - Subscription
+      - Invoice
+      - PaymentAttempt
+    allowed_dependencies:
+      - shared/kernel
+      - services/customer/contracts
+    forbidden_dependencies:
+      - services/customer/internal
+      - services/admin/internal
+    verification:
+      unit: pnpm test services/billing
+      contract: pnpm test:contract billing
+      typecheck: pnpm typecheck
+    risky_paths:
+      - services/billing/migrations
+      - services/billing/provider-mapping
+      - services/billing/domain/money.ts
+    escalation:
+      - path: services/billing/domain/money.ts
+        owner_approval_required: true
+      - path: services/billing/authz
+        security_review_required: true
+```
+
+이 manifest는 세 곳에서 사용된다.
+
+1. 에이전트가 작업 계획을 세울 때
+2. CI가 변경을 검증할 때
+3. 리뷰어가 위험을 판단할 때
+
+### 7.3 문서에서 제약으로
+
+문서에 “domain layer는 infra를 import하면 안 된다”라고 쓰는 것은 약하다. 더 강한 방식은 dependency rule로 막는 것이다.
 
 ```text
-controllers/
-services/
-repositories/
-dtos/
-utils/
+domain -> application: forbidden
+domain -> infra: forbidden
+application -> infra: allowed through interface only
+api -> domain: allowed
 ```
 
-이 구조는 작은 기능 변경도 여러 폴더를 횡단하게 만듭니다. 예를 들어 구독 갱신 정책을 바꾸려면 `controllers`, `services`, `repositories`, `utils`, `tests`를 모두 검색해야 합니다.
+에이전트는 지시를 따르려 하지만 완벽하지 않다. 따라서 중요한 규칙은 문서가 아니라 자동 검증으로 내려와야 한다.
 
-더 나은 구조는 기능 또는 도메인 단위로 응집시키는 것입니다.
+### 7.4 AGENTS.md의 역할
 
-```text
-billing/
-  subscription/
-    subscription.entity.ts
-    subscription-renewal.policy.ts
-    subscription-renewal.usecase.ts
-    subscription-renewal.test.ts
-    subscription-renewal.fixture.ts
-  invoice/
-    invoice.entity.ts
-    invoice-issue.usecase.ts
-    invoice-policy.ts
-    invoice.test.ts
+AGENTS.md는 에이전트 시대의 온보딩 문서다. 그러나 AGENTS.md만으로는 부족하다.
+
+좋은 AGENTS.md는 짧고 구체적이어야 한다.
+
+```md
+# AGENTS.md
+
+## Commands
+- Typecheck: pnpm typecheck
+- Billing tests: pnpm test services/billing
+- Contract tests: pnpm test:contract billing
+
+## Architecture
+- Domain policies live under `domain/`.
+- Do not import `infra/` from `domain/`.
+- External provider status mapping lives only in `infra/provider-mapping`.
+
+## Naming
+- Use `Customer`, not `User`, in billing.
+- Use `SubscriptionRenewal`, not `AutoRenewal`.
+
+## Safety
+- Do not edit generated files.
+- Do not modify existing migrations.
+- Escalate if payment amount calculation changes.
 ```
 
-이 구조에서는 “subscription renewal” 관련 변경이 대부분 한 경계 안에 모입니다. 에이전트는 덜 읽고 더 정확하게 고칠 수 있습니다.
+AGENTS.md는 사람이 읽기 쉬운 entry point이고, architecture manifest는 기계가 집행할 수 있는 source of truth가 되어야 한다.
 
-실무 규칙은 다음과 같습니다.
+## 8장. Blast Radius Budget
 
-함께 변경되는 파일은 가까이 둡니다. 기능별 테스트는 기능 코드 근처에 둡니다. `utils`, `common`, `shared`, `helpers`는 엄격히 관리합니다. 도메인 정책은 프레임워크 코드와 분리합니다. 생성 코드와 수동 작성 코드는 디렉터리부터 분리합니다.
+### 8.1 정의
 
-## 원칙 3. 중복 제거의 목적은 “정책의 단일 출처”다
+**Blast Radius Budget**은 특정 작업 유형이 건드릴 수 있는 파일, 모듈, public API, migration, dependency, 설정 변경의 범위를 사전에 제한하는 예산이다.
 
-DRY는 더 중요해졌습니다. 다만 “비슷하게 생긴 코드를 무조건 합친다”가 아닙니다. 에이전트 시대의 DRY는 정책, 규칙, 계산식, 상태 전이, 권한 판정의 단일 출처를 만드는 것입니다.
+에이전트는 요청을 해결하려고 하면서 diff를 넓힐 수 있다. 브라운필드에서는 diff가 커질수록 리뷰 비용과 회귀 위험이 비선형으로 증가한다. 따라서 작업 유형별 예산이 필요하다.
 
-나쁜 예시는 이런 식입니다.
+### 8.2 작업 유형별 예산
 
-```ts
-// checkout.ts
-if (user.status === 'SUSPENDED') throw new Error('blocked');
+#### Bug fix
 
-// renewal.ts
-if (account.state === 'SUSPENDED') return false;
-
-// invoice.ts
-if (customer.status !== 'ACTIVE') return;
+```yaml
+task_type: bugfix
+max_files_changed: 5
+public_api_change: false
+db_migration: false
+dependency_change: false
+requires_test: true
+requires_human_escalation_if:
+  - auth policy touched
+  - payment calculation touched
+  - more than 5 files changed
 ```
 
-같은 정책이 세 곳에 흩어져 있고, 이름도 다릅니다. 에이전트에게 “정지된 고객은 갱신 불가로 바꿔줘”라고 하면 한두 곳만 수정할 수 있습니다.
+#### Refactoring
 
-좋은 구조는 정책을 이름 있는 단위로 모읍니다.
-
-```ts
-export function canCustomerBeCharged(customer: Customer): boolean {
-  return customer.status === CustomerStatus.Active;
-}
+```yaml
+task_type: refactoring
+behavior_change: false
+public_api_change: false
+rename_and_logic_change_same_commit: false
+requires_existing_tests_green: true
+requires_before_after_diff_summary: true
 ```
 
-또는 도메인 정책 객체로 분리합니다.
+#### Feature addition
 
-```ts
-export class BillingEligibilityPolicy {
-  canIssueInvoice(customer: Customer): boolean {
-    return customer.status === CustomerStatus.Active;
-  }
-
-  canRenewSubscription(subscription: Subscription, customer: Customer): boolean {
-    return subscription.isRenewable() && this.canIssueInvoice(customer);
-  }
-}
+```yaml
+task_type: feature
+public_api_change: allowed
+migration: allowed_if_declared
+feature_flag: required_for_high_risk
+contract_test: required
+rollback_plan: required
 ```
 
-이렇게 하면 에이전트는 `BillingEligibilityPolicy`만 찾아도 관련 정책을 이해할 수 있습니다.
+### 8.3 멈춤 조건
 
-실무 기준은 다음과 같습니다.
+좋은 에이전트 시스템은 더 오래 자율적으로 일하는 시스템이 아니다. 좋은 시스템은 멈춰야 할 때를 안다.
 
-계산식은 한 곳에 둡니다. 권한 규칙은 한 곳에 둡니다. 상태 전이는 한 곳에 둡니다. validation schema는 한 곳에 둡니다. API 변환 로직은 한 곳에 둡니다. 단, UI의 우연한 반복이나 테스트의 의도적 중복까지 과도하게 추상화하지는 않습니다.
+에이전트는 다음 상황에서 멈춰야 한다.
 
-좋은 DRY는 에이전트의 수정 누락을 줄입니다. 나쁜 DRY는 에이전트의 이해를 방해합니다.
+- 예상보다 많은 파일을 수정해야 한다.
+- public API 변경이 필요하다.
+- DB migration이 필요하다.
+- 권한, 결제, 개인정보, 삭제 로직을 건드린다.
+- 테스트를 약화해야 통과한다.
+- 기존 정책 위치가 불명확하다.
+- 동일한 개념의 중복 구현이 발견된다.
+- 요구사항과 기존 동작이 충돌한다.
 
-## 원칙 4. 고응집·저결합은 컨텍스트 절약 전략이다
+멈춤은 실패가 아니다. 브라운필드에서 멈춤은 안전 기능이다.
 
-에이전트에게 컨텍스트는 비용입니다. 어떤 기능을 수정하기 위해 30개 파일을 읽어야 한다면 실패 확률이 올라갑니다. 반대로 5개 파일 안에서 정책, 실행 흐름, 테스트를 파악할 수 있으면 성공률이 올라갑니다.
+---
 
-고응집은 관련 지식을 가까이 두는 것입니다. 저결합은 변경 영향이 불필요하게 퍼지지 않게 하는 것입니다.
+# 3부. 기존 소프트웨어 엔지니어링의 재정의
 
-나쁜 징후는 다음과 같습니다.
+## 9장. DDD에서 Semantic Addressability Engineering으로
 
-하나의 use case가 여러 도메인의 내부 필드를 직접 만집니다. UI 컴포넌트가 API response shape을 그대로 알고 있습니다. DB schema 변경이 controller와 frontend까지 연쇄적으로 퍼집니다. 공통 util 하나를 고치면 전혀 다른 기능 테스트가 깨집니다. 테스트 fixture가 전역 공유되어 작은 변경에도 수십 개 테스트가 깨집니다.
+DDD는 에이전트 시대에 더 중요해진다. 다만 초점이 확장된다.
 
-좋은 구조는 다음과 같습니다.
+기존 DDD는 도메인 전문가와 개발자가 같은 언어를 쓰고, 복잡한 도메인을 모델링하고, bounded context로 개념 경계를 분리하는 데 초점을 두었다.
 
-도메인 내부 규칙은 도메인 모듈 안에 둡니다. 외부 API, DB, message queue, UI와의 변환은 adapter에서 처리합니다. 모듈 public API를 작게 유지합니다. 내부 타입을 외부로 과도하게 노출하지 않습니다. import 방향을 고정합니다.
+ABE에서는 DDD가 다음과 같이 재정의된다.
 
-예시는 다음과 같습니다.
+- Ubiquitous Language → 검색 가능한 도메인 주소 체계
+- Bounded Context → 컨텍스트 윈도우 경계
+- Aggregate → 변경 영향과 일관성의 단위
+- Domain Service → authoritative policy location
+- Repository → persistence boundary
+- Anti-Corruption Layer → 외부 의미 오염 차단 장치
+
+에이전트가 브라운필드에서 실패하는 대표적 이유는 도메인 언어가 흐릿하기 때문이다. `user`, `member`, `customer`, `account`가 혼용되면 에이전트는 정확한 코드를 찾지 못한다. 같은 정책이 `service`, `helper`, `job`, `controller`에 흩어져 있으면 authoritative source를 판단하지 못한다.
+
+따라서 DDD는 이제 단순한 모델링 방법이 아니라 에이전트가 도메인 의미를 검색하고 조작할 수 있게 만드는 정보 구조화 방법이다.
+
+## 10장. Clean Architecture에서 Context Boundary Engineering으로
+
+Clean Architecture의 핵심은 의존성 방향을 제어하고, 비즈니스 정책을 프레임워크와 외부 시스템으로부터 분리하는 것이다.
+
+에이전트 시대에는 이 원칙이 더 직접적인 의미를 갖는다.
+
+비즈니스 정책이 프레임워크, DB, HTTP, message queue와 뒤섞여 있으면 에이전트는 정책 변경을 위해 너무 많은 맥락을 읽어야 한다. 반대로 도메인 정책이 순수한 코드로 분리되어 있으면 에이전트는 작은 컨텍스트로 안전하게 수정할 수 있다.
+
+좋은 구조는 다음과 같다.
 
 ```text
 subscription/
@@ -181,959 +680,904 @@ subscription/
     payment-provider.adapter.ts
   api/
     subscription.controller.ts
+  tests/
+    subscription-renewal-policy.test.ts
 ```
 
-에이전트가 “구독 갱신 정책”을 바꿀 때는 `domain`과 관련 테스트부터 보면 됩니다. “외부 결제사 응답 변경”이면 `infra/payment-provider.adapter.ts`부터 보면 됩니다. 변경 목적에 따라 탐색 경로가 분리됩니다.
+이 구조에서 구독 갱신 정책 변경은 domain과 관련 테스트에 국소화된다. 외부 provider 변경은 infra adapter에 국소화된다. API 변경은 api와 contract test에 국소화된다.
 
-## 원칙 5. 타입과 스키마는 에이전트의 안전 난간이다
+이것이 Context Boundary Engineering이다.
 
-에이전트는 그럴듯한 코드를 잘 만듭니다. 문제는 그럴듯하지만 틀린 코드입니다. 정적 타입과 schema validation은 그 오류를 빠르게 드러냅니다.
+## 11장. DRY에서 Single Source of Behavioral Truth로
 
-Codex prompting guide도 타입 안정성을 유지하고, 불필요한 `any`나 강제 캐스팅을 피하라고 안내합니다. ([OpenAI 개발자][1])
+DRY는 “중복을 없애라”가 아니다. ABE에서 DRY는 **행동 규칙의 단일 출처를 만들어라**라는 의미다.
 
-나쁜 예시는 다음과 같습니다.
+줄 수가 비슷한 코드를 무조건 합치는 것은 위험하다. 서로 다른 이유로 변하는 코드까지 추상화하면 오히려 CSA가 증가한다.
+
+중요한 것은 다음이 중복되지 않게 하는 것이다.
+
+- 권한 정책
+- 상태 전이
+- 금액 계산
+- 날짜 계산
+- idempotency key 생성
+- retry policy
+- external provider mapping
+- validation schema
+- feature flag 판정
+
+예를 들어 이런 코드는 위험하다.
 
 ```ts
-function charge(customerId: string, amount: number, currency: string) {
-  // ...
+// renewal.ts
+if (customer.status !== 'ACTIVE') return;
+
+// invoice.ts
+if (user.state === 'SUSPENDED') throw new Error('blocked');
+
+// checkout.ts
+if (account.disabled) return false;
+```
+
+같은 정책이 여러 이름과 여러 위치에 흩어져 있다.
+
+더 나은 구조는 다음과 같다.
+
+```ts
+export class BillingEligibilityPolicy {
+  canCharge(customer: Customer): boolean {
+    return customer.status === CustomerStatus.Active;
+  }
 }
 ```
 
-이 함수는 `customerId`와 `orderId`가 모두 string이면 잘못 넣어도 타입 시스템이 막지 못합니다. `amount`의 단위도 모호합니다.
+에이전트는 `BillingEligibilityPolicy`를 찾으면 결제 가능성 판단의 authoritative source를 찾은 것이다.
 
-더 나은 구조는 값 객체나 branded type을 쓰는 것입니다.
+## 12장. TDD에서 Executable Change Contract로
 
-```ts
-type CustomerId = string & { readonly brand: unique symbol };
-type OrderId = string & { readonly brand: unique symbol };
+TDD는 에이전트 시대에도 중요하다. 다만 단순히 “테스트를 먼저 작성한다”를 넘어야 한다.
 
-type Money = {
-  amountMinor: number;
-  currency: CurrencyCode;
-};
-```
+ABE에서 테스트는 Change Contract를 실행 가능한 형태로 만드는 수단이다.
 
-또는 런타임 schema를 명시합니다.
+좋은 테스트명은 요구사항 문장이어야 한다.
 
 ```ts
-const CreateInvoiceRequestSchema = z.object({
-  customerId: z.string().uuid(),
-  amountMinor: z.number().int().nonnegative(),
-  currency: z.enum(['KRW', 'USD', 'JPY']),
-});
+it('does not renew expired subscriptions', () => {});
+it('does not charge suspended customers', () => {});
+it('creates only one invoice when renewal job is retried', () => {});
 ```
 
-실무 규칙은 다음과 같습니다.
-
-`string`, `number`, `boolean`만으로 도메인 의미를 표현하지 않습니다. API boundary에는 runtime validation을 둡니다. DB row type과 domain type을 구분합니다. null과 undefined의 의미를 구분합니다. enum 또는 union type으로 상태를 제한합니다. `any`, `as unknown as`, non-null assertion을 예외적으로만 허용합니다.
-
-타입은 문서이자 테스트이자 에이전트의 자동 피드백입니다.
-
-## 원칙 6. 테스트는 에이전트 작업의 판정기다
-
-에이전트는 수정 후 테스트 결과를 보고 다음 행동을 결정합니다. 따라서 테스트는 “사람이 안심하기 위한 장치”를 넘어 “에이전트가 작업 완료 여부를 판단하는 oracle”입니다.
-
-Aider는 lint와 test command를 실행해 문제를 고치는 워크플로우를 지원하고, Codex 계열 도구도 patch 적용 후 테스트·검증 루프를 전제로 합니다. ([aider.chat][3])
-
-좋은 테스트는 세 가지 조건을 만족합니다.
-
-빠릅니다. 실패 메시지가 구체적입니다. 테스트 이름에 도메인 규칙이 드러납니다.
-
-나쁜 테스트명은 다음과 같습니다.
+나쁜 테스트명은 에이전트에게 도움이 되지 않는다.
 
 ```ts
-it('works', () => {})
-it('returns false', () => {})
-it('case 3', () => {})
+it('works', () => {});
+it('case 3', () => {});
+it('returns false', () => {});
 ```
 
-좋은 테스트명은 다음과 같습니다.
+테스트는 검색 대상이다. 에이전트가 `expired subscription renewal`을 검색했을 때 관련 테스트가 나와야 한다.
 
-```ts
-it('does not renew an expired subscription', () => {})
-it('does not issue invoice when customer is suspended', () => {})
-it('applies annual discount only to active paid subscriptions', () => {})
-```
+## 13장. CI/CD에서 Agent Control Plane으로
 
-테스트명 역시 검색 대상입니다. 에이전트가 `expired subscription renew`로 검색했을 때 관련 테스트를 찾을 수 있어야 합니다.
+CI/CD는 더 이상 빌드와 배포 자동화만이 아니다. 에이전트가 만든 변경을 제어하는 control plane이다.
 
-테스트 구성은 다음처럼 가져가는 것이 좋습니다.
+CI는 다음을 집행해야 한다.
 
-핵심 도메인 정책은 빠른 unit test로 촘촘히 검증합니다. 외부 API 연동은 contract test 또는 adapter test로 분리합니다. DB query는 repository integration test로 검증합니다. 전체 E2E는 적게 유지하되 핵심 사용자 흐름만 커버합니다. 실패 메시지에는 입력 조건과 기대 정책이 드러나게 합니다.
+- typecheck
+- lint
+- unit test
+- integration test
+- contract test
+- schema compatibility
+- dependency boundary
+- secret scan
+- migration validation
+- generated file consistency
+- blast radius policy
+- ownership approval
 
-에이전트 친화적 테스트 명령도 필요합니다.
+에이전트에게 “주의해라”라고 말하는 것은 약하다. CI에서 막아야 한다.
+
+프롬프트는 권고다. CI는 법이다.
+
+## 14장. Observability에서 Runtime Semantic Feedback으로
+
+관측성은 운영팀만을 위한 것이 아니다. 에이전트가 운영 장애를 코드 변경으로 연결하기 위한 의미적 다리다.
+
+좋은 로그는 도메인 언어를 사용한다.
 
 ```json
 {
-  "scripts": {
-    "test": "vitest run",
-    "test:billing": "vitest run src/billing",
-    "test:changed": "vitest related --run",
-    "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
-  }
+  "event": "SubscriptionRenewalSkipped",
+  "subscription_id": "sub_123",
+  "customer_id": "cus_456",
+  "reason": "CUSTOMER_SUSPENDED"
 }
 ```
 
-에이전트에게 “전체 테스트 돌려”만 가능한 저장소보다 “관련 테스트만 빠르게 돌려”가 가능한 저장소가 훨씬 생산적입니다.
+나쁜 로그는 의미를 숨긴다.
 
-## 원칙 7. 에러 메시지는 디버깅 API다
-
-에이전트는 에러 메시지를 읽고 다음 수정을 결정합니다. 따라서 에러 메시지가 애매하면 에이전트가 추측성 수정을 합니다.
-
-나쁜 예시는 다음과 같습니다.
-
-```ts
-throw new Error('Invalid state');
-throw new Error('Something went wrong');
+```text
+process failed
+invalid status
+skipped
 ```
 
-좋은 예시는 다음과 같습니다.
+에이전트가 장애 로그를 보고 코드를 검색하려면 로그 event name, error code, metric name, test name, code symbol이 연결되어야 한다.
 
-```ts
-throw new SubscriptionRenewalError(
-  `Cannot renew subscription ${subscription.id}: status is ${subscription.status}`
-);
+관측성은 runtime에서 발생한 사실을 codebase의 semantic address로 되돌려주는 시스템이다.
+
+---
+
+# 4부. 실전 방법론
+
+## 15장. SCOPE 루프
+
+ABE의 기본 작업 루프는 SCOPE다.
+
+- Search
+- Contract
+- Operate
+- Prove
+- Explain
+
+### 15.1 Search
+
+에이전트는 먼저 수정하지 않는다. 관련 맥락을 찾는다.
+
+산출물:
+
+- 관련 파일 목록
+- authoritative policy 위치
+- 중복 가능 위치
+- 관련 테스트
+- 관련 문서
+- 예상 blast radius
+- 불명확한 점
+
+요청 예시:
+
+```text
+아직 수정하지 말고 관련 파일, 정책 위치, 테스트, 예상 변경 범위만 찾아서 보고해줘.
 ```
 
-더 좋은 방식은 에러 타입을 도메인화하는 것입니다.
+### 15.2 Contract
 
-```ts
-class CannotRenewExpiredSubscriptionError extends Error {
-  constructor(subscriptionId: SubscriptionId) {
-    super(`Cannot renew expired subscription: ${subscriptionId}`);
-  }
-}
+변경의 성공 조건을 정의한다.
+
+산출물:
+
+- 보존해야 할 동작
+- 새로 만족해야 할 동작
+- 호환성 조건
+- 보안 조건
+- 데이터 조건
+- 관측성 조건
+- 실행할 테스트
+- 멈춤 조건
+
+요청 예시:
+
+```text
+이 변경의 Change Contract를 먼저 작성해줘. 어떤 동작을 보존해야 하고 어떤 테스트를 실행해야 하는지 포함해줘.
 ```
 
-실무 규칙은 다음과 같습니다.
+### 15.3 Operate
 
-에러 메시지에 도메인 객체, 현재 상태, 실패한 정책을 포함합니다. 로그 필드명은 코드의 도메인 용어와 일치시킵니다. catch 후 조용히 무시하지 않습니다. broad catch로 원인을 숨기지 않습니다. retry, fallback, ignore는 명시적으로 표현합니다.
+에이전트가 최소 diff로 수정한다.
 
-좋은 에러는 사람뿐 아니라 에이전트에게도 다음 액션을 알려줍니다.
+규칙:
 
-## 원칙 8. 문서는 설명서가 아니라 작업 라우팅 테이블이어야 한다
+- 기존 abstraction 우선
+- 중복 정책 금지
+- public API 변경 금지 unless contract says so
+- migration 별도
+- formatter-only diff 분리
+- blast radius budget 준수
 
-에이전트에게 긴 철학 문서는 별 도움이 안 됩니다. 유용한 문서는 “어디를 고치고, 무엇을 실행하고, 무엇을 건드리지 말아야 하는지”를 알려주는 문서입니다.
+요청 예시:
 
-Codex는 `AGENTS.md` 같은 저장소 지침 파일을 활용하는 워크플로우를 지원하고, Codex skills도 특정 작업 지침·리소스·스크립트를 패키징해 재현 가능한 워크플로우로 확장하는 개념을 제공합니다. ([OpenAI 개발자][4])
+```text
+위 계약을 만족하도록 최소 diff로 수정해줘. 기존 정책을 재사용하고, 새 helper를 만들기 전에 기존 구현을 검색해줘.
+```
 
-좋은 `AGENTS.md` 예시는 다음과 같습니다.
+### 15.4 Prove
+
+검증한다.
+
+검증에는 다음이 포함될 수 있다.
+
+- related unit test
+- integration test
+- contract test
+- typecheck
+- lint
+- schema compatibility
+- migration validation
+- security scan
+
+요청 예시:
+
+```text
+관련 테스트와 typecheck를 실행하고, 실패하면 원인을 분석한 뒤 수정해줘. 테스트를 약화하지 마.
+```
+
+### 15.5 Explain
+
+마지막으로 에이전트는 증거를 남긴다.
+
+산출물:
+
+- 무엇을 바꿨는가
+- 왜 그 위치를 바꿨는가
+- 어떤 계약을 만족하는가
+- 어떤 테스트를 실행했는가
+- 어떤 위험이 남아 있는가
+- 어떤 후속 작업이 필요한가
+
+요청 예시:
+
+```text
+git diff 기준으로 변경 요약, 검증 결과, 남은 위험을 PR 설명 형식으로 정리해줘.
+```
+
+## 16장. Agentability Audit
+
+대규모 조직은 AI 도입률보다 Agentability를 측정해야 한다.
+
+### 16.1 Agentability란 무엇인가
+
+Agentability는 특정 코드베이스가 에이전트에 의해 안전하게 탐색, 수정, 검증, 리뷰될 수 있는 정도다.
+
+### 16.2 평가 항목
+
+```text
+Agentability Score =
+  Semantic Addressability
++ Context Boundary Clarity
++ Verification Strength
++ Change Contract Coverage
++ Observability Linkage
++ Blast Radius Controllability
++ Architecture Enforceability
+- Tacit Knowledge Load
+- Cross-Service Coupling
+- Test Flakiness
+- Generated Diff Noise
+```
+
+### 16.3 실무 평가 질문
+
+- 같은 도메인 개념이 같은 이름으로 불리는가?
+- 핵심 정책의 authoritative location이 있는가?
+- 작은 변경의 관련 파일 수가 제한적인가?
+- 관련 테스트를 빠르게 찾고 실행할 수 있는가?
+- 테스트명이 비즈니스 규칙을 설명하는가?
+- 로그와 코드가 같은 도메인 언어를 쓰는가?
+- 아키텍처 경계가 자동으로 검증되는가?
+- 위험 변경의 escalation rule이 있는가?
+- generated file과 handwritten file이 분리되어 있는가?
+- 에이전트가 멈춰야 할 조건이 정의되어 있는가?
+
+### 16.4 결과 해석
+
+Agentability가 낮은 시스템에서는 최신 에이전트를 도입해도 큰 효과가 나지 않는다. 오히려 코드 생산량만 늘어 기술부채가 가속될 수 있다.
+
+Agentability가 높은 시스템에서는 모델 차이가 줄어든다. 평범한 에이전트도 안정적으로 작은 변경을 수행할 수 있고, 고성능 에이전트는 더 큰 유지보수 작업을 맡을 수 있다.
+
+## 17장. 작업 위험도 등급
+
+모든 작업에 에이전트를 동일하게 적용하면 안 된다. 작업은 위험도에 따라 등급화해야 한다.
+
+### Level 1. 안전한 반복 작업
+
+- 문서 업데이트
+- 테스트명 개선
+- lint fix
+- 타입 annotation 추가
+- deprecated API 치환
+- 단순 로그명 정리
+- dead code 후보 탐색
+
+에이전트에게 적극 위임할 수 있다.
+
+### Level 2. 국소적 유지보수
+
+- 작은 버그 수정
+- 단일 모듈 내 정책 수정
+- adapter mapping 수정
+- 단일 API validation 수정
+- fixture 정리
+
+Change Contract와 관련 테스트가 있으면 위임 가능하다.
+
+### Level 3. 중간 규모 변경
+
+- 여러 파일의 정책 이동
+- domain policy 추출
+- API schema 확장
+- 서비스 내부 구조 개편
+- 성능 개선
+
+에이전트는 초안과 기계적 변경을 맡고, 사람은 경계와 계약을 승인해야 한다.
+
+### Level 4. 고위험 변경
+
+- 서비스 간 계약 변경
+- DB migration과 backfill
+- 권한 정책
+- 결제/정산
+- 개인정보
+- 데이터 삭제
+- 대규모 리팩터링
+- 장애 대응
+
+에이전트는 탐색, 영향 분석, 테스트 생성, 문서화에 사용한다. 핵심 결정은 사람이 해야 한다.
+
+## 18장. Evidence-Based Code Review
+
+에이전트가 만든 PR은 코드만 보면 안 된다. 에이전트가 어떤 증거를 바탕으로 판단했는지 봐야 한다.
+
+### 18.1 Evidence Bundle
+
+에이전트 PR에는 다음이 포함되어야 한다.
+
+```text
+- Task summary
+- Files inspected
+- Existing policies found
+- Change Contract applied
+- Files changed
+- Tests run
+- CI result
+- Blast radius assessment
+- Remaining risks
+- Escalation needed or not
+```
+
+### 18.2 리뷰 기준
+
+리뷰어는 다음을 확인한다.
+
+- 올바른 authoritative policy를 수정했는가?
+- 기존 정책을 중복하지 않았는가?
+- 변경 범위가 예산 안에 있는가?
+- 테스트가 계약을 충분히 검증하는가?
+- 테스트를 약화하지 않았는가?
+- public API나 데이터 계약을 몰래 바꾸지 않았는가?
+- 로그와 metric이 의미적으로 연결되어 있는가?
+- 에이전트가 놓친 위험은 없는가?
+
+### 18.3 새로운 생산성 지표
+
+기존 지표인 LOC/hour는 위험하다. 에이전트는 LOC를 쉽게 늘린다.
+
+더 나은 지표는 다음이다.
+
+```text
+Verified Change per Human Review Minute
+```
+
+사람 리뷰 1분당 얼마나 많은 검증된 변경을 안전하게 merge했는가가 중요하다.
+
+보조 지표:
+
+- PR review iteration count
+- post-merge defect rate
+- rollback rate
+- CI failure recovery time
+- agent retry count
+- files inspected per task
+- files changed per task
+- test coverage of Change Contract
+- blast radius budget violation rate
+
+---
+
+# 5부. 조직 적용
+
+## 19장. 도입 로드맵
+
+### Phase 0. Baseline 측정
+
+AI 도입 전 현재 상태를 측정한다.
+
+- 작업 유형별 lead time
+- review time
+- CI failure rate
+- rollback rate
+- hotfix rate
+- test flakiness
+- cross-service change frequency
+- post-merge defect
+- incident root cause
+
+측정 없이 AI를 도입하면 효과를 판단할 수 없다.
+
+### Phase 1. Low-Risk Maintenance 자동화
+
+위험이 낮은 작업부터 시작한다.
+
+- lint fix
+- deprecated API 치환
+- 테스트명 개선
+- 문서 업데이트
+- 타입 annotation 추가
+- 로그 필드명 통일
+- dead code 후보 탐색
+
+목표는 에이전트 자체보다 workflow와 governance를 안정화하는 것이다.
+
+### Phase 2. Semantic Addressability 개선
+
+주요 도메인 용어를 정리한다.
+
+- Domain Term Registry 작성
+- AGENTS.md 작성
+- 로그명과 테스트명 정리
+- preferred name 적용
+- legacy alias mapping
+
+이 단계는 에이전트의 bug localization 성공률을 높인다.
+
+### Phase 3. Change Contract 도입
+
+가장 중요하고 자주 바뀌는 도메인부터 계약화한다.
+
+- 결제
+- 구독
+- 주문
+- 권한
+- 개인정보
+- 알림
+- 정산
+- 추천/랭킹
+
+각 도메인에 “변경하면 반드시 검증해야 하는 것”을 정의한다.
+
+### Phase 4. Agent Work Envelope 강제
+
+작업 유형별 blast radius budget을 도입한다.
+
+- bugfix 예산
+- refactor 예산
+- feature 예산
+- high-risk escalation rule
+
+CI와 PR bot에서 위반을 감지한다.
+
+### Phase 5. 대규모 유지보수 캠페인
+
+이제 에이전트를 대규모 유지보수에 투입한다.
+
+- framework migration
+- API migration
+- type hardening
+- policy extraction
+- test characterization
+- observability standardization
+- security fix rollout
+- dead code removal
+
+이 단계에서는 에이전트의 코드 생성 능력이 큰 효과를 낸다. 단, contract와 budget 없이 진행하면 기술부채가 늘어난다.
+
+## 20장. 팀 역할의 변화
+
+에이전트 시대에도 개발자는 사라지지 않는다. 역할이 바뀐다.
+
+개발자의 핵심 역할은 다음으로 이동한다.
+
+- 도메인 경계 정의
+- 변경 계약 설계
+- 테스트 oracle 설계
+- 아키텍처 제약 집행
+- 에이전트 적용 등급 판단
+- 위험 예산 설정
+- 운영 신호와 코드 연결
+- 리뷰 기준 설계
+- 실패 패턴을 도구와 구조에 반영
+
+개발자는 단순 코더에서 Context Governor가 된다.
+
+이것은 개발자가 덜 기술적이 된다는 뜻이 아니다. 오히려 더 기술적이다. 코드, 도메인, 테스트, 운영, 보안, 조직 구조를 모두 이해해야 한다.
+
+## 21장. 플랫폼 팀의 역할
+
+대기업에서는 개별 제품팀이 모든 하네스와 제약을 직접 만들 수 없다. 플랫폼 팀이 공통 기반을 제공해야 한다.
+
+플랫폼 팀이 제공할 것:
+
+- 표준 AGENTS.md 템플릿
+- architecture manifest schema
+- Change Contract catalog
+- PR evidence bundle generator
+- blast radius checker
+- dependency boundary checker
+- semantic term registry tool
+- test selection tool
+- agent sandbox
+- secret access guard
+- generated file guard
+- migration guard
+- review dashboard
+
+플랫폼 팀의 목표는 “AI 도구 구매”가 아니라 “에이전트가 안전하게 일할 수 있는 paved road”를 만드는 것이다.
+
+## 22장. 경영진을 위한 메시지
+
+경영진은 AI를 도입하면 개발 속도가 몇 배가 될 것이라고 기대할 수 있다. 일부 작업에서는 맞다. 하지만 브라운필드에서는 무조건적이지 않다.
+
+경영진에게 필요한 메시지는 다음이다.
+
+1. AI는 조직의 강점과 약점을 증폭한다.
+2. 유지보수성이 낮은 시스템에서는 AI가 부채를 더 빨리 만들 수 있다.
+3. 생산성 지표는 코드량이 아니라 검증된 변경량이어야 한다.
+4. 사람 리뷰 병목을 줄이려면 evidence와 contract가 필요하다.
+5. AI 도입 예산의 상당 부분은 코드베이스 agentability 개선에 써야 한다.
+
+AI 코딩 도구 라이선스를 사는 것은 시작일 뿐이다. 진짜 투자는 코드베이스, 테스트, CI, 아키텍처 제약, 도메인 언어 정리에 들어가야 한다.
+
+---
+
+# 6부. 연구 의제
+
+## 23장. 측정 가능한 가설
+
+이 방법론은 주장에 그치면 안 된다. 측정 가능한 연구 프로그램으로 발전해야 한다.
+
+### 가설 1
+
+브라운필드 생산성은 모델 성능보다 변경의 Context Surface Area에 더 민감하다.
+
+측정:
+
+- 에이전트가 읽은 파일 수
+- tool call 수
+- token 수
+- 수정 재시도 횟수
+- 리뷰 코멘트 수
+- 최종 merge 여부
+- post-merge defect
+
+### 가설 2
+
+Semantic Addressability를 개선하면 bug localization 성공률이 오른다.
+
+측정:
+
+- 첫 검색에서 관련 파일 발견률
+- 잘못된 파일 탐색 비율
+- 중복 구현 생성률
+- 수정 누락률
+
+### 가설 3
+
+Change Contract가 있는 작업은 단순 테스트만 있는 작업보다 리뷰 부담과 회귀율이 낮다.
+
+측정:
+
+- review time
+- review iteration
+- CI failure count
+- rollback rate
+- post-merge defect
+
+### 가설 4
+
+Blast Radius Budget을 강제하면 agent-generated PR의 merge 가능성이 높아진다.
+
+측정:
+
+- changed file count
+- diff line count
+- budget violation rate
+- merge lead time
+- reviewer rejection reason
+
+### 가설 5
+
+Agent-readable architecture artifact는 AGENTS.md 단독보다 장기적으로 더 큰 효과를 낸다.
+
+측정:
+
+- dependency violation rate
+- wrong-layer modification rate
+- architecture review comment count
+- cross-context regression count
+
+## 24장. 실험 설계
+
+### 24.1 저장소 단위 실험
+
+같은 유형의 작업을 agentability 개선 전후로 비교한다.
+
+전:
+
+- AGENTS.md 없음
+- 용어 불일치
+- 계약 없음
+- 관련 테스트 찾기 어려움
+
+후:
+
+- AGENTS.md 있음
+- Domain Term Registry 있음
+- Change Contract 있음
+- test command 명시
+- architecture manifest 있음
+
+비교:
+
+- 성공률
+- 소요 시간
+- 리뷰 시간
+- 변경 파일 수
+- CI 실패 수
+- post-merge defect
+
+### 24.2 작업 유형별 실험
+
+작업을 Level 1~4로 나누고 에이전트 효과를 측정한다.
+
+예상 결과:
+
+- Level 1은 높은 자동화율
+- Level 2는 contract 유무에 따라 성공률 차이
+- Level 3은 사람 승인 지점이 중요
+- Level 4는 탐색과 검증 보조 중심
+
+### 24.3 CSA와 실패율 상관 분석
+
+작업별 CSA proxy를 수집한다.
+
+- 읽은 파일 수
+- 변경 파일 수
+- 관련 서비스 수
+- 관련 테스트 수
+- 관련 도메인 용어 수
+- tool call 수
+
+CSA가 커질수록 실패율, 리뷰 시간, 재시도 횟수가 증가하는지 분석한다.
+
+## 25장. 용어 정리
+
+### Agentability
+
+코드베이스가 에이전트에 의해 안전하게 탐색, 수정, 검증, 리뷰될 수 있는 정도.
+
+### Context Surface Area
+
+변경 하나를 안전하게 수행하기 위해 에이전트가 회수하고 이해해야 하는 정보의 총량.
+
+### Semantic Addressability
+
+도메인 개념과 정책이 일관된 의미 주소를 통해 검색 가능한 성질.
+
+### Change Contract
+
+특정 변경 유형이 만족해야 하는 도메인, API, 데이터, 보안, 운영 조건의 실행 가능한 계약.
+
+### Agent-Readable Architecture
+
+아키텍처 경계와 제약을 에이전트와 자동화 시스템이 읽고 집행할 수 있는 형식으로 표현한 것.
+
+### Blast Radius Budget
+
+작업 유형별 허용 변경 범위와 escalation 조건.
+
+### Evidence Bundle
+
+에이전트가 PR 또는 작업 결과에 첨부해야 하는 탐색, 판단, 검증 증거 묶음.
+
+### Codebase-as-Harness
+
+에이전트를 감싸는 도구뿐 아니라 코드베이스 자체를 에이전트의 작업 하네스로 설계하는 관점.
+
+---
+
+# 결론
+
+에이전트 시대의 소프트웨어 엔지니어링은 단순히 AI에게 코드를 쓰게 하는 문제가 아니다.
+
+진짜 문제는 브라운필드 시스템을 에이전트가 안전하게 조작할 수 있는 대상으로 바꾸는 것이다.
+
+이를 위해서는 기존 소프트웨어 엔지니어링을 버리는 것이 아니라 더 정밀하게 발전시켜야 한다.
+
+DDD는 Semantic Addressability Engineering이 된다. Clean Architecture는 Context Boundary Engineering이 된다. DRY는 Single Source of Behavioral Truth가 된다. TDD는 Executable Change Contract가 된다. CI/CD는 Agent Control Plane이 된다. Observability는 Runtime Semantic Feedback이 된다. Code Review는 Evidence-Based Change Governance가 된다.
+
+앞으로의 생산성 차이는 어떤 모델을 쓰느냐만으로 결정되지 않는다. 같은 모델을 쓰더라도 어떤 조직은 빠르고 안전하게 변경을 merge할 것이고, 어떤 조직은 더 많은 코드를 만들고 더 많은 부채를 쌓을 것이다.
+
+차이는 코드베이스의 agentability에서 나온다.
+
+좋은 코드베이스는 사람이 읽기 쉬운 코드베이스를 넘어선다. 좋은 코드베이스는 에이전트가 관련 맥락을 찾을 수 있고, authoritative한 정책을 식별할 수 있고, 작은 diff를 만들 수 있고, Change Contract로 검증할 수 있고, 위험한 변경에서 멈출 수 있는 코드베이스다.
+
+이것이 Codebase-as-Harness다.
+
+그리고 이것이 브라운필드 소프트웨어 엔지니어링의 다음 단계다.
+
+---
+
+# 부록 A. AGENTS.md 템플릿
 
 ```md
 # AGENTS.md
 
-## Commands
-- Install: pnpm install
-- Typecheck: pnpm typecheck
-- Lint: pnpm lint
-- Unit tests: pnpm test
-- Billing tests: pnpm test:billing
-
-## Architecture
-- Domain policies live under `src/*/domain`.
-- Use cases live under `src/*/application`.
-- External API mapping must stay in `src/*/infra`.
-- Do not import infra modules from domain modules.
-
-## Naming
-- Use `Customer`, not `User` or `Member`, for paying customers.
-- Use `SubscriptionStatus`, not raw string status values.
-- Use `amountMinor` for money amounts.
-
-## Safety
-- Do not edit generated files under `src/generated`.
-- Do not modify existing migration files. Add a new migration.
-- Do not access `.env` or production credentials.
-
-## Verification
-- For billing changes, run `pnpm test:billing` and `pnpm typecheck`.
-- For API schema changes, update OpenAPI and run contract tests.
-```
-
-좋은 AGENTS 문서는 짧고 명령형입니다. 나쁜 AGENTS 문서는 장황하고 추상적입니다.
-
-## 원칙 9. Hook과 CI로 규칙을 강제하라
-
-에이전트에게 “주의해”라고 말하는 것보다 자동으로 막는 것이 낫습니다. Claude Code hooks 문서는 `PreToolUse`, `PostToolUse`, `Stop`, `SubagentStop` 같은 이벤트를 제공하고, `PreToolUse`는 도구 실행 전 차단에, `PostToolUse`는 실행 후 후처리에 쓸 수 있다고 설명합니다. ([Claude Code][5])
-
-예를 들어 다음을 hook이나 CI로 강제할 수 있습니다.
-
-`.env` 읽기 차단. `rm -rf` 같은 위험 명령 차단. generated file 직접 수정 차단. 편집 후 formatter 자동 실행. 편집 후 관련 lint 실행. migration 수정 규칙 검사. 특정 디렉터리 import boundary 검사. secret scanning 실행.
-
-예시 정책은 다음과 같습니다.
-
-```text
-PreToolUse:
-- Block reading `.env`, `.pem`, `.key`, `secrets/**`
-- Block `rm -rf`, `git reset --hard`, `git clean -fd`
-- Block writes to `src/generated/**`
-
-PostToolUse:
-- If TypeScript file changed, run formatter
-- If domain file changed, run related unit tests
-- If API schema changed, run contract test
-
-CI:
-- typecheck
-- lint
-- unit tests
-- contract tests
-- dependency boundary check
-- secret scan
-```
-
-이런 장치는 에이전트를 믿지 못해서가 아니라, 에이전트의 빠른 실행력을 안전하게 활용하기 위해 필요합니다.
-
-## 원칙 10. Git hygiene은 에이전트 작업의 안전장치다
-
-에이전트가 파일을 수정하기 시작하면 Git 상태 관리가 매우 중요해집니다. Codex 계열 지침에서도 사용자가 만든 기존 변경을 되돌리지 말고, dirty worktree에서 주의하라는 원칙이 강조됩니다. ([GitHub][6])
-
-실무 규칙은 다음과 같습니다.
-
-에이전트 작업 전 가능한 한 working tree를 깨끗하게 둡니다. 작업 단위마다 branch를 분리합니다. 큰 변경은 여러 작은 커밋으로 나눕니다. 기능 변경과 포맷 변경을 섞지 않습니다. rename과 behavior change를 같은 커밋에 섞지 않습니다. 에이전트가 만든 diff는 반드시 사람이 리뷰합니다.
-
-커밋 메시지는 이렇게 씁니다.
-
-```text
-Prevent renewal for expired subscriptions
-
-- Add domain policy for renewal eligibility
-- Use policy in renewal use case
-- Add regression tests for expired and suspended states
-```
-
-나쁜 커밋 메시지는 다음과 같습니다.
-
-```text
-fix stuff
-update
-agent changes
-```
-
-에이전트 시대에는 Git diff가 작업 감사 로그입니다. 커밋 단위가 나쁘면 나중에 에이전트도 사람도 변경 의도를 회수하기 어렵습니다.
-
-# 3. 에이전트 친화적 저장소 구조 예시
-
-## 권장 구조
-
-```text
-src/
-  billing/
-    AGENTS.md
-    subscription/
-      domain/
-        subscription.ts
-        subscription-status.ts
-        subscription-renewal-policy.ts
-      application/
-        renew-subscription.usecase.ts
-      infra/
-        subscription.repository.ts
-        payment-provider.adapter.ts
-      api/
-        subscription.controller.ts
-      tests/
-        subscription-renewal-policy.test.ts
-        renew-subscription.usecase.test.ts
-
-  customer/
-    domain/
-    application/
-    infra/
-    api/
-    tests/
-
-  shared/
-    kernel/
-      money.ts
-      clock.ts
-      result.ts
-    testing/
-      fixture-builder.ts
-
-  generated/
-    openapi/
-    prisma/
-```
-
-여기서 중요한 점은 `shared`를 작게 유지하는 것입니다. `shared`가 커지면 사실상 모든 도메인이 결합되는 쓰레기장이 됩니다. `shared/kernel`에는 정말 여러 도메인에서 안정적으로 공유할 수 있는 값 객체나 기반 타입만 둬야 합니다.
-
-## 피해야 할 구조
-
-```text
-src/
-  controllers/
-  services/
-  repositories/
-  models/
-  utils/
-  helpers/
-  constants/
-  types/
-```
-
-이 구조는 처음에는 단순해 보이지만, 시간이 지날수록 에이전트가 기능 단위를 찾기 어려워집니다. “구독 갱신 정책”이 `services/subscription.ts`, `utils/date.ts`, `constants/status.ts`, `types/user.ts`, `repositories/billing.ts`에 흩어집니다.
-
-# 4. 에이전트에게 일을 잘 시키는 프롬프트 패턴
-
-## 나쁜 요청
-
-```text
-이거 고쳐줘.
-```
-
-```text
-결제 쪽 버그 수정해줘.
-```
-
-```text
-리팩터링해줘.
-```
-
-이런 요청은 범위가 불명확합니다. 에이전트가 과도하게 탐색하거나, 반대로 일부만 고칠 가능성이 큽니다.
-
-## 좋은 요청
-
-```text
-billing/subscription의 갱신 정책을 수정해줘.
-
-요구사항:
-- 만료된 구독은 갱신하지 않는다.
-- 정지된 고객의 구독은 갱신하지 않는다.
-- 기존 active 구독 갱신 동작은 유지한다.
-
-작업 방식:
-- 먼저 관련 정책과 테스트를 찾아라.
-- 기존 정책 함수가 있으면 재사용하거나 확장하라.
-- 새 중복 validation을 만들지 마라.
-- 관련 unit test를 추가하거나 수정하라.
-- 마지막에 billing 관련 테스트와 typecheck를 실행하라.
-```
-
-이 요청은 에이전트에게 탐색 방향, 설계 제약, 검증 기준을 줍니다.
-
-## 리팩터링 요청 예시
-
-```text
-subscription renewal 로직을 리팩터링해줘.
-
-목표:
-- 상태 판정 로직을 하나의 정책 객체로 모은다.
-- use case는 정책을 호출만 하게 한다.
-- 외부 결제 provider mapping은 건드리지 않는다.
-- public API behavior는 바꾸지 않는다.
-
-검증:
-- 기존 subscription 테스트가 통과해야 한다.
-- 새 정책 테스트를 추가한다.
-- diff에서 포맷팅만 바뀐 파일은 제외한다.
-```
-
-## 버그 수정 요청 예시
-
-```text
-버그: 만료된 subscription이 renewal job에서 invoice를 생성하고 있다.
-
-원하는 결과:
-- expired subscription은 invoice 생성 대상에서 제외한다.
-- skipped reason을 로그에 남긴다.
-- active subscription의 기존 갱신 동작은 유지한다.
-
-먼저 다음을 찾아라:
-- renewal job entry point
-- invoice 생성 use case
-- subscription status policy
-- 관련 테스트
-
-수정 후:
-- 최소한의 diff로 고쳐라.
-- regression test를 추가하라.
-- 관련 테스트만 먼저 돌리고, 가능하면 전체 typecheck도 돌려라.
-```
-
-## 코드 리뷰 요청 예시
-
-```text
-현재 diff를 리뷰해줘.
-
-관점:
-- 도메인 용어가 일관적인지
-- 기존 정책을 중복 구현하지 않았는지
-- 변경 영향 범위가 과도하지 않은지
-- 테스트가 실패 원인을 충분히 설명하는지
-- 에이전트가 나중에 이 코드를 검색하기 쉬운지
-
-출력:
-- 반드시 고쳐야 할 것
-- 고치면 좋은 것
-- 유지해도 되는 것
-순서로 정리해줘.
-```
-
-# 5. 에이전트 활용 워크플로우
-
-## 워크플로우 A: 작은 버그 수정
-
-1단계. 증상을 구체화합니다.
-
-```text
-증상, 기대 동작, 재현 조건, 관련 로그, 실패 테스트를 제공한다.
-```
-
-2단계. 에이전트에게 먼저 탐색만 시킵니다.
-
-```text
-아직 수정하지 말고 관련 파일과 실행 흐름만 찾아서 설명해줘.
-```
-
-3단계. 수정 범위를 승인합니다.
-
-```text
-좋아. 그 범위 안에서 최소 diff로 수정하고 regression test를 추가해줘.
-```
-
-4단계. 테스트를 실행시킵니다.
-
-```text
-관련 테스트를 먼저 실행하고, 실패하면 원인을 분석한 뒤 수정해줘.
-```
-
-5단계. diff를 리뷰합니다.
-
-```text
-git diff 기준으로 변경 의도와 영향 범위를 요약해줘.
-```
-
-이 방식은 에이전트가 처음부터 과도하게 수정하는 것을 막습니다.
-
-## 워크플로우 B: 기능 추가
-
-기능 추가는 바로 구현시키면 안 됩니다. 먼저 설계 스케치를 시킵니다.
-
-```text
-이 기능을 추가하려면 어떤 모듈, 타입, 테스트를 수정해야 하는지 계획부터 제시해줘.
-기존 패턴을 우선 재사용하고, 새 abstraction은 꼭 필요한 경우에만 제안해줘.
-```
-
-그다음 구현합니다.
-
-```text
-제안한 계획 중 1안으로 구현해줘.
-단, public API 변경이 필요하면 구현 전에 멈추고 알려줘.
-```
-
-기능 추가에서는 특히 다음을 요구해야 합니다.
-
-기존 유사 기능 검색. 기존 정책 재사용. 테스트 추가. API schema 업데이트. 마이그레이션 필요 여부 확인. backward compatibility 확인. feature flag 필요 여부 확인.
-
-## 워크플로우 C: 대형 리팩터링
-
-대형 리팩터링은 에이전트에게 한 번에 맡기면 위험합니다. 반드시 phase로 나눕니다.
-
-```text
-Phase 1: 현재 구조 분석만 해줘. 수정하지 마.
-Phase 2: 리팩터링 목표와 안전한 순서를 제안해줘.
-Phase 3: behavior-preserving refactor만 먼저 해줘.
-Phase 4: 테스트 통과 후 정책 변경을 별도 diff로 해줘.
-```
-
-대형 리팩터링의 핵심은 behavior-preserving change와 behavior change를 분리하는 것입니다.
-
-나쁜 방식은 “구조도 바꾸고 정책도 바꾸고 테스트도 갈아엎는” 것입니다. 이렇게 하면 실패했을 때 원인을 찾기 어렵습니다.
-
-좋은 방식은 다음 순서입니다.
-
-기존 테스트 확보. 이름 정리. 파일 이동. 정책 추출. 호출부 교체. 중복 제거. 새 동작 변경. 테스트 추가. dead code 삭제.
-
-## 워크플로우 D: 테스트 보강
-
-에이전트는 테스트 추가에 매우 유용합니다. 단, 무의미한 snapshot이나 happy path만 만들게 두면 안 됩니다.
-
-요청 예시는 다음과 같습니다.
-
-```text
-subscription renewal 정책의 테스트 공백을 찾아줘.
-
-특히 다음 관점으로 봐줘:
-- 상태별 분기
-- 날짜 경계값
-- suspended customer
-- provider failure
-- idempotency
-- duplicate invoice 방지
-
-기존 테스트 스타일을 유지하고, production code는 수정하지 마.
-```
-
-테스트 보강은 production code 수정 없이 먼저 진행하는 것이 좋습니다. 테스트가 기존 버그를 드러내면 그다음 수정합니다.
-
-## 워크플로우 E: 코드 리뷰 자동화
-
-에이전트 리뷰는 사람 리뷰를 대체하기보다 1차 필터로 쓰는 것이 좋습니다.
-
-리뷰 프롬프트는 다음 기준을 포함해야 합니다.
-
-도메인 용어 일관성. 기존 abstraction 재사용 여부. 중복 정책 여부. 테스트 충분성. backward compatibility. 보안 위험. migration 위험. 관측성 누락. 에러 메시지 품질. diff 크기.
-
-예시는 다음과 같습니다.
-
-```text
-이 PR을 agent-friendly 관점에서 리뷰해줘.
-
-확인할 것:
-- 검색 가능한 이름을 쓰는가?
-- 기존 정책/타입을 중복하지 않았는가?
-- 변경 범위가 응집되어 있는가?
-- 테스트 실패 시 원인을 알 수 있는가?
-- 나중에 다른 에이전트가 이 변경을 찾기 쉬운가?
-```
-
-# 6. 팀 운영 가이드
-
-## 6.1 저장소별 AGENTS.md를 둔다
-
-루트에는 전체 규칙을 둡니다.
-
-```text
-/AGENTS.md
-```
-
-도메인별 규칙이 다르면 하위 디렉터리에도 둡니다.
-
-```text
-/src/billing/AGENTS.md
-/src/ml/AGENTS.md
-/src/mobile/AGENTS.md
-```
-
-루트 AGENTS에는 전체 명령과 공통 금지사항을 둡니다. 하위 AGENTS에는 해당 도메인 용어, 테스트 명령, 수정 주의사항을 둡니다.
-
-## 6.2 “에이전트 준비도”를 Definition of Done에 넣는다
-
-기능 완료 조건에 다음을 추가합니다.
-
-관련 테스트가 있다. 테스트명이 도메인 규칙을 설명한다. 타입 에러가 없다. lint가 통과한다. 새 도메인 용어가 기존 용어와 충돌하지 않는다. 새 정책이 중복 구현되지 않았다. 문서 또는 AGENTS.md 업데이트가 필요하면 반영했다. 에러 메시지와 로그가 검색 가능하다.
-
-## 6.3 PR 템플릿을 바꾼다
-
-기존 PR 템플릿은 보통 “무엇을 바꿨는가”에 치우쳐 있습니다. 에이전트 시대에는 “어떻게 검증했고, 다음 에이전트가 어디를 봐야 하는가”가 중요합니다.
-
-예시입니다.
-
-```md
-## Summary
-- 
-
-## Domain terms
-- New terms:
-- Reused terms:
-
-## Change scope
-- Main modules:
-- Explicitly not changed:
-
-## Verification
-- [ ] Unit tests
-- [ ] Typecheck
-- [ ] Lint
-- [ ] Contract tests
-- [ ] Manual verification
-
-## Agent notes
-- Relevant entry point:
-- Relevant policy:
-- Tests to run:
-- Files not to edit:
-```
-
-## 6.4 코드 리뷰 기준을 바꾼다
-
-사람 리뷰어는 이제 다음을 봐야 합니다.
-
-이 diff는 너무 넓지 않은가? 에이전트가 기존 정책을 놓치고 새로 만든 것은 아닌가? 이름이 검색 가능한가? 새 abstraction이 실제로 필요한가? 테스트가 정책을 설명하는가? 실패 메시지가 충분한가? 다음 번 변경자가 수정 위치를 찾을 수 있는가?
-
-즉, 리뷰의 초점이 “이 코드가 맞는가”에서 “이 코드베이스가 다음 변경에도 안전한가”로 확장됩니다.
-
-# 7. 도구별 실용 팁
-
-## Codex류 에이전트
-
-Codex prompting guide는 `rg`/`rg --files` 사용, 파일 읽기, 구조화된 patch, 테스트 실행, 타입 안정성 같은 흐름을 강조합니다. 따라서 Codex류 에이전트에는 “탐색 → 계획 → 수정 → 검증” 순서를 명시하는 것이 좋습니다. ([OpenAI 개발자][1])
-
-좋은 사용법은 다음과 같습니다.
-
-처음부터 수정시키지 말고 관련 파일을 찾게 합니다. 기존 패턴을 먼저 조사하게 합니다. 최소 diff를 요구합니다. 관련 테스트를 지정합니다. `git diff` 요약을 요구합니다. 실패 시 에러를 그대로 바탕으로 고치게 합니다.
-
-## Aider류 에이전트
-
-Aider는 repo map을 통해 전체 저장소의 주요 클래스·함수·시그니처를 압축해 모델에게 제공한다고 설명합니다. 따라서 Aider를 잘 쓰려면 심볼 이름, 함수 시그니처, 모듈 경계가 중요합니다. ([aider.chat][2])
-
-좋은 사용법은 다음과 같습니다.
-
-관련 파일을 명시적으로 add합니다. 너무 많은 파일을 한 번에 넣지 않습니다. 테스트 명령을 설정합니다. 작은 작업 단위로 커밋합니다. 기존 abstraction 이름을 명확히 유지합니다. repo map에 잡히기 쉬운 이름 있는 함수와 클래스를 선호합니다.
-
-## Claude Code류 에이전트
-
-Claude Code hooks는 도구 실행 전후에 정책을 적용할 수 있습니다. `PreToolUse`는 위험한 작업 차단, `PostToolUse`는 포맷·린트 같은 후처리에 적합합니다. ([Claude Code][5])
-
-좋은 사용법은 다음과 같습니다.
-
-위험 명령 차단 hook을 둡니다. `.env`, secret, production credential 접근을 차단합니다. 편집 후 formatter를 자동 실행합니다. 특정 파일 변경 시 관련 테스트를 자동 실행합니다. stop hook에서 최종 diff 요약이나 검증 누락을 점검하게 합니다.
-
-# 8. 코드 작성 규칙 상세
-
-## 8.1 이름 규칙
-
-좋은 이름은 다음 조건을 만족합니다.
-
-도메인 용어와 일치합니다. 검색했을 때 관련 코드가 잘 모입니다. 축약어가 적습니다. 상태와 행위가 명확합니다. 테스트명과 로그에서도 같은 이름을 씁니다.
-
-예시는 다음과 같습니다.
-
-```ts
-// 나쁨
-processUser()
-handleData()
-checkStatus()
-doRenewal()
-
-// 좋음
-renewSubscription()
-calculateInvoiceAmount()
-canCustomerBeCharged()
-markSubscriptionAsExpired()
-```
-
-## 8.2 함수 규칙
-
-함수는 하나의 정책 또는 하나의 동작을 표현해야 합니다.
-
-```ts
-// 나쁨
-function processSubscriptionAndInvoiceAndNotify() {}
-```
-
-```ts
-// 좋음
-function renewSubscription() {}
-function issueRenewalInvoice() {}
-function notifyCustomerOfRenewal() {}
-```
-
-단, 지나치게 쪼개서 흐름이 흩어지는 것도 피해야 합니다. 기준은 “에이전트가 함수명과 테스트명만 보고 역할을 알 수 있는가”입니다.
-
-## 8.3 상태 규칙
-
-raw string 상태를 흩뿌리지 않습니다.
-
-```ts
-// 나쁨
-if (subscription.status === 'expired') {}
-```
-
-```ts
-// 좋음
-if (subscription.status === SubscriptionStatus.Expired) {}
-```
-
-더 나은 방식은 상태 전이를 도메인 객체 안에 둡니다.
-
-```ts
-subscription.expire(clock.now());
-subscription.renew(policy, clock.now());
-```
-
-상태 전이는 에이전트가 실수하기 쉬운 부분입니다. 반드시 한 곳에 모으고 테스트해야 합니다.
-
-## 8.4 시간 규칙
-
-시간은 항상 버그가 많은 영역입니다. 에이전트도 자주 실수합니다.
-
-규칙은 다음과 같습니다.
-
-`new Date()`를 도메인 로직 안에서 직접 호출하지 않습니다. `Clock` abstraction을 씁니다. timezone을 명시합니다. 날짜 경계값 테스트를 둡니다. “오늘”, “내일”, “월말”, “갱신일” 같은 개념을 정책 함수로 표현합니다.
-
-```ts
-interface Clock {
-  now(): Date;
-}
-```
-
-## 8.5 금액 규칙
-
-금액은 number만 쓰면 위험합니다.
-
-```ts
-type Money = {
-  amountMinor: number;
-  currency: CurrencyCode;
-};
-```
-
-규칙은 다음과 같습니다.
-
-minor unit을 쓸지 major unit을 쓸지 통일합니다. 변수명에 `amountMinor`처럼 단위를 드러냅니다. 통화 없는 금액을 만들지 않습니다. 반올림 정책을 한 곳에 둡니다. 할인, 세금, 환불 계산은 테스트를 촘촘히 둡니다.
-
-## 8.6 외부 API 규칙
-
-외부 API 응답을 내부 도메인에 직접 흘리지 않습니다.
-
-```ts
-// 나쁨
-const status = providerResponse.status;
-subscription.status = status;
-```
-
-```ts
-// 좋음
-const status = mapProviderStatusToSubscriptionStatus(providerResponse.status);
-subscription.applyProviderStatus(status);
-```
-
-외부 세계의 불안정성을 adapter에서 차단해야 합니다. 그래야 에이전트가 외부 API 변경과 내부 정책 변경을 구분할 수 있습니다.
-
-# 9. 테스트 작성 규칙 상세
-
-## 9.1 테스트명은 요구사항 문장으로 쓴다
-
-```ts
-it('does not renew expired subscriptions', () => {});
-it('creates exactly one invoice when renewal job is retried', () => {});
-it('maps provider canceled status to subscription canceled', () => {});
-```
-
-## 9.2 fixture는 도메인 언어로 만든다
-
-```ts
-const customer = activeCustomer();
-const subscription = expiredSubscription({ customerId: customer.id });
-```
-
-나쁜 fixture는 다음과 같습니다.
-
-```ts
-const data = makeTestData1();
-```
-
-에이전트는 `makeTestData1`이 무엇인지 알 수 없습니다.
-
-## 9.3 실패 메시지를 강화한다
-
-가능하면 assertion에 의미 있는 메시지를 둡니다.
-
-```ts
-expect(result.invoices).toHaveLength(0);
-expect(result.skippedReason).toBe('SUBSCRIPTION_EXPIRED');
-```
-
-## 9.4 regression test를 우선한다
-
-버그 수정 시 production code부터 고치지 말고, 가능하면 실패하는 테스트를 먼저 추가합니다.
-
-```text
-1. 현재 버그를 재현하는 테스트 추가
-2. 테스트 실패 확인
-3. 최소 수정
-4. 테스트 통과 확인
-```
-
-에이전트에게도 이 순서를 요구하면 품질이 좋아집니다.
-
-# 10. 문서 작성 규칙 상세
-
-## 10.1 README
-
-README는 실행과 구조 중심이어야 합니다.
-
-```md
-## Development
+## Repository Commands
 - Install:
-- Run:
-- Test:
 - Typecheck:
+- Lint:
+- Unit tests:
+- Contract tests:
 
-## Architecture
-- Domain:
-- Application:
-- Infra:
-- API:
+## Architecture Rules
+- Domain logic lives in:
+- Application use cases live in:
+- Infra adapters live in:
+- API controllers live in:
+- Do not import:
 
-## Common tasks
-- Add new API:
-- Add migration:
-- Add provider mapping:
+## Domain Language
+- Use:
+- Do not use:
+- Legacy aliases:
+
+## Safety Rules
+- Do not edit generated files:
+- Do not modify existing migrations:
+- Escalate if touching:
+
+## Verification
+- For billing changes, run:
+- For API changes, run:
+- For DB changes, run:
+
+## Output Requirements
+- Summarize files inspected.
+- Summarize files changed.
+- List tests run.
+- List remaining risks.
 ```
 
-## 10.2 ADR
+# 부록 B. Change Contract 템플릿
 
-ADR은 에이전트에게 설계 의도를 알려주는 좋은 자료입니다.
+```yaml
+name:
+applicable_paths:
+change_type:
+
+invariants:
+  -
+
+compatibility:
+  api:
+  events:
+  database:
+
+security:
+  -
+
+observability:
+  logs:
+  metrics:
+  alerts:
+
+required_checks:
+  -
+
+forbidden_changes:
+  -
+
+escalation_conditions:
+  -
+
+rollback_requirements:
+  -
+```
+
+# 부록 C. Agent Work Envelope 템플릿
+
+```yaml
+task:
+  type:
+  description:
+
+budget:
+  max_files_changed:
+  max_lines_changed:
+  public_api_change:
+  db_migration:
+  dependency_change:
+  generated_files:
+
+required_evidence:
+  - files_inspected
+  - existing_policy_found
+  - tests_run
+  - risks
+
+stop_conditions:
+  -
+
+verification:
+  -
+```
+
+# 부록 D. PR Evidence Bundle 템플릿
 
 ```md
-# ADR-012: Subscription renewal policy lives in domain layer
+## Task
 
-## Context
-Renewal rules were duplicated in job, API, and invoice use case.
+## Search Evidence
+- Files searched:
+- Files inspected:
+- Existing policies found:
 
-## Decision
-All renewal eligibility checks must go through `SubscriptionRenewalPolicy`.
+## Change Contract
+- Contract applied:
+- Invariants preserved:
+- New behavior:
 
-## Consequences
-- Jobs and APIs call the same policy.
-- Provider-specific status mapping remains in infra adapter.
-- New renewal rules require policy tests.
+## Changes
+- Files changed:
+- Public API changed: yes/no
+- DB migration: yes/no
+- Dependency changed: yes/no
+
+## Verification
+- Tests run:
+- Typecheck:
+- Lint:
+- Contract tests:
+
+## Blast Radius
+- Expected impact:
+- Escalation required:
+
+## Remaining Risks
+-
 ```
 
-에이전트가 나중에 “왜 이렇게 되어 있지?”를 이해할 수 있습니다.
-
-## 10.3 Runbook
-
-운영 runbook도 에이전트 친화적으로 써야 합니다.
-
-```md
-## Symptom
-Renewal job created duplicate invoices.
-
-## Check
-- Search logs by `subscriptionId`
-- Check `RenewalJob`
-- Check `InvoiceIdempotencyKey`
-
-## Code entry points
-- `billing/subscription/application/renew-subscription.usecase.ts`
-- `billing/invoice/domain/invoice-idempotency-policy.ts`
-
-## Tests
-- `pnpm test:billing`
-```
-
-# 11. Hook / CI 정책 예시
-
-## PreToolUse에서 막을 것
+# 부록 E. Agentability Audit Sheet
 
 ```text
-- `.env`, `.pem`, `.key`, `secrets/**` 읽기
-- production credential 접근
-- `rm -rf`
-- `git reset --hard`
-- `git clean -fd`
-- generated file 직접 수정
-- 기존 migration 수정
+Semantic Addressability
+[ ] Major domain terms are defined.
+[ ] Preferred names and aliases are documented.
+[ ] Code, tests, logs, and docs use consistent terms.
+
+Context Boundary Clarity
+[ ] Bounded contexts are clear.
+[ ] Related files are colocated.
+[ ] Dependency direction is enforced.
+
+Verification Strength
+[ ] Fast local tests exist.
+[ ] Tests describe business rules.
+[ ] Contract tests exist for external boundaries.
+
+Change Contract Coverage
+[ ] High-risk domains have change contracts.
+[ ] Required checks are documented.
+[ ] Forbidden changes are explicit.
+
+Observability Linkage
+[ ] Logs use domain event names.
+[ ] Error codes map to source locations.
+[ ] Runbooks link to code entry points.
+
+Blast Radius Controllability
+[ ] Task types have budgets.
+[ ] Escalation conditions are defined.
+[ ] CI detects budget violations.
+
+Architecture Enforceability
+[ ] Architecture rules are machine-readable.
+[ ] Dependency violations fail CI.
+[ ] Ownership is encoded.
+
+Tacit Knowledge Load
+[ ] Critical rules are not only in people’s heads.
+[ ] Legacy exceptions are documented.
+[ ] Deprecated paths are marked.
 ```
 
-## PostToolUse에서 실행할 것
-
-```text
-- TS/JS 변경 후 formatter
-- domain 변경 후 관련 unit test
-- API schema 변경 후 contract test
-- package file 변경 후 lockfile consistency check
-```
-
-## CI에서 강제할 것
-
-```text
-- typecheck
-- lint
-- unit test
-- contract test
-- dependency boundary check
-- secret scan
-- generated file consistency
-- migration validation
-```
-
-프롬프트는 권고이고, hook과 CI는 강제입니다. 에이전트 작업에는 강제가 필요합니다.
-
-# 12. 조직 차원의 적용 순서
-
-처음부터 모든 것을 바꾸려고 하면 실패합니다. 다음 순서가 현실적입니다.
-
-## 1단계: 검색성 개선
-
-도메인 용어 정리. 핵심 개념 이름 통일. 애매한 `utils`, `helpers` 정리. 테스트명 개선. 로그 필드명 통일.
-
-## 2단계: 검증 루프 개선
-
-빠른 테스트 명령 추가. typecheck 명령 추가. 관련 테스트만 돌리는 스크립트 추가. CI 실패 메시지 개선.
-
-## 3단계: 에이전트 지침 추가
-
-루트 `AGENTS.md` 추가. 도메인별 `AGENTS.md` 추가. PR 템플릿 수정. 코드 리뷰 체크리스트 수정.
-
-## 4단계: 구조 개선
-
-기능별 디렉터리 응집. 정책 객체 추출. 외부 adapter 분리. shared 폴더 축소. generated code 분리.
-
-## 5단계: 자동 강제
-
-lint rule. dependency boundary. hooks. secret scan. migration guard. generated file guard.
-
-# 13. 체크리스트
-
-## 저장소 체크리스트
-
-```text
-[ ] 루트 AGENTS.md가 있다.
-[ ] 주요 도메인 용어가 문서화되어 있다.
-[ ] 같은 개념을 여러 이름으로 부르지 않는다.
-[ ] 기능별 테스트 명령이 있다.
-[ ] typecheck와 lint가 빠르게 실행된다.
-[ ] generated file이 분리되어 있다.
-[ ] migration 수정 규칙이 명확하다.
-[ ] secret 접근이 차단되어 있다.
-[ ] shared/common/utils가 비대하지 않다.
-```
-
-## 코드 체크리스트
-
-```text
-[ ] 함수명이 도메인 행위를 설명한다.
-[ ] 상태값이 raw string으로 흩어져 있지 않다.
-[ ] 정책 로직이 중복되어 있지 않다.
-[ ] 외부 API mapping이 adapter에 격리되어 있다.
-[ ] 도메인 로직이 framework나 DB에 직접 의존하지 않는다.
-[ ] 에러 메시지가 실패 원인을 설명한다.
-[ ] 로그 필드명이 도메인 용어와 일치한다.
-```
-
-## 테스트 체크리스트
-
-```text
-[ ] 테스트명이 요구사항을 설명한다.
-[ ] 핵심 정책에 unit test가 있다.
-[ ] 외부 API mapping에 contract/adapter test가 있다.
-[ ] 날짜, 상태, 금액 경계값 테스트가 있다.
-[ ] 실패 시 원인을 알 수 있다.
-[ ] 관련 테스트만 빠르게 실행할 수 있다.
-```
-
-## 에이전트 작업 체크리스트
-
-```text
-[ ] 작업 전 git 상태를 확인했다.
-[ ] 관련 파일 탐색을 먼저 했다.
-[ ] 기존 패턴을 확인했다.
-[ ] 최소 diff로 수정했다.
-[ ] 새 중복 정책을 만들지 않았다.
-[ ] 관련 테스트를 실행했다.
-[ ] typecheck/lint를 실행했다.
-[ ] diff 요약을 확인했다.
-```
-
-# 14. 결론
-
-에이전트 시대의 엔지니어링은 “AI가 코드를 대신 써준다”가 아닙니다. 더 정확히는 “코드베이스를 에이전트가 안전하게 조작할 수 있는 작업 환경으로 재설계한다”입니다.
-
-가장 중요한 변화는 다음입니다.
-
-네이밍은 검색 인덱스입니다. 디렉터리 구조는 에이전트의 지도입니다. 타입은 안전 난간입니다. 테스트는 판정기입니다. 에러 메시지는 디버깅 API입니다. AGENTS.md는 온보딩 문서입니다. Hook과 CI는 정책 집행기입니다. Git diff는 감사 로그입니다.
-
-따라서 생산성의 차이는 단순히 어떤 에이전트를 쓰느냐에서 나오지 않습니다. 에이전트가 덜 헤매고, 덜 읽고, 덜 추측하고, 더 빨리 검증할 수 있는 코드베이스를 갖췄느냐에서 나옵니다.
-
-[1]: https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide?utm_source=chatgpt.com "Codex Prompting Guide"
-[2]: https://aider.chat/docs/repomap.html?utm_source=chatgpt.com "Repository map"
-[3]: https://aider.chat/docs/config/options.html?utm_source=chatgpt.com "Options reference"
-[4]: https://developers.openai.com/codex/skills?utm_source=chatgpt.com "Agent Skills – Codex"
-[5]: https://code.claude.com/docs/en/hooks-guide?utm_source=chatgpt.com "Automate workflows with hooks - Claude Code Docs"
-[6]: https://github.com/openai/codex/issues/14113?utm_source=chatgpt.com "Rework the `apply_patch` edit/create developer prompt ..."
