@@ -1,5 +1,5 @@
 ---
-title: 에이전트 시대의 브라운필드 엔지니어링
+title: 에이전트 시대의 소프트웨어 엔지니어링 (with. AI)
 date: 2026-05-21
 updatedAt: 2026-05-21
 slug: guideofsoftwareengineeringinagentera
@@ -7,115 +7,88 @@ category: tech
 ---
 # Codebase-as-Harness
 
-## 에이전트 시대의 브라운필드 소프트웨어 엔지니어링
+## 에이전트가 일하기 좋은 브라운필드 소프트웨어 엔지니어링
 
-### 부제: 인간이 읽기 좋은 코드에서 에이전트가 조작 가능한 시스템으로
-
----
-
-# 서문
-
-소프트웨어 개발에서 인공지능 에이전트는 이미 단순한 자동완성 도구의 범위를 넘어섰다. 최신 코딩 에이전트는 저장소를 검색하고, 파일을 읽고, 코드를 수정하고, 테스트를 실행하고, 실패 로그를 해석하고, 다시 패치를 생성한다. 어떤 경우에는 이슈를 받아 pull request를 만들고, CI 피드백을 보고 재수정하기도 한다.
-
-하지만 대규모 IT 서비스 기업의 현실은 훨씬 복잡하다. 대부분의 핵심 시스템은 greenfield가 아니라 brownfield다. 오래된 도메인 모델, 누적된 기술부채, 여러 팀의 암묵지, 불완전한 테스트, 중복된 정책, 불명확한 소유권, 복잡한 배포 파이프라인, 레거시 데이터, 운영 장애 이력, 외부 API 의존성이 함께 얽혀 있다.
-
-이런 환경에서 에이전트의 한계는 단순히 “아직 모델이 덜 똑똑하다”가 아니다. 더 근본적인 문제는 코드베이스가 에이전트가 일하기 좋은 형태로 설계되어 있지 않다는 데 있다.
-
-에이전트는 전체 시스템을 인간처럼 장기적으로 기억하지 않는다. 에이전트는 주어진 프롬프트, 검색 결과, 열어 본 파일, 테스트 출력, 도구 결과를 바탕으로 다음 행동을 선택한다. 따라서 에이전트의 생산성은 모델 성능뿐 아니라 코드베이스가 얼마나 탐색 가능하고, 변경 가능하고, 검증 가능하고, 안전하게 되돌릴 수 있는지에 의해 결정된다.
-
-이 책은 그 문제를 다룬다.
-
-주장은 간단하다.
-
-**에이전트 시대의 병목은 코드 생성 능력이 아니라, 브라운필드 코드베이스가 에이전트에게 조작 가능한 작업 환경으로 설계되어 있지 않다는 점이다.**
-
-따라서 앞으로의 소프트웨어 엔지니어링은 “사람이 읽기 좋은 코드”를 넘어 “에이전트가 안전하게 조작할 수 있는 시스템”을 목표로 발전해야 한다.
-
-이 책에서는 이를 **Agentic Brownfield Engineering**, 줄여서 **ABE**라고 부른다. 더 직접적으로는 **Agent-Operable Maintainability Engineering**, 즉 **에이전트 조작 가능 유지보수 공학**이라고 부를 수 있다.
+### 부제: 사람이 읽기 좋은 코드에서, 에이전트도 안전하게 고칠 수 있는 시스템으로
 
 ---
 
 # 1부. 문제 정의
 
-## 1장. 코딩 에이전트의 착시
+## 1장. 코딩 에이전트가 잘하는 일과 못하는 일
 
-코딩 에이전트는 빠르게 발전하고 있다. 과거의 코드 자동완성은 함수 몇 줄을 제안하는 수준이었다. 지금의 에이전트는 명령을 받고, 저장소를 탐색하고, 관련 파일을 찾고, 코드를 고치고, 테스트를 실행하고, 실패를 수정한다.
+코딩 에이전트는 빠르게 발전하고 있다. 과거의 코드 자동완성은 함수 몇 줄을 제안하는 수준이었다. 지금의 에이전트는 작업 지시를 받고, 저장소를 탐색하고, 관련 파일을 찾고, 코드를 고치고, 테스트를 실행하고, 실패를 다시 수정한다.
 
-이 변화는 실제로 크다. 작은 버그 수정, 반복적인 API 마이그레이션, 테스트 보강, 문서 업데이트, 타입 추가, lint 수정 같은 작업에서는 이미 큰 생산성 향상이 가능하다.
+이 변화는 실제로 유용하다. 특히 다음과 같은 작업에서는 에이전트가 이미 강하다.
 
-그러나 여기에는 착시가 있다.
+* 입력과 출력이 명확한 함수 구현
+* 국소적인 버그 수정
+* 기존 패턴을 따르는 반복 코드 작성
+* 테스트 케이스 추가
+* 단순한 리팩터링
+* 명확한 컴파일 오류 또는 테스트 실패 수정
+* 문서, 타입, lint, 포맷팅 정리
 
-작은 작업에서 성공한다고 해서 대규모 브라운필드 유지보수에서도 동일하게 성공하는 것은 아니다. 단일 파일 또는 단일 모듈 수준의 수정과, 여러 서비스·도메인·데이터 계약·운영 제약이 얽힌 변경은 완전히 다른 문제다.
+그러나 여기에는 착시가 있다. 작은 작업에서 잘한다고 해서 대규모 브라운필드 유지보수에서도 같은 방식으로 성공하는 것은 아니다. 단일 파일 또는 단일 모듈 수준의 수정과, 여러 서비스·도메인·데이터 계약·운영 제약이 얽힌 변경은 완전히 다른 문제다.
 
-코딩 에이전트가 가장 잘하는 일은 다음과 같다.
+에이전트가 어려워하는 일은 보통 “코드를 쓰는 일”이 아니다. 오히려 다음이 어렵다.
 
-- 명확한 입력과 출력이 있는 함수 구현
-- 국소적인 버그 수정
-- 기존 패턴을 따르는 반복 코드 작성
-- 테스트 케이스 추가
-- 단순한 리팩터링
-- 명확한 컴파일 오류 또는 테스트 실패 수정
-
-반대로 에이전트가 어려워하는 일은 다음과 같다.
-
-- 어떤 코드가 authoritative한 정책 위치인지 판단하기
-- 여러 중복 구현 중 진짜 규칙을 구분하기
-- 암묵적인 비즈니스 불변조건 추론하기
-- 과거의 설계 의도 파악하기
-- 테스트가 없는 운영 리스크 판단하기
-- 서비스 간 계약 변경의 파급효과 계산하기
-- 장기 리팩터링 과정에서 목표를 유지하기
-- “멈춰야 할 시점”을 판단하기
+* 어디가 진짜 정책 위치인지 판단하기
+* 여러 중복 구현 중 권위 있는 구현을 구분하기
+* 문서화되지 않은 비즈니스 규칙을 추론하기
+* 과거 설계 의도와 임시 workaround를 구분하기
+* 테스트가 없는 운영 리스크 판단하기
+* 서비스 간 계약 변경의 파급효과 계산하기
+* 장기 리팩터링 과정에서 목표를 잃지 않기
+* 더 진행하면 위험하다는 시점에 멈추기
 
 이 차이를 보지 못하면 조직은 AI 도입 효과를 과대평가한다. 에이전트가 코드를 빠르게 만들수록 실제 병목은 코드 작성에서 리뷰, 검증, 회귀 방지, 운영 안정성으로 이동한다.
 
-결국 질문은 “에이전트가 코드를 쓸 수 있는가?”가 아니다.
+결국 중요한 질문은 “에이전트가 코드를 쓸 수 있는가?”가 아니다.
 
-질문은 이것이다.
+중요한 질문은 이것이다.
 
 **에이전트가 만든 변경을 대규모 브라운필드 시스템에 안전하게 통합할 수 있는가?**
 
-## 2장. 브라운필드가 어려운 이유
+## 2장. 브라운필드는 왜 어려운가
 
-브라운필드는 단순히 오래된 코드가 아니다. 브라운필드는 시간이 축적된 사회기술적 시스템이다.
+브라운필드는 단순히 오래된 코드가 아니다. 브라운필드는 시간이 축적된 사회기술적 시스템이다. 그 안에는 코드뿐 아니라 조직, 운영, 장애, 데이터, 고객, 의사결정의 흔적이 함께 들어 있다.
 
-그 안에는 코드만 있는 것이 아니다.
+브라운필드에는 보통 다음이 섞여 있다.
 
-- 도메인 지식
-- 장애 이력
-- 운영 관행
-- 팀 간 소유권
-- 고객별 예외
-- 데이터 마이그레이션 이력
-- 테스트되지 않은 불변조건
-- deprecated API
-- 임시 workaround
-- 과거 의사결정의 흔적
-- 문서화되지 않은 제약
+* 도메인 지식
+* 장애 이력
+* 운영 관행
+* 팀 간 소유권
+* 고객별 예외
+* 데이터 마이그레이션 이력
+* 테스트되지 않은 불변조건
+* deprecated API
+* 임시 workaround
+* 과거 의사결정의 흔적
+* 문서화되지 않은 제약
 
-브라운필드 유지보수가 어려운 이유는 코드량이 많아서가 아니다. 진짜 문제는 변경 하나를 안전하게 수행하기 위해 알아야 할 맥락이 너무 많다는 데 있다.
+브라운필드 유지보수가 어려운 이유는 코드량이 많아서만은 아니다. 진짜 문제는 변경 하나를 안전하게 수행하기 위해 알아야 할 맥락이 너무 많다는 데 있다.
 
-예를 들어 “구독 갱신 정책을 바꾸라”는 요청을 생각해 보자.
+예를 들어 “구독 갱신 정책을 바꾸라”는 요청을 생각해 보자. 겉보기에는 간단하다. 하지만 실제 시스템에서는 다음을 확인해야 할 수 있다.
 
-겉보기에는 간단하다. 하지만 실제 시스템에서는 다음을 모두 확인해야 할 수 있다.
-
-- subscription 상태 모델
-- customer 상태 모델
-- invoice 생성 정책
-- payment provider mapping
-- renewal batch job
-- webhook 처리
-- idempotency key
-- retry policy
-- coupon과 discount
-- tax calculation
-- mobile API 응답
-- admin tool 표시
-- CS 운영 화면
-- 데이터 분석 파이프라인
-- notification 발송 조건
-- 장애 runbook
-- 기존 테스트 fixture
+* subscription 상태 모델
+* customer 상태 모델
+* invoice 생성 정책
+* payment provider mapping
+* renewal batch job
+* webhook 처리
+* idempotency key
+* retry policy
+* coupon과 discount
+* tax calculation
+* mobile API 응답
+* admin tool 표시
+* CS 운영 화면
+* 데이터 분석 파이프라인
+* notification 발송 조건
+* 장애 runbook
+* 기존 테스트 fixture
 
 사람도 어렵다. 에이전트는 더 어렵다. 에이전트는 이 모든 것을 자동으로 알고 있지 않다. 검색해야 하고, 읽어야 하고, 해석해야 한다. 일부만 놓쳐도 버그가 생긴다.
 
@@ -123,13 +96,13 @@ category: tech
 
 ## 3장. LLM과 에이전트의 구조적 한계
 
-에이전트 시대의 엔지니어링은 모델의 실제 동작 원리에 기반해야 한다. 막연히 “AI가 더 똑똑해질 것”이라는 기대 위에 방법론을 세우면 실패한다.
+에이전트 시대의 엔지니어링은 모델의 실제 동작 방식에 기반해야 한다. 막연히 “AI가 더 똑똑해질 것”이라는 기대 위에 방법론을 세우면 실패한다.
 
 ### 3.1 LLM은 저장소의 진실을 모른다
 
 LLM은 저장소 전체의 진실을 본질적으로 알고 있지 않다. 모델은 학습된 일반 지식과 현재 컨텍스트에 들어온 정보로 답한다. 저장소에 대한 진실은 검색, 파일 읽기, 테스트 출력, 빌드 결과, 문서, CI 로그를 통해 공급된다.
 
-따라서 에이전트에게 중요한 것은 “모델이 똑똑한가”만이 아니다. 더 중요한 것은 “모델에게 올바른 진실을 공급하는 경로가 있는가”다.
+따라서 에이전트에게 중요한 것은 “모델이 얼마나 똑똑한가”만이 아니다. 더 중요한 것은 “모델에게 올바른 진실을 공급하는 경로가 있는가”다.
 
 코드베이스 안에 같은 정책이 세 곳에 중복되어 있고, 테스트는 한 곳만 검증하며, 문서는 예전 내용을 담고 있다면 에이전트는 잘못된 진실을 바탕으로 그럴듯한 패치를 만든다.
 
@@ -152,29 +125,29 @@ LLM은 저장소 전체의 진실을 본질적으로 알고 있지 않다. 모�
 
 따라서 에이전트 성능은 모델만의 함수가 아니다.
 
-에이전트 성능은 다음의 함수다.
-
 ```text
-Agent Performance = f(Model Capability,
-                      Tool Quality,
-                      Retrieval Quality,
-                      Codebase Structure,
-                      Test Oracle Quality,
-                      Feedback Clarity,
-                      Human Governance)
+에이전트 성능 = f(
+  모델 성능,
+  도구 품질,
+  검색 품질,
+  코드베이스 구조,
+  테스트의 신뢰도,
+  피드백의 명확성,
+  사람의 관리 방식
+)
 ```
 
-이 책은 특히 Codebase Structure, Test Oracle Quality, Feedback Clarity, Human Governance에 집중한다.
+이 책은 특히 코드베이스 구조, 테스트의 신뢰도, 피드백의 명확성, 사람의 관리 방식에 집중한다.
 
 ### 3.3 긴 컨텍스트는 근본 해법이 아니다
 
 컨텍스트 윈도우가 커지면 많은 문제가 완화된다. 더 많은 파일, 문서, 로그를 한 번에 볼 수 있다. 하지만 긴 컨텍스트는 근본 해법이 아니다.
 
-왜냐하면 브라운필드 문제는 “정보가 부족한 문제”만이 아니라 “어떤 정보가 authoritative한지 모르는 문제”이기 때문이다.
+브라운필드 문제는 “정보가 부족한 문제”만이 아니다. 더 자주 발생하는 문제는 “어떤 정보가 진짜인지 모르는 문제”다.
 
 긴 컨텍스트에 오래된 문서, 중복 구현, deprecated 코드, 임시 workaround, 실패한 실험의 흔적을 모두 넣으면 오히려 판단이 어려워진다.
 
-브라운필드에서 필요한 것은 단순한 context expansion이 아니라 context governance다.
+브라운필드에서 필요한 것은 단순한 context expansion이 아니라 context governance다. 쉬운 말로 하면, 맥락을 더 많이 넣는 것보다 맥락을 정리하고 우선순위를 부여하는 것이 중요하다.
 
 어떤 정보가 최신인가. 어떤 코드가 진짜 정책인가. 어떤 테스트가 핵심 불변조건을 검증하는가. 어떤 문서는 더 이상 신뢰하면 안 되는가. 어떤 변경은 사람 승인을 받아야 하는가.
 
@@ -186,32 +159,46 @@ Agent Performance = f(Model Capability,
 
 테스트가 없을 수 있다. 테스트가 잘못되었을 수 있다. 테스트가 구현 세부사항만 확인할 수 있다. 운영 데이터 분포를 반영하지 못할 수 있다. 보안, 성능, 개인정보, backward compatibility, 장애 대응 조건은 테스트에 없을 수 있다.
 
-따라서 브라운필드에서 필요한 것은 단순한 테스트 실행이 아니다. 필요한 것은 변경 유형별로 무엇을 검증해야 하는지 정의한 실행 가능한 계약이다. 이 책에서는 이를 Change Contract라고 부른다.
+따라서 브라운필드에서 필요한 것은 단순한 테스트 실행이 아니다. 필요한 것은 변경 유형별로 무엇을 검증해야 하는지 정의한 실행 가능한 약속이다. 이 책에서는 이를 **Change Contract**, 즉 **변경 계약**이라고 부른다.
 
 ---
 
 # 2부. 핵심 개념
 
-## 4장. Context Surface Area
+이 책에서는 일부 영어 용어를 사용한다. 이유는 멋있어 보이기 위해서가 아니다. 기존 소프트웨어 엔지니어링에서 잘 다뤄지지 않았던 문제를 정확히 가리키기 위해서다. 다만 모든 용어는 처음 등장할 때 쉬운 한글 설명을 함께 붙인다.
+
+핵심 개념은 다섯 가지다.
+
+```text
+Context Surface Area  = 작업에 필요한 맥락의 크기
+Semantic Addressability = 의미 있는 이름으로 찾을 수 있는 성질
+Change Contract = 변경할 때 지켜야 할 약속
+Agent-Readable Architecture = 에이전트도 읽을 수 있는 설계 지도
+Blast Radius Budget = 변경이 퍼질 수 있는 범위의 예산
+```
+
+이 다섯 가지는 에이전트가 브라운필드에서 자주 실패하는 지점을 직접 겨냥한다.
+
+## 4장. Context Surface Area: 작업 맥락의 크기
 
 ### 4.1 정의
 
-**Context Surface Area, CSA**는 어떤 변경을 안전하게 수행하기 위해 에이전트가 회수하고 이해해야 하는 정보의 총량이다.
+**Context Surface Area**, 줄여서 **CSA**는 어떤 변경을 안전하게 수행하기 위해 에이전트가 찾아보고 이해해야 하는 정보의 총량이다. 쉬운 말로 하면 “이 작업을 하려면 얼마나 많은 맥락을 알아야 하는가”다.
 
 여기에는 코드 파일만 포함되지 않는다.
 
-- 관련 파일 수
-- 관련 심볼 수
-- 도메인 개념 수
-- 서비스 경계 수
-- DB 테이블 수
-- API contract 수
-- 이벤트 타입 수
-- 테스트 수
-- 문서 수
-- 로그와 metric 수
-- 운영 runbook 수
-- 암묵적 정책 수
+* 관련 파일 수
+* 관련 심볼 수
+* 도메인 개념 수
+* 서비스 경계 수
+* DB 테이블 수
+* API contract 수
+* 이벤트 타입 수
+* 테스트 수
+* 문서 수
+* 로그와 metric 수
+* 운영 runbook 수
+* 암묵적 정책 수
 
 변경에 필요한 CSA가 클수록 에이전트의 실패 확률은 올라간다.
 
@@ -231,15 +218,15 @@ Agent Performance = f(Model Capability,
 
 CSA가 큰 시스템에서는 다음 현상이 나타난다.
 
-- 작은 변경에도 많은 파일을 열어야 한다.
-- 정책이 여러 레이어에 흩어져 있다.
-- 같은 개념이 여러 이름으로 불린다.
-- 테스트가 어디에 있는지 찾기 어렵다.
-- 로그와 코드의 용어가 다르다.
-- 문서가 실제 코드와 다르다.
-- 한 모듈 수정이 예상치 못한 다른 모듈 실패를 만든다.
-- 에이전트가 자주 중복 helper를 만든다.
-- 리뷰어가 “이거 다른 데도 고쳐야 하지 않나?”라고 반복해서 묻는다.
+* 작은 변경에도 많은 파일을 열어야 한다.
+* 정책이 여러 레이어에 흩어져 있다.
+* 같은 개념이 여러 이름으로 불린다.
+* 테스트가 어디에 있는지 찾기 어렵다.
+* 로그와 코드의 용어가 다르다.
+* 문서가 실제 코드와 다르다.
+* 한 모듈 수정이 예상치 못한 다른 모듈 실패를 만든다.
+* 에이전트가 자주 중복 helper를 만든다.
+* 리뷰어가 “이거 다른 데도 고쳐야 하지 않나?”라고 반복해서 묻는다.
 
 이런 조직에서 AI 도구를 도입하면 처음에는 속도가 오르는 것처럼 보인다. 하지만 시간이 지나면 리뷰 병목, 회귀 버그, 중복 코드, 테스트 약화가 늘어날 수 있다.
 
@@ -247,8 +234,8 @@ CSA가 큰 시스템에서는 다음 현상이 나타난다.
 
 CSA를 줄이는 방법은 다음과 같다.
 
-1. 변경 단위 중심으로 모듈을 재구성한다.
-2. 도메인 정책을 authoritative location에 둔다.
+1. 함께 바뀌는 코드를 가까이 둔다.
+2. 도메인 정책을 권위 있는 한 위치에 둔다.
 3. 중복 정책을 제거한다.
 4. 테스트를 정책 가까이에 둔다.
 5. 로그, metric, 테스트명, 코드 심볼의 용어를 맞춘다.
@@ -260,11 +247,13 @@ CSA를 줄이는 방법은 다음과 같다.
 
 CSA는 완전히 없앨 수 없다. 대규모 시스템에는 본질적 복잡성이 있다. 목표는 복잡성을 숨기는 것이 아니라, 변경별로 필요한 맥락을 작고 명확한 경계 안에 가두는 것이다.
 
-## 5장. Semantic Addressability
+## 5장. Semantic Addressability: 의미 있는 이름으로 찾기
 
 ### 5.1 정의
 
-**Semantic Addressability**는 도메인 개념, 정책, 상태, 이벤트, 실패 케이스가 일관된 이름을 통해 검색 가능하고, 코드·문서·테스트·로그에서 같은 의미 주소로 회수되는 성질이다.
+**Semantic Addressability**는 도메인 개념, 정책, 상태, 이벤트, 실패 케이스가 일관된 이름을 통해 검색 가능하고, 코드·문서·테스트·로그에서 같은 의미로 연결되는 성질이다.
+
+쉬운 말로 하면, 에이전트가 검색했을 때 필요한 정보를 놓치지 않게 이름을 붙이는 능력이다.
 
 에이전트가 무언가를 고치려면 먼저 찾아야 한다. 따라서 검색 가능한 의미 주소는 에이전트 시대 유지보수성의 핵심이다.
 
@@ -272,7 +261,7 @@ CSA는 완전히 없앨 수 없다. 대규모 시스템에는 본질적 복잡�
 
 DDD의 유비쿼터스 언어는 원래 도메인 전문가와 개발자가 같은 언어를 쓰게 하는 개념이었다. 에이전트 시대에는 여기에 새로운 의미가 추가된다.
 
-유비쿼터스 언어는 인간 커뮤니케이션 도구이자 에이전트 검색 인덱스다.
+유비쿼터스 언어는 사람 간 커뮤니케이션 도구이자 에이전트 검색 인덱스다.
 
 예를 들어 같은 개념을 다음처럼 섞어 쓰면 안 된다.
 
@@ -304,29 +293,29 @@ function mapProviderClientToCustomer(input: ProviderClient): CustomerId {
 
 여기서 중요한 점은 외부 용어와 내부 용어의 경계를 명시하는 것이다. alias를 방치하지 않고 mapping을 코드로 드러내야 한다.
 
-### 5.3 의미 주소의 대상
+### 5.3 이름은 코드 밖에서도 맞아야 한다
 
 Semantic Addressability는 코드명에만 적용되지 않는다. 다음 모든 곳에 적용되어야 한다.
 
-- class name
-- function name
-- file name
-- directory name
-- DB column
-- API field
-- event name
-- log event name
-- metric name
-- test name
-- ADR 제목
-- runbook keyword
-- alert name
+* class name
+* function name
+* file name
+* directory name
+* DB column
+* API field
+* event name
+* log event name
+* metric name
+* test name
+* ADR 제목
+* runbook keyword
+* alert name
 
-운영 로그에 `user_id`가 나오고, 코드에는 `customerId`가 있고, DB에는 `member_no`가 있으면 에이전트는 장애 로그에서 관련 코드를 추적하기 어렵다. 사람도 어렵다.
+운영 로그에는 `user_id`가 나오고, 코드에는 `customerId`가 있고, DB에는 `member_no`가 있으면 에이전트는 장애 로그에서 관련 코드를 추적하기 어렵다. 사람도 어렵다.
 
-### 5.4 Domain Term Registry
+### 5.4 Domain Term Registry: 도메인 용어 사전
 
-대규모 브라운필드에서는 하루아침에 모든 이름을 바꿀 수 없다. 따라서 먼저 Domain Term Registry를 만든다.
+대규모 브라운필드에서는 하루아침에 모든 이름을 바꿀 수 없다. 따라서 먼저 **Domain Term Registry**, 즉 도메인 용어 사전을 만든다.
 
 ```yaml
 terms:
@@ -367,29 +356,31 @@ terms:
 6. 테스트명과 로그명부터 먼저 통일한다.
 7. 큰 rename은 기능 변경과 분리한다.
 
-완벽한 통일보다 중요한 것은 authoritative한 용어 지도를 만드는 것이다.
+완벽한 통일보다 중요한 것은 권위 있는 용어 지도를 만드는 것이다.
 
-## 6장. Change Contract
+## 6장. Change Contract: 변경할 때 지켜야 할 약속
 
 ### 6.1 정의
 
-**Change Contract**는 특정 변경 유형이 반드시 보존해야 하는 도메인 불변조건, API 호환성, 데이터 호환성, 보안 조건, 운영 조건을 기계적으로 검증 가능한 형태로 표현한 계약이다.
+**Change Contract**는 특정 변경 유형이 반드시 보존해야 하는 도메인 불변조건, API 호환성, 데이터 호환성, 보안 조건, 운영 조건을 검증 가능한 형태로 표현한 계약이다.
+
+쉬운 말로 하면 “이 코드를 바꿀 때 절대 깨지면 안 되는 것들의 목록”이다.
 
 테스트는 Change Contract의 일부다. 하지만 Change Contract는 테스트보다 넓다.
 
 Change Contract에는 다음이 포함될 수 있다.
 
-- unit test
-- integration test
-- contract test
-- schema compatibility check
-- migration validation
-- idempotency test
-- authorization policy check
-- observability assertion
-- security scan
-- performance budget
-- rollback condition
+* unit test
+* integration test
+* contract test
+* schema compatibility check
+* migration validation
+* idempotency test
+* authorization policy check
+* observability assertion
+* security scan
+* performance budget
+* rollback condition
 
 ### 6.2 왜 Change Contract가 필요한가
 
@@ -437,29 +428,29 @@ it('does not renew expired subscriptions', () => {});
 
 하지만 Change Contract는 더 넓다.
 
-- expired subscription은 invoice를 만들지 않는다.
-- skipped reason이 기록된다.
-- retry해도 duplicate invoice가 생기지 않는다.
-- 기존 active subscription 동작은 유지된다.
-- provider mapping은 바뀌지 않는다.
+* expired subscription은 invoice를 만들지 않는다.
+* skipped reason이 기록된다.
+* retry해도 duplicate invoice가 생기지 않는다.
+* 기존 active subscription 동작은 유지된다.
+* provider mapping은 바뀌지 않는다.
 
 이 계약을 여러 테스트와 정적 검사로 나누어 검증해야 한다.
 
-### 6.4 Change Contract Catalog
+### 6.4 Change Contract Catalog: 변경 계약 목록
 
 조직은 변경 유형별 catalog를 만들어야 한다.
 
 예시는 다음과 같다.
 
-- API schema change contract
-- DB migration contract
-- payment calculation contract
-- authorization policy contract
-- event schema contract
-- batch job contract
-- notification contract
-- privacy data handling contract
-- feature flag rollout contract
+* API schema change contract
+* DB migration contract
+* payment calculation contract
+* authorization policy contract
+* event schema contract
+* batch job contract
+* notification contract
+* privacy data handling contract
+* feature flag rollout contract
 
 각 contract에는 다음 필드가 필요하다.
 
@@ -477,13 +468,15 @@ escalation_conditions:
 
 이 catalog는 AGENTS.md, CI, PR bot, code review template과 연결되어야 한다.
 
-## 7장. Agent-Readable Architecture
+## 7장. Agent-Readable Architecture: 에이전트가 읽을 수 있는 설계 지도
 
 ### 7.1 정의
 
 **Agent-Readable Architecture**는 아키텍처 경계, 의존 방향, 소유권, 금지된 import, 변경 절차, 테스트 명령, 위험 파일을 에이전트와 자동화 시스템이 읽을 수 있는 형식으로 표현한 것이다.
 
-기존 아키텍처 문서는 사람이 읽는 설명이었다. ABE에서 아키텍처는 실행 가능한 제약이어야 한다.
+쉬운 말로 하면 코드베이스의 설계 지도를 사람이 읽는 문서로만 두지 말고, 에이전트와 CI도 읽고 사용할 수 있게 만들자는 뜻이다.
+
+기존 아키텍처 문서는 사람이 읽는 설명이었다. Codebase-as-Harness에서 아키텍처는 실행 가능한 제약이어야 한다.
 
 ### 7.2 Architecture Manifest
 
@@ -570,11 +563,13 @@ AGENTS.md는 에이전트 시대의 온보딩 문서다. 그러나 AGENTS.md만�
 
 AGENTS.md는 사람이 읽기 쉬운 entry point이고, architecture manifest는 기계가 집행할 수 있는 source of truth가 되어야 한다.
 
-## 8장. Blast Radius Budget
+## 8장. Blast Radius Budget: 변경 범위 예산
 
 ### 8.1 정의
 
 **Blast Radius Budget**은 특정 작업 유형이 건드릴 수 있는 파일, 모듈, public API, migration, dependency, 설정 변경의 범위를 사전에 제한하는 예산이다.
+
+쉬운 말로 하면 “이 작업은 여기까지만 건드릴 수 있다”는 선을 미리 정하는 것이다.
 
 에이전트는 요청을 해결하려고 하면서 diff를 넓힐 수 있다. 브라운필드에서는 diff가 커질수록 리뷰 비용과 회귀 위험이 비선형으로 증가한다. 따라서 작업 유형별 예산이 필요하다.
 
@@ -623,14 +618,14 @@ rollback_plan: required
 
 에이전트는 다음 상황에서 멈춰야 한다.
 
-- 예상보다 많은 파일을 수정해야 한다.
-- public API 변경이 필요하다.
-- DB migration이 필요하다.
-- 권한, 결제, 개인정보, 삭제 로직을 건드린다.
-- 테스트를 약화해야 통과한다.
-- 기존 정책 위치가 불명확하다.
-- 동일한 개념의 중복 구현이 발견된다.
-- 요구사항과 기존 동작이 충돌한다.
+* 예상보다 많은 파일을 수정해야 한다.
+* public API 변경이 필요하다.
+* DB migration이 필요하다.
+* 권한, 결제, 개인정보, 삭제 로직을 건드린다.
+* 테스트를 약화해야 통과한다.
+* 기존 정책 위치가 불명확하다.
+* 동일한 개념의 중복 구현이 발견된다.
+* 요구사항과 기존 동작이 충돌한다.
 
 멈춤은 실패가 아니다. 브라운필드에서 멈춤은 안전 기능이다.
 
@@ -638,26 +633,26 @@ rollback_plan: required
 
 # 3부. 기존 소프트웨어 엔지니어링의 재정의
 
-## 9장. DDD에서 Semantic Addressability Engineering으로
+## 9장. DDD는 검색 가능한 도메인 언어가 된다
 
 DDD는 에이전트 시대에 더 중요해진다. 다만 초점이 확장된다.
 
 기존 DDD는 도메인 전문가와 개발자가 같은 언어를 쓰고, 복잡한 도메인을 모델링하고, bounded context로 개념 경계를 분리하는 데 초점을 두었다.
 
-ABE에서는 DDD가 다음과 같이 재정의된다.
+Codebase-as-Harness에서는 DDD가 다음과 같이 재정의된다.
 
-- Ubiquitous Language → 검색 가능한 도메인 주소 체계
-- Bounded Context → 컨텍스트 윈도우 경계
-- Aggregate → 변경 영향과 일관성의 단위
-- Domain Service → authoritative policy location
-- Repository → persistence boundary
-- Anti-Corruption Layer → 외부 의미 오염 차단 장치
+* Ubiquitous Language → 검색 가능한 도메인 주소 체계
+* Bounded Context → 에이전트가 탐색할 수 있는 경계
+* Aggregate → 변경 영향과 일관성의 단위
+* Domain Service → 권위 있는 정책 위치
+* Repository → 저장소 경계
+* Anti-Corruption Layer → 외부 의미 오염 차단 장치
 
-에이전트가 브라운필드에서 실패하는 대표적 이유는 도메인 언어가 흐릿하기 때문이다. `user`, `member`, `customer`, `account`가 혼용되면 에이전트는 정확한 코드를 찾지 못한다. 같은 정책이 `service`, `helper`, `job`, `controller`에 흩어져 있으면 authoritative source를 판단하지 못한다.
+에이전트가 브라운필드에서 실패하는 대표적 이유는 도메인 언어가 흐릿하기 때문이다. `user`, `member`, `customer`, `account`가 혼용되면 에이전트는 정확한 코드를 찾지 못한다. 같은 정책이 `service`, `helper`, `job`, `controller`에 흩어져 있으면 진짜 정책 위치를 판단하지 못한다.
 
 따라서 DDD는 이제 단순한 모델링 방법이 아니라 에이전트가 도메인 의미를 검색하고 조작할 수 있게 만드는 정보 구조화 방법이다.
 
-## 10장. Clean Architecture에서 Context Boundary Engineering으로
+## 10장. Clean Architecture는 작업 맥락을 줄이는 구조가 된다
 
 Clean Architecture의 핵심은 의존성 방향을 제어하고, 비즈니스 정책을 프레임워크와 외부 시스템으로부터 분리하는 것이다.
 
@@ -686,25 +681,25 @@ subscription/
 
 이 구조에서 구독 갱신 정책 변경은 domain과 관련 테스트에 국소화된다. 외부 provider 변경은 infra adapter에 국소화된다. API 변경은 api와 contract test에 국소화된다.
 
-이것이 Context Boundary Engineering이다.
+Clean Architecture는 더 이상 “아름다운 계층 구조”가 아니다. 에이전트가 불필요한 맥락을 읽지 않아도 되게 만드는 작업 경계다.
 
-## 11장. DRY에서 Single Source of Behavioral Truth로
+## 11장. DRY는 동작 규칙의 단일 출처가 된다
 
-DRY는 “중복을 없애라”가 아니다. ABE에서 DRY는 **행동 규칙의 단일 출처를 만들어라**라는 의미다.
+DRY는 “중복을 없애라”가 아니다. Codebase-as-Harness에서 DRY는 **동작 규칙의 단일 출처를 만들어라**라는 의미다.
 
 줄 수가 비슷한 코드를 무조건 합치는 것은 위험하다. 서로 다른 이유로 변하는 코드까지 추상화하면 오히려 CSA가 증가한다.
 
 중요한 것은 다음이 중복되지 않게 하는 것이다.
 
-- 권한 정책
-- 상태 전이
-- 금액 계산
-- 날짜 계산
-- idempotency key 생성
-- retry policy
-- external provider mapping
-- validation schema
-- feature flag 판정
+* 권한 정책
+* 상태 전이
+* 금액 계산
+* 날짜 계산
+* idempotency key 생성
+* retry policy
+* external provider mapping
+* validation schema
+* feature flag 판정
 
 예를 들어 이런 코드는 위험하다.
 
@@ -731,13 +726,13 @@ export class BillingEligibilityPolicy {
 }
 ```
 
-에이전트는 `BillingEligibilityPolicy`를 찾으면 결제 가능성 판단의 authoritative source를 찾은 것이다.
+에이전트는 `BillingEligibilityPolicy`를 찾으면 결제 가능성 판단의 권위 있는 위치를 찾은 것이다.
 
-## 12장. TDD에서 Executable Change Contract로
+## 12장. TDD는 실행 가능한 변경 계약이 된다
 
 TDD는 에이전트 시대에도 중요하다. 다만 단순히 “테스트를 먼저 작성한다”를 넘어야 한다.
 
-ABE에서 테스트는 Change Contract를 실행 가능한 형태로 만드는 수단이다.
+Codebase-as-Harness에서 테스트는 Change Contract를 실행 가능한 형태로 만드는 수단이다.
 
 좋은 테스트명은 요구사항 문장이어야 한다.
 
@@ -757,30 +752,30 @@ it('returns false', () => {});
 
 테스트는 검색 대상이다. 에이전트가 `expired subscription renewal`을 검색했을 때 관련 테스트가 나와야 한다.
 
-## 13장. CI/CD에서 Agent Control Plane으로
+## 13장. CI/CD는 에이전트 작업 관문이 된다
 
-CI/CD는 더 이상 빌드와 배포 자동화만이 아니다. 에이전트가 만든 변경을 제어하는 control plane이다.
+CI/CD는 더 이상 빌드와 배포 자동화만이 아니다. 에이전트가 만든 변경을 제어하는 관문이다.
 
 CI는 다음을 집행해야 한다.
 
-- typecheck
-- lint
-- unit test
-- integration test
-- contract test
-- schema compatibility
-- dependency boundary
-- secret scan
-- migration validation
-- generated file consistency
-- blast radius policy
-- ownership approval
+* typecheck
+* lint
+* unit test
+* integration test
+* contract test
+* schema compatibility
+* dependency boundary
+* secret scan
+* migration validation
+* generated file consistency
+* blast radius policy
+* ownership approval
 
 에이전트에게 “주의해라”라고 말하는 것은 약하다. CI에서 막아야 한다.
 
 프롬프트는 권고다. CI는 법이다.
 
-## 14장. Observability에서 Runtime Semantic Feedback으로
+## 14장. Observability는 운영 신호와 코드의 연결이 된다
 
 관측성은 운영팀만을 위한 것이 아니다. 에이전트가 운영 장애를 코드 변경으로 연결하기 위한 의미적 다리다.
 
@@ -805,7 +800,7 @@ skipped
 
 에이전트가 장애 로그를 보고 코드를 검색하려면 로그 event name, error code, metric name, test name, code symbol이 연결되어야 한다.
 
-관측성은 runtime에서 발생한 사실을 codebase의 semantic address로 되돌려주는 시스템이다.
+관측성은 runtime에서 발생한 사실을 코드베이스의 의미 주소로 되돌려주는 시스템이다.
 
 ---
 
@@ -813,13 +808,15 @@ skipped
 
 ## 15장. SCOPE 루프
 
-ABE의 기본 작업 루프는 SCOPE다.
+Codebase-as-Harness의 기본 작업 루프는 SCOPE다.
 
-- Search
-- Contract
-- Operate
-- Prove
-- Explain
+* Search: 먼저 찾는다.
+* Contract: 지켜야 할 약속을 정한다.
+* Operate: 최소 범위로 고친다.
+* Prove: 검증한다.
+* Explain: 근거를 남긴다.
+
+SCOPE는 에이전트에게 무작정 “고쳐줘”라고 시키지 않기 위한 절차다. 브라운필드에서는 수정 자체보다 수정 전 탐색과 수정 후 검증이 더 중요하다.
 
 ### 15.1 Search
 
@@ -827,13 +824,13 @@ ABE의 기본 작업 루프는 SCOPE다.
 
 산출물:
 
-- 관련 파일 목록
-- authoritative policy 위치
-- 중복 가능 위치
-- 관련 테스트
-- 관련 문서
-- 예상 blast radius
-- 불명확한 점
+* 관련 파일 목록
+* 권위 있는 정책 위치
+* 중복 가능 위치
+* 관련 테스트
+* 관련 문서
+* 예상 변경 범위
+* 불명확한 점
 
 요청 예시:
 
@@ -847,14 +844,14 @@ ABE의 기본 작업 루프는 SCOPE다.
 
 산출물:
 
-- 보존해야 할 동작
-- 새로 만족해야 할 동작
-- 호환성 조건
-- 보안 조건
-- 데이터 조건
-- 관측성 조건
-- 실행할 테스트
-- 멈춤 조건
+* 보존해야 할 동작
+* 새로 만족해야 할 동작
+* 호환성 조건
+* 보안 조건
+* 데이터 조건
+* 관측성 조건
+* 실행할 테스트
+* 멈춤 조건
 
 요청 예시:
 
@@ -868,12 +865,12 @@ ABE의 기본 작업 루프는 SCOPE다.
 
 규칙:
 
-- 기존 abstraction 우선
-- 중복 정책 금지
-- public API 변경 금지 unless contract says so
-- migration 별도
-- formatter-only diff 분리
-- blast radius budget 준수
+* 기존 abstraction 우선
+* 중복 정책 금지
+* 계약에 없는 public API 변경 금지
+* migration 별도 처리
+* formatter-only diff 분리
+* blast radius budget 준수
 
 요청 예시:
 
@@ -887,14 +884,14 @@ ABE의 기본 작업 루프는 SCOPE다.
 
 검증에는 다음이 포함될 수 있다.
 
-- related unit test
-- integration test
-- contract test
-- typecheck
-- lint
-- schema compatibility
-- migration validation
-- security scan
+* related unit test
+* integration test
+* contract test
+* typecheck
+* lint
+* schema compatibility
+* migration validation
+* security scan
 
 요청 예시:
 
@@ -908,12 +905,12 @@ ABE의 기본 작업 루프는 SCOPE다.
 
 산출물:
 
-- 무엇을 바꿨는가
-- 왜 그 위치를 바꿨는가
-- 어떤 계약을 만족하는가
-- 어떤 테스트를 실행했는가
-- 어떤 위험이 남아 있는가
-- 어떤 후속 작업이 필요한가
+* 무엇을 바꿨는가
+* 왜 그 위치를 바꿨는가
+* 어떤 계약을 만족하는가
+* 어떤 테스트를 실행했는가
+* 어떤 위험이 남아 있는가
+* 어떤 후속 작업이 필요한가
 
 요청 예시:
 
@@ -921,15 +918,13 @@ ABE의 기본 작업 루프는 SCOPE다.
 git diff 기준으로 변경 요약, 검증 결과, 남은 위험을 PR 설명 형식으로 정리해줘.
 ```
 
-## 16장. Agentability Audit
+## 16장. Agentability Audit: 에이전트 친화도 점검
 
-대규모 조직은 AI 도입률보다 Agentability를 측정해야 한다.
-
-### 16.1 Agentability란 무엇인가
+대규모 조직은 AI 도입률보다 **Agentability**, 즉 에이전트 친화도를 측정해야 한다.
 
 Agentability는 특정 코드베이스가 에이전트에 의해 안전하게 탐색, 수정, 검증, 리뷰될 수 있는 정도다.
 
-### 16.2 평가 항목
+### 16.1 평가 항목
 
 ```text
 Agentability Score =
@@ -946,20 +941,22 @@ Agentability Score =
 - Generated Diff Noise
 ```
 
-### 16.3 실무 평가 질문
+이 식은 엄밀한 수학 공식이라기보다 점검 틀이다. 중요한 것은 “우리 조직이 AI를 얼마나 많이 쓰는가”보다 “우리 코드베이스가 에이전트가 일하기 쉬운 상태인가”를 묻는 것이다.
 
-- 같은 도메인 개념이 같은 이름으로 불리는가?
-- 핵심 정책의 authoritative location이 있는가?
-- 작은 변경의 관련 파일 수가 제한적인가?
-- 관련 테스트를 빠르게 찾고 실행할 수 있는가?
-- 테스트명이 비즈니스 규칙을 설명하는가?
-- 로그와 코드가 같은 도메인 언어를 쓰는가?
-- 아키텍처 경계가 자동으로 검증되는가?
-- 위험 변경의 escalation rule이 있는가?
-- generated file과 handwritten file이 분리되어 있는가?
-- 에이전트가 멈춰야 할 조건이 정의되어 있는가?
+### 16.2 실무 평가 질문
 
-### 16.4 결과 해석
+* 같은 도메인 개념이 같은 이름으로 불리는가?
+* 핵심 정책의 권위 있는 위치가 있는가?
+* 작은 변경의 관련 파일 수가 제한적인가?
+* 관련 테스트를 빠르게 찾고 실행할 수 있는가?
+* 테스트명이 비즈니스 규칙을 설명하는가?
+* 로그와 코드가 같은 도메인 언어를 쓰는가?
+* 아키텍처 경계가 자동으로 검증되는가?
+* 위험 변경의 escalation rule이 있는가?
+* generated file과 handwritten file이 분리되어 있는가?
+* 에이전트가 멈춰야 할 조건이 정의되어 있는가?
+
+### 16.3 결과 해석
 
 Agentability가 낮은 시스템에서는 최신 에이전트를 도입해도 큰 효과가 나지 않는다. 오히려 코드 생산량만 늘어 기술부채가 가속될 수 있다.
 
@@ -971,52 +968,52 @@ Agentability가 높은 시스템에서는 모델 차이가 줄어든다. 평범�
 
 ### Level 1. 안전한 반복 작업
 
-- 문서 업데이트
-- 테스트명 개선
-- lint fix
-- 타입 annotation 추가
-- deprecated API 치환
-- 단순 로그명 정리
-- dead code 후보 탐색
+* 문서 업데이트
+* 테스트명 개선
+* lint fix
+* 타입 annotation 추가
+* deprecated API 치환
+* 단순 로그명 정리
+* dead code 후보 탐색
 
 에이전트에게 적극 위임할 수 있다.
 
 ### Level 2. 국소적 유지보수
 
-- 작은 버그 수정
-- 단일 모듈 내 정책 수정
-- adapter mapping 수정
-- 단일 API validation 수정
-- fixture 정리
+* 작은 버그 수정
+* 단일 모듈 내 정책 수정
+* adapter mapping 수정
+* 단일 API validation 수정
+* fixture 정리
 
 Change Contract와 관련 테스트가 있으면 위임 가능하다.
 
 ### Level 3. 중간 규모 변경
 
-- 여러 파일의 정책 이동
-- domain policy 추출
-- API schema 확장
-- 서비스 내부 구조 개편
-- 성능 개선
+* 여러 파일의 정책 이동
+* domain policy 추출
+* API schema 확장
+* 서비스 내부 구조 개편
+* 성능 개선
 
 에이전트는 초안과 기계적 변경을 맡고, 사람은 경계와 계약을 승인해야 한다.
 
 ### Level 4. 고위험 변경
 
-- 서비스 간 계약 변경
-- DB migration과 backfill
-- 권한 정책
-- 결제/정산
-- 개인정보
-- 데이터 삭제
-- 대규모 리팩터링
-- 장애 대응
+* 서비스 간 계약 변경
+* DB migration과 backfill
+* 권한 정책
+* 결제/정산
+* 개인정보
+* 데이터 삭제
+* 대규모 리팩터링
+* 장애 대응
 
 에이전트는 탐색, 영향 분석, 테스트 생성, 문서화에 사용한다. 핵심 결정은 사람이 해야 한다.
 
-## 18장. Evidence-Based Code Review
+## 18장. Evidence-Based Review: 근거 중심 리뷰
 
-에이전트가 만든 PR은 코드만 보면 안 된다. 에이전트가 어떤 증거를 바탕으로 판단했는지 봐야 한다.
+에이전트가 만든 PR은 코드만 보면 안 된다. 에이전트가 어떤 근거를 바탕으로 판단했는지 봐야 한다.
 
 ### 18.1 Evidence Bundle
 
@@ -1035,18 +1032,20 @@ Change Contract와 관련 테스트가 있으면 위임 가능하다.
 - Escalation needed or not
 ```
 
+이를 **Evidence Bundle**, 즉 작업 근거 묶음이라고 부른다.
+
 ### 18.2 리뷰 기준
 
 리뷰어는 다음을 확인한다.
 
-- 올바른 authoritative policy를 수정했는가?
-- 기존 정책을 중복하지 않았는가?
-- 변경 범위가 예산 안에 있는가?
-- 테스트가 계약을 충분히 검증하는가?
-- 테스트를 약화하지 않았는가?
-- public API나 데이터 계약을 몰래 바꾸지 않았는가?
-- 로그와 metric이 의미적으로 연결되어 있는가?
-- 에이전트가 놓친 위험은 없는가?
+* 올바른 정책 위치를 수정했는가?
+* 기존 정책을 중복하지 않았는가?
+* 변경 범위가 예산 안에 있는가?
+* 테스트가 계약을 충분히 검증하는가?
+* 테스트를 약화하지 않았는가?
+* public API나 데이터 계약을 몰래 바꾸지 않았는가?
+* 로그와 metric이 의미적으로 연결되어 있는가?
+* 에이전트가 놓친 위험은 없는가?
 
 ### 18.3 새로운 생산성 지표
 
@@ -1062,15 +1061,15 @@ Verified Change per Human Review Minute
 
 보조 지표:
 
-- PR review iteration count
-- post-merge defect rate
-- rollback rate
-- CI failure recovery time
-- agent retry count
-- files inspected per task
-- files changed per task
-- test coverage of Change Contract
-- blast radius budget violation rate
+* PR review iteration count
+* post-merge defect rate
+* rollback rate
+* CI failure recovery time
+* agent retry count
+* files inspected per task
+* files changed per task
+* test coverage of Change Contract
+* blast radius budget violation rate
 
 ---
 
@@ -1082,15 +1081,15 @@ Verified Change per Human Review Minute
 
 AI 도입 전 현재 상태를 측정한다.
 
-- 작업 유형별 lead time
-- review time
-- CI failure rate
-- rollback rate
-- hotfix rate
-- test flakiness
-- cross-service change frequency
-- post-merge defect
-- incident root cause
+* 작업 유형별 lead time
+* review time
+* CI failure rate
+* rollback rate
+* hotfix rate
+* test flakiness
+* cross-service change frequency
+* post-merge defect
+* incident root cause
 
 측정 없이 AI를 도입하면 효과를 판단할 수 없다.
 
@@ -1098,13 +1097,13 @@ AI 도입 전 현재 상태를 측정한다.
 
 위험이 낮은 작업부터 시작한다.
 
-- lint fix
-- deprecated API 치환
-- 테스트명 개선
-- 문서 업데이트
-- 타입 annotation 추가
-- 로그 필드명 통일
-- dead code 후보 탐색
+* lint fix
+* deprecated API 치환
+* 테스트명 개선
+* 문서 업데이트
+* 타입 annotation 추가
+* 로그 필드명 통일
+* dead code 후보 탐색
 
 목표는 에이전트 자체보다 workflow와 governance를 안정화하는 것이다.
 
@@ -1112,11 +1111,11 @@ AI 도입 전 현재 상태를 측정한다.
 
 주요 도메인 용어를 정리한다.
 
-- Domain Term Registry 작성
-- AGENTS.md 작성
-- 로그명과 테스트명 정리
-- preferred name 적용
-- legacy alias mapping
+* Domain Term Registry 작성
+* AGENTS.md 작성
+* 로그명과 테스트명 정리
+* preferred name 적용
+* legacy alias mapping
 
 이 단계는 에이전트의 bug localization 성공률을 높인다.
 
@@ -1124,14 +1123,14 @@ AI 도입 전 현재 상태를 측정한다.
 
 가장 중요하고 자주 바뀌는 도메인부터 계약화한다.
 
-- 결제
-- 구독
-- 주문
-- 권한
-- 개인정보
-- 알림
-- 정산
-- 추천/랭킹
+* 결제
+* 구독
+* 주문
+* 권한
+* 개인정보
+* 알림
+* 정산
+* 추천/랭킹
 
 각 도메인에 “변경하면 반드시 검증해야 하는 것”을 정의한다.
 
@@ -1139,10 +1138,10 @@ AI 도입 전 현재 상태를 측정한다.
 
 작업 유형별 blast radius budget을 도입한다.
 
-- bugfix 예산
-- refactor 예산
-- feature 예산
-- high-risk escalation rule
+* bugfix 예산
+* refactor 예산
+* feature 예산
+* high-risk escalation rule
 
 CI와 PR bot에서 위반을 감지한다.
 
@@ -1150,14 +1149,14 @@ CI와 PR bot에서 위반을 감지한다.
 
 이제 에이전트를 대규모 유지보수에 투입한다.
 
-- framework migration
-- API migration
-- type hardening
-- policy extraction
-- test characterization
-- observability standardization
-- security fix rollout
-- dead code removal
+* framework migration
+* API migration
+* type hardening
+* policy extraction
+* test characterization
+* observability standardization
+* security fix rollout
+* dead code removal
 
 이 단계에서는 에이전트의 코드 생성 능력이 큰 효과를 낸다. 단, contract와 budget 없이 진행하면 기술부채가 늘어난다.
 
@@ -1167,17 +1166,17 @@ CI와 PR bot에서 위반을 감지한다.
 
 개발자의 핵심 역할은 다음으로 이동한다.
 
-- 도메인 경계 정의
-- 변경 계약 설계
-- 테스트 oracle 설계
-- 아키텍처 제약 집행
-- 에이전트 적용 등급 판단
-- 위험 예산 설정
-- 운영 신호와 코드 연결
-- 리뷰 기준 설계
-- 실패 패턴을 도구와 구조에 반영
+* 도메인 경계 정의
+* 변경 계약 설계
+* 테스트 oracle 설계
+* 아키텍처 제약 집행
+* 에이전트 적용 등급 판단
+* 위험 예산 설정
+* 운영 신호와 코드 연결
+* 리뷰 기준 설계
+* 실패 패턴을 도구와 구조에 반영
 
-개발자는 단순 코더에서 Context Governor가 된다.
+개발자는 단순 코더에서 **Context Governor**, 즉 맥락 관리자가 된다.
 
 이것은 개발자가 덜 기술적이 된다는 뜻이 아니다. 오히려 더 기술적이다. 코드, 도메인, 테스트, 운영, 보안, 조직 구조를 모두 이해해야 한다.
 
@@ -1187,19 +1186,19 @@ CI와 PR bot에서 위반을 감지한다.
 
 플랫폼 팀이 제공할 것:
 
-- 표준 AGENTS.md 템플릿
-- architecture manifest schema
-- Change Contract catalog
-- PR evidence bundle generator
-- blast radius checker
-- dependency boundary checker
-- semantic term registry tool
-- test selection tool
-- agent sandbox
-- secret access guard
-- generated file guard
-- migration guard
-- review dashboard
+* 표준 AGENTS.md 템플릿
+* architecture manifest schema
+* Change Contract catalog
+* PR evidence bundle generator
+* blast radius checker
+* dependency boundary checker
+* semantic term registry tool
+* test selection tool
+* agent sandbox
+* secret access guard
+* generated file guard
+* migration guard
+* review dashboard
 
 플랫폼 팀의 목표는 “AI 도구 구매”가 아니라 “에이전트가 안전하게 일할 수 있는 paved road”를 만드는 것이다.
 
@@ -1231,13 +1230,13 @@ AI 코딩 도구 라이선스를 사는 것은 시작일 뿐이다. 진짜 투�
 
 측정:
 
-- 에이전트가 읽은 파일 수
-- tool call 수
-- token 수
-- 수정 재시도 횟수
-- 리뷰 코멘트 수
-- 최종 merge 여부
-- post-merge defect
+* 에이전트가 읽은 파일 수
+* tool call 수
+* token 수
+* 수정 재시도 횟수
+* 리뷰 코멘트 수
+* 최종 merge 여부
+* post-merge defect
 
 ### 가설 2
 
@@ -1245,10 +1244,10 @@ Semantic Addressability를 개선하면 bug localization 성공률이 오른다.
 
 측정:
 
-- 첫 검색에서 관련 파일 발견률
-- 잘못된 파일 탐색 비율
-- 중복 구현 생성률
-- 수정 누락률
+* 첫 검색에서 관련 파일 발견률
+* 잘못된 파일 탐색 비율
+* 중복 구현 생성률
+* 수정 누락률
 
 ### 가설 3
 
@@ -1256,11 +1255,11 @@ Change Contract가 있는 작업은 단순 테스트만 있는 작업보다 리�
 
 측정:
 
-- review time
-- review iteration
-- CI failure count
-- rollback rate
-- post-merge defect
+* review time
+* review iteration
+* CI failure count
+* rollback rate
+* post-merge defect
 
 ### 가설 4
 
@@ -1268,11 +1267,11 @@ Blast Radius Budget을 강제하면 agent-generated PR의 merge 가능성이 높
 
 측정:
 
-- changed file count
-- diff line count
-- budget violation rate
-- merge lead time
-- reviewer rejection reason
+* changed file count
+* diff line count
+* budget violation rate
+* merge lead time
+* reviewer rejection reason
 
 ### 가설 5
 
@@ -1280,10 +1279,10 @@ Agent-readable architecture artifact는 AGENTS.md 단독보다 장기적으로 �
 
 측정:
 
-- dependency violation rate
-- wrong-layer modification rate
-- architecture review comment count
-- cross-context regression count
+* dependency violation rate
+* wrong-layer modification rate
+* architecture review comment count
+* cross-context regression count
 
 ## 24장. 실험 설계
 
@@ -1293,27 +1292,27 @@ Agent-readable architecture artifact는 AGENTS.md 단독보다 장기적으로 �
 
 전:
 
-- AGENTS.md 없음
-- 용어 불일치
-- 계약 없음
-- 관련 테스트 찾기 어려움
+* AGENTS.md 없음
+* 용어 불일치
+* 계약 없음
+* 관련 테스트 찾기 어려움
 
 후:
 
-- AGENTS.md 있음
-- Domain Term Registry 있음
-- Change Contract 있음
-- test command 명시
-- architecture manifest 있음
+* AGENTS.md 있음
+* Domain Term Registry 있음
+* Change Contract 있음
+* test command 명시
+* architecture manifest 있음
 
 비교:
 
-- 성공률
-- 소요 시간
-- 리뷰 시간
-- 변경 파일 수
-- CI 실패 수
-- post-merge defect
+* 성공률
+* 소요 시간
+* 리뷰 시간
+* 변경 파일 수
+* CI 실패 수
+* post-merge defect
 
 ### 24.2 작업 유형별 실험
 
@@ -1321,57 +1320,57 @@ Agent-readable architecture artifact는 AGENTS.md 단독보다 장기적으로 �
 
 예상 결과:
 
-- Level 1은 높은 자동화율
-- Level 2는 contract 유무에 따라 성공률 차이
-- Level 3은 사람 승인 지점이 중요
-- Level 4는 탐색과 검증 보조 중심
+* Level 1은 높은 자동화율
+* Level 2는 contract 유무에 따라 성공률 차이
+* Level 3은 사람 승인 지점이 중요
+* Level 4는 탐색과 검증 보조 중심
 
 ### 24.3 CSA와 실패율 상관 분석
 
 작업별 CSA proxy를 수집한다.
 
-- 읽은 파일 수
-- 변경 파일 수
-- 관련 서비스 수
-- 관련 테스트 수
-- 관련 도메인 용어 수
-- tool call 수
+* 읽은 파일 수
+* 변경 파일 수
+* 관련 서비스 수
+* 관련 테스트 수
+* 관련 도메인 용어 수
+* tool call 수
 
 CSA가 커질수록 실패율, 리뷰 시간, 재시도 횟수가 증가하는지 분석한다.
 
 ## 25장. 용어 정리
 
+### Codebase-as-Harness
+
+코드베이스 자체를 에이전트가 일하기 좋은 작업장으로 설계하는 관점. 프롬프트나 도구만 개선하는 것이 아니라, 코드 구조·테스트·문서·로그·CI·아키텍처 제약까지 함께 정비한다.
+
 ### Agentability
 
-코드베이스가 에이전트에 의해 안전하게 탐색, 수정, 검증, 리뷰될 수 있는 정도.
+코드베이스가 에이전트에 의해 안전하게 탐색, 수정, 검증, 리뷰될 수 있는 정도. 쉬운 말로 에이전트 친화도다.
 
 ### Context Surface Area
 
-변경 하나를 안전하게 수행하기 위해 에이전트가 회수하고 이해해야 하는 정보의 총량.
+변경 하나를 안전하게 수행하기 위해 에이전트가 찾아보고 이해해야 하는 정보의 총량. 쉬운 말로 작업 맥락의 크기다.
 
 ### Semantic Addressability
 
-도메인 개념과 정책이 일관된 의미 주소를 통해 검색 가능한 성질.
+도메인 개념과 정책이 일관된 이름을 통해 검색 가능한 성질. 쉬운 말로 의미 있는 이름으로 찾을 수 있는 정도다.
 
 ### Change Contract
 
-특정 변경 유형이 만족해야 하는 도메인, API, 데이터, 보안, 운영 조건의 실행 가능한 계약.
+특정 변경 유형이 만족해야 하는 도메인, API, 데이터, 보안, 운영 조건의 실행 가능한 계약. 쉬운 말로 변경할 때 지켜야 할 약속이다.
 
 ### Agent-Readable Architecture
 
-아키텍처 경계와 제약을 에이전트와 자동화 시스템이 읽고 집행할 수 있는 형식으로 표현한 것.
+아키텍처 경계와 제약을 에이전트와 자동화 시스템이 읽고 집행할 수 있는 형식으로 표현한 것. 쉬운 말로 에이전트가 읽을 수 있는 설계 지도다.
 
 ### Blast Radius Budget
 
-작업 유형별 허용 변경 범위와 escalation 조건.
+작업 유형별 허용 변경 범위와 escalation 조건. 쉬운 말로 변경 범위 예산이다.
 
 ### Evidence Bundle
 
-에이전트가 PR 또는 작업 결과에 첨부해야 하는 탐색, 판단, 검증 증거 묶음.
-
-### Codebase-as-Harness
-
-에이전트를 감싸는 도구뿐 아니라 코드베이스 자체를 에이전트의 작업 하네스로 설계하는 관점.
+에이전트가 PR 또는 작업 결과에 첨부해야 하는 탐색, 판단, 검증 증거 묶음. 쉬운 말로 작업 근거 묶음이다.
 
 ---
 
@@ -1379,17 +1378,17 @@ CSA가 커질수록 실패율, 리뷰 시간, 재시도 횟수가 증가하는�
 
 에이전트 시대의 소프트웨어 엔지니어링은 단순히 AI에게 코드를 쓰게 하는 문제가 아니다.
 
-진짜 문제는 브라운필드 시스템을 에이전트가 안전하게 조작할 수 있는 대상으로 바꾸는 것이다.
+진짜 문제는 브라운필드 시스템을 에이전트가 안전하게 작업할 수 있는 대상으로 바꾸는 것이다.
 
 이를 위해서는 기존 소프트웨어 엔지니어링을 버리는 것이 아니라 더 정밀하게 발전시켜야 한다.
 
-DDD는 Semantic Addressability Engineering이 된다. Clean Architecture는 Context Boundary Engineering이 된다. DRY는 Single Source of Behavioral Truth가 된다. TDD는 Executable Change Contract가 된다. CI/CD는 Agent Control Plane이 된다. Observability는 Runtime Semantic Feedback이 된다. Code Review는 Evidence-Based Change Governance가 된다.
+DDD는 검색 가능한 도메인 언어가 된다. Clean Architecture는 작업 맥락을 줄이는 구조가 된다. DRY는 동작 규칙의 단일 출처가 된다. TDD는 실행 가능한 변경 계약이 된다. CI/CD는 에이전트 작업 관문이 된다. Observability는 운영 신호와 코드의 연결이 된다. Code Review는 근거 중심 변경 관리가 된다.
 
 앞으로의 생산성 차이는 어떤 모델을 쓰느냐만으로 결정되지 않는다. 같은 모델을 쓰더라도 어떤 조직은 빠르고 안전하게 변경을 merge할 것이고, 어떤 조직은 더 많은 코드를 만들고 더 많은 부채를 쌓을 것이다.
 
 차이는 코드베이스의 agentability에서 나온다.
 
-좋은 코드베이스는 사람이 읽기 쉬운 코드베이스를 넘어선다. 좋은 코드베이스는 에이전트가 관련 맥락을 찾을 수 있고, authoritative한 정책을 식별할 수 있고, 작은 diff를 만들 수 있고, Change Contract로 검증할 수 있고, 위험한 변경에서 멈출 수 있는 코드베이스다.
+좋은 코드베이스는 사람이 읽기 쉬운 코드베이스를 넘어선다. 좋은 코드베이스는 에이전트가 관련 맥락을 찾을 수 있고, 권위 있는 정책 위치를 식별할 수 있고, 작은 diff를 만들 수 있고, Change Contract로 검증할 수 있고, 위험한 변경에서 멈출 수 있는 코드베이스다.
 
 이것이 Codebase-as-Harness다.
 
@@ -1580,4 +1579,3 @@ Tacit Knowledge Load
 [ ] Legacy exceptions are documented.
 [ ] Deprecated paths are marked.
 ```
-
