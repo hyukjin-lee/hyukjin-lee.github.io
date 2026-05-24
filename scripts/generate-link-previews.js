@@ -118,6 +118,38 @@ async function scrapeYouTubeOEmbed(url) {
   };
 }
 
+async function isReachableImage(url) {
+  if (!url) return false;
+
+  try {
+    const response = await axios.head(url, {
+      timeout: 5000,
+      maxRedirects: 5,
+      validateStatus: (status) => status >= 200 && status < 400,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+    });
+
+    const contentType = response.headers['content-type'] || '';
+    return contentType.startsWith('image/');
+  } catch {
+    return false;
+  }
+}
+
+async function selectReachableImage(candidates) {
+  const uniqueCandidates = [...new Set(candidates.map(image => image?.trim()).filter(Boolean))];
+
+  for (const image of uniqueCandidates) {
+    if (await isReachableImage(image)) {
+      return image;
+    }
+  }
+
+  return uniqueCandidates[0] || '';
+}
+
 function shouldRefreshPreview(url, preview) {
   if (!preview) return true;
   if (preview.error && !preview.title) return true;
@@ -125,6 +157,9 @@ function shouldRefreshPreview(url, preview) {
   if (isYouTubeUrl(url)) {
     return isGenericYouTubeTitle(preview.title) || !preview.image;
   }
+
+  if (preview.image?.includes('ingress-comporellon.ewp.live')) return true;
+  if (preview.image === '') return false;
 
   return false;
 }
@@ -157,10 +192,11 @@ async function scrapeMetadata(url) {
       document.querySelector('meta[name="description"]')?.getAttribute('content') ||
       '';
 
-    const image = 
-      document.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
-      document.querySelector('meta[name="twitter:image"]')?.getAttribute('content') ||
-      '';
+    const image = await selectReachableImage([
+      document.querySelector('meta[property="og:image"]')?.getAttribute('content'),
+      document.querySelector('meta[name="twitter:image"]')?.getAttribute('content'),
+      document.querySelector('meta[property="og:image:secure_url"]')?.getAttribute('content'),
+    ]);
 
     const siteName = 
       document.querySelector('meta[property="og:site_name"]')?.getAttribute('content') ||
