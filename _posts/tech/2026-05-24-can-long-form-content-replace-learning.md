@@ -2,7 +2,7 @@
 title: 긴 컨텍스트는 학습을 대체할 수 있는가? (with. AI)
 date: 2026-05-24
 updatedAt: 2026-05-24
-slug: Can long-form content replace learning?
+slug: can-long-context-replace-learning
 category: tech
 ---
 이 글은 업스테이지 Kevin Ko님의 페이스북에 올라온 글을 보고 궁금증을 해소하기 위해 작성된 글이다.
