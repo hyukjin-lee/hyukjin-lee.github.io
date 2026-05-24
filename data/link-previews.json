@@ -1,12 +1,4 @@
 {
-  "https://codeopinion.com/database-migration-strategies/": {
-    "url": "https://codeopinion.com/database-migration-strategies/",
-    "title": "Database Migration Strategies",
-    "description": "Database migrations can be tricky, depending on your application and environment. The key is making backward-compatible changes!",
-    "image": "https://codeopinion.com/wp-content/uploads/2025/07/Twitter-1.png",
-    "siteName": "CodeOpinion",
-    "scrapedAt": "2025-08-01T10:42:51.465Z"
-  },
   "https://blog.fguy.com/2017/02/being-a-programmer-part-2.html": {
     "url": "https://blog.fguy.com/2017/02/being-a-programmer-part-2.html",
     "title": "프로그래머가 되기까지... - 2 -",
@@ -79,5 +71,13 @@
     "image": "https://i.ytimg.com/vi/julbw1JuAz0/maxresdefault.jpg",
     "siteName": "YouTube",
     "scrapedAt": "2026-05-20T05:55:42.944Z"
+  },
+  "https://codeopinion.com/aggregate-ddd-isnt-hierarchy-relationships/": {
+    "url": "https://codeopinion.com/aggregate-ddd-isnt-hierarchy-relationships/",
+    "title": "Aggregate (DDD) isn't hierarchy & relationships - CodeOpinion",
+    "description": "Want to design an aggregate? It's not all about hierarchy & relationships but rather the behaviors and data within that boundary.",
+    "image": "https://codeopinion-136111d.ingress-comporellon.ewp.live/wp-content/uploads/2023/08/Twitter.png",
+    "siteName": "CodeOpinion",
+    "scrapedAt": "2026-05-24T11:41:24.818Z"
   }
 }
