@@ -5,6 +5,10 @@ updatedAt: 2026-05-24
 slug: can-long-context-replace-learning
 category: tech
 ---
+이 글은 업스테이지 Kevin Ko님의 페이스북에 올라온 글을 보고 궁금증을 해소하기 위해 작성된 글이다.
+
+> kevin : 만약 어떤 모델의 context length가 1T~10T 토큰 수준이라면, 수년간 했던 모든 대화를 요약 없이 원본으로 context에 들고 있고 매번 토큰 레벨 어텐션으로 참조할 수 있다면 더 이상 학습과 추론을 구분할 수 있을까?
+
 # 긴 컨텍스트는 학습을 대체할 수 있을까?
 
 ## LLM의 학습과 추론이 같아 보이는 순간, 그리고 끝내 달라지는 지점
