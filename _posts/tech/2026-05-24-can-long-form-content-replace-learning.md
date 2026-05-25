@@ -1,5 +1,5 @@
 ---
-title: 방대한 컨텍스트는 학습을 대체할 수 있는가? (with. AI)
+title: 긴 컨텍스트는 학습을 대체할 수 있는가? (with. AI)
 date: 2026-05-24
 updatedAt: 2026-05-24
 slug: can-long-context-replace-learning
