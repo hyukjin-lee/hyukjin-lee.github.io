@@ -1,5 +1,5 @@
 ---
-title: 에이전트 시대의 소프트웨어 엔지니어링 (with. AI)
+title: 에이전트 시대의 소프트웨어 엔지니어링
 date: 2026-05-21
 updatedAt: 2026-05-21
 slug: guideofsoftwareengineeringinagentera
@@ -7,9 +7,9 @@ category: tech
 ---
 # Codebase-as-Harness
 
-## 에이전트가 일하기 좋은 브라운필드 소프트웨어 엔지니어링
+## 에이전트 시대의 소프트웨어 엔지니어링
 
-### 부제: 사람이 읽기 좋은 코드에서, 에이전트도 안전하게 고칠 수 있는 시스템으로
+사람이 읽기 좋은 코드에서, 에이전트도 안전하게 고칠 수 있는 시스템으로
 
 ---
 
@@ -21,26 +21,26 @@ category: tech
 
 이 변화는 실제로 유용하다. 특히 다음과 같은 작업에서는 에이전트가 이미 강하다.
 
-* 입력과 출력이 명확한 함수 구현
-* 국소적인 버그 수정
-* 기존 패턴을 따르는 반복 코드 작성
-* 테스트 케이스 추가
-* 단순한 리팩터링
-* 명확한 컴파일 오류 또는 테스트 실패 수정
-* 문서, 타입, lint, 포맷팅 정리
+- 입력과 출력이 명확한 함수 구현
+- 국소적인 버그 수정
+- 기존 패턴을 따르는 반복 코드 작성
+- 테스트 케이스 추가
+- 단순한 리팩터링
+- 명확한 컴파일 오류 또는 테스트 실패 수정
+- 문서, 타입, lint, 포맷팅 정리
 
 그러나 여기에는 착시가 있다. 작은 작업에서 잘한다고 해서 대규모 브라운필드 유지보수에서도 같은 방식으로 성공하는 것은 아니다. 단일 파일 또는 단일 모듈 수준의 수정과, 여러 서비스·도메인·데이터 계약·운영 제약이 얽힌 변경은 완전히 다른 문제다.
 
 에이전트가 어려워하는 일은 보통 “코드를 쓰는 일”이 아니다. 오히려 다음이 어렵다.
 
-* 어디가 진짜 정책 위치인지 판단하기
-* 여러 중복 구현 중 권위 있는 구현을 구분하기
-* 문서화되지 않은 비즈니스 규칙을 추론하기
-* 과거 설계 의도와 임시 workaround를 구분하기
-* 테스트가 없는 운영 리스크 판단하기
-* 서비스 간 계약 변경의 파급효과 계산하기
-* 장기 리팩터링 과정에서 목표를 잃지 않기
-* 더 진행하면 위험하다는 시점에 멈추기
+- 어디가 진짜 정책 위치인지 판단하기
+- 여러 중복 구현 중 권위 있는 구현을 구분하기
+- 문서화되지 않은 비즈니스 규칙을 추론하기
+- 과거 설계 의도와 임시 workaround를 구분하기
+- 테스트가 없는 운영 리스크 판단하기
+- 서비스 간 계약 변경의 파급효과 계산하기
+- 장기 리팩터링 과정에서 목표를 잃지 않기
+- 더 진행하면 위험하다는 시점에 멈추기
 
 이 차이를 보지 못하면 조직은 AI 도입 효과를 과대평가한다. 에이전트가 코드를 빠르게 만들수록 실제 병목은 코드 작성에서 리뷰, 검증, 회귀 방지, 운영 안정성으로 이동한다.
 
@@ -56,39 +56,39 @@ category: tech
 
 브라운필드에는 보통 다음이 섞여 있다.
 
-* 도메인 지식
-* 장애 이력
-* 운영 관행
-* 팀 간 소유권
-* 고객별 예외
-* 데이터 마이그레이션 이력
-* 테스트되지 않은 불변조건
-* deprecated API
-* 임시 workaround
-* 과거 의사결정의 흔적
-* 문서화되지 않은 제약
+- 도메인 지식
+- 장애 이력
+- 운영 관행
+- 팀 간 소유권
+- 고객별 예외
+- 데이터 마이그레이션 이력
+- 테스트되지 않은 불변조건
+- deprecated API
+- 임시 workaround
+- 과거 의사결정의 흔적
+- 문서화되지 않은 제약
 
 브라운필드 유지보수가 어려운 이유는 코드량이 많아서만은 아니다. 진짜 문제는 변경 하나를 안전하게 수행하기 위해 알아야 할 맥락이 너무 많다는 데 있다.
 
 예를 들어 “구독 갱신 정책을 바꾸라”는 요청을 생각해 보자. 겉보기에는 간단하다. 하지만 실제 시스템에서는 다음을 확인해야 할 수 있다.
 
-* subscription 상태 모델
-* customer 상태 모델
-* invoice 생성 정책
-* payment provider mapping
-* renewal batch job
-* webhook 처리
-* idempotency key
-* retry policy
-* coupon과 discount
-* tax calculation
-* mobile API 응답
-* admin tool 표시
-* CS 운영 화면
-* 데이터 분석 파이프라인
-* notification 발송 조건
-* 장애 runbook
-* 기존 테스트 fixture
+- subscription 상태 모델
+- customer 상태 모델
+- invoice 생성 정책
+- payment provider mapping
+- renewal batch job
+- webhook 처리
+- idempotency key
+- retry policy
+- coupon과 discount
+- tax calculation
+- mobile API 응답
+- admin tool 표시
+- CS 운영 화면
+- 데이터 분석 파이프라인
+- notification 발송 조건
+- 장애 runbook
+- 기존 테스트 fixture
 
 사람도 어렵다. 에이전트는 더 어렵다. 에이전트는 이 모든 것을 자동으로 알고 있지 않다. 검색해야 하고, 읽어야 하고, 해석해야 한다. 일부만 놓쳐도 버그가 생긴다.
 
@@ -187,18 +187,18 @@ Blast Radius Budget = 변경이 퍼질 수 있는 범위의 예산
 
 여기에는 코드 파일만 포함되지 않는다.
 
-* 관련 파일 수
-* 관련 심볼 수
-* 도메인 개념 수
-* 서비스 경계 수
-* DB 테이블 수
-* API contract 수
-* 이벤트 타입 수
-* 테스트 수
-* 문서 수
-* 로그와 metric 수
-* 운영 runbook 수
-* 암묵적 정책 수
+- 관련 파일 수
+- 관련 심볼 수
+- 도메인 개념 수
+- 서비스 경계 수
+- DB 테이블 수
+- API contract 수
+- 이벤트 타입 수
+- 테스트 수
+- 문서 수
+- 로그와 metric 수
+- 운영 runbook 수
+- 암묵적 정책 수
 
 변경에 필요한 CSA가 클수록 에이전트의 실패 확률은 올라간다.
 
@@ -218,15 +218,15 @@ Blast Radius Budget = 변경이 퍼질 수 있는 범위의 예산
 
 CSA가 큰 시스템에서는 다음 현상이 나타난다.
 
-* 작은 변경에도 많은 파일을 열어야 한다.
-* 정책이 여러 레이어에 흩어져 있다.
-* 같은 개념이 여러 이름으로 불린다.
-* 테스트가 어디에 있는지 찾기 어렵다.
-* 로그와 코드의 용어가 다르다.
-* 문서가 실제 코드와 다르다.
-* 한 모듈 수정이 예상치 못한 다른 모듈 실패를 만든다.
-* 에이전트가 자주 중복 helper를 만든다.
-* 리뷰어가 “이거 다른 데도 고쳐야 하지 않나?”라고 반복해서 묻는다.
+- 작은 변경에도 많은 파일을 열어야 한다.
+- 정책이 여러 레이어에 흩어져 있다.
+- 같은 개념이 여러 이름으로 불린다.
+- 테스트가 어디에 있는지 찾기 어렵다.
+- 로그와 코드의 용어가 다르다.
+- 문서가 실제 코드와 다르다.
+- 한 모듈 수정이 예상치 못한 다른 모듈 실패를 만든다.
+- 에이전트가 자주 중복 helper를 만든다.
+- 리뷰어가 “이거 다른 데도 고쳐야 하지 않나?”라고 반복해서 묻는다.
 
 이런 조직에서 AI 도구를 도입하면 처음에는 속도가 오르는 것처럼 보인다. 하지만 시간이 지나면 리뷰 병목, 회귀 버그, 중복 코드, 테스트 약화가 늘어날 수 있다.
 
@@ -297,19 +297,19 @@ function mapProviderClientToCustomer(input: ProviderClient): CustomerId {
 
 Semantic Addressability는 코드명에만 적용되지 않는다. 다음 모든 곳에 적용되어야 한다.
 
-* class name
-* function name
-* file name
-* directory name
-* DB column
-* API field
-* event name
-* log event name
-* metric name
-* test name
-* ADR 제목
-* runbook keyword
-* alert name
+- class name
+- function name
+- file name
+- directory name
+- DB column
+- API field
+- event name
+- log event name
+- metric name
+- test name
+- ADR 제목
+- runbook keyword
+- alert name
 
 운영 로그에는 `user_id`가 나오고, 코드에는 `customerId`가 있고, DB에는 `member_no`가 있으면 에이전트는 장애 로그에서 관련 코드를 추적하기 어렵다. 사람도 어렵다.
 
@@ -370,17 +370,17 @@ terms:
 
 Change Contract에는 다음이 포함될 수 있다.
 
-* unit test
-* integration test
-* contract test
-* schema compatibility check
-* migration validation
-* idempotency test
-* authorization policy check
-* observability assertion
-* security scan
-* performance budget
-* rollback condition
+- unit test
+- integration test
+- contract test
+- schema compatibility check
+- migration validation
+- idempotency test
+- authorization policy check
+- observability assertion
+- security scan
+- performance budget
+- rollback condition
 
 ### 6.2 왜 Change Contract가 필요한가
 
@@ -428,11 +428,11 @@ it('does not renew expired subscriptions', () => {});
 
 하지만 Change Contract는 더 넓다.
 
-* expired subscription은 invoice를 만들지 않는다.
-* skipped reason이 기록된다.
-* retry해도 duplicate invoice가 생기지 않는다.
-* 기존 active subscription 동작은 유지된다.
-* provider mapping은 바뀌지 않는다.
+- expired subscription은 invoice를 만들지 않는다.
+- skipped reason이 기록된다.
+- retry해도 duplicate invoice가 생기지 않는다.
+- 기존 active subscription 동작은 유지된다.
+- provider mapping은 바뀌지 않는다.
 
 이 계약을 여러 테스트와 정적 검사로 나누어 검증해야 한다.
 
@@ -442,15 +442,15 @@ it('does not renew expired subscriptions', () => {});
 
 예시는 다음과 같다.
 
-* API schema change contract
-* DB migration contract
-* payment calculation contract
-* authorization policy contract
-* event schema contract
-* batch job contract
-* notification contract
-* privacy data handling contract
-* feature flag rollout contract
+- API schema change contract
+- DB migration contract
+- payment calculation contract
+- authorization policy contract
+- event schema contract
+- batch job contract
+- notification contract
+- privacy data handling contract
+- feature flag rollout contract
 
 각 contract에는 다음 필드가 필요하다.
 
@@ -618,14 +618,14 @@ rollback_plan: required
 
 에이전트는 다음 상황에서 멈춰야 한다.
 
-* 예상보다 많은 파일을 수정해야 한다.
-* public API 변경이 필요하다.
-* DB migration이 필요하다.
-* 권한, 결제, 개인정보, 삭제 로직을 건드린다.
-* 테스트를 약화해야 통과한다.
-* 기존 정책 위치가 불명확하다.
-* 동일한 개념의 중복 구현이 발견된다.
-* 요구사항과 기존 동작이 충돌한다.
+- 예상보다 많은 파일을 수정해야 한다.
+- public API 변경이 필요하다.
+- DB migration이 필요하다.
+- 권한, 결제, 개인정보, 삭제 로직을 건드린다.
+- 테스트를 약화해야 통과한다.
+- 기존 정책 위치가 불명확하다.
+- 동일한 개념의 중복 구현이 발견된다.
+- 요구사항과 기존 동작이 충돌한다.
 
 멈춤은 실패가 아니다. 브라운필드에서 멈춤은 안전 기능이다.
 
@@ -641,12 +641,12 @@ DDD는 에이전트 시대에 더 중요해진다. 다만 초점이 확장된다
 
 Codebase-as-Harness에서는 DDD가 다음과 같이 재정의된다.
 
-* Ubiquitous Language → 검색 가능한 도메인 주소 체계
-* Bounded Context → 에이전트가 탐색할 수 있는 경계
-* Aggregate → 변경 영향과 일관성의 단위
-* Domain Service → 권위 있는 정책 위치
-* Repository → 저장소 경계
-* Anti-Corruption Layer → 외부 의미 오염 차단 장치
+- Ubiquitous Language → 검색 가능한 도메인 주소 체계
+- Bounded Context → 에이전트가 탐색할 수 있는 경계
+- Aggregate → 변경 영향과 일관성의 단위
+- Domain Service → 권위 있는 정책 위치
+- Repository → 저장소 경계
+- Anti-Corruption Layer → 외부 의미 오염 차단 장치
 
 에이전트가 브라운필드에서 실패하는 대표적 이유는 도메인 언어가 흐릿하기 때문이다. `user`, `member`, `customer`, `account`가 혼용되면 에이전트는 정확한 코드를 찾지 못한다. 같은 정책이 `service`, `helper`, `job`, `controller`에 흩어져 있으면 진짜 정책 위치를 판단하지 못한다.
 
@@ -691,15 +691,15 @@ DRY는 “중복을 없애라”가 아니다. Codebase-as-Harness에서 DRY는 
 
 중요한 것은 다음이 중복되지 않게 하는 것이다.
 
-* 권한 정책
-* 상태 전이
-* 금액 계산
-* 날짜 계산
-* idempotency key 생성
-* retry policy
-* external provider mapping
-* validation schema
-* feature flag 판정
+- 권한 정책
+- 상태 전이
+- 금액 계산
+- 날짜 계산
+- idempotency key 생성
+- retry policy
+- external provider mapping
+- validation schema
+- feature flag 판정
 
 예를 들어 이런 코드는 위험하다.
 
@@ -758,18 +758,18 @@ CI/CD는 더 이상 빌드와 배포 자동화만이 아니다. 에이전트가 
 
 CI는 다음을 집행해야 한다.
 
-* typecheck
-* lint
-* unit test
-* integration test
-* contract test
-* schema compatibility
-* dependency boundary
-* secret scan
-* migration validation
-* generated file consistency
-* blast radius policy
-* ownership approval
+- typecheck
+- lint
+- unit test
+- integration test
+- contract test
+- schema compatibility
+- dependency boundary
+- secret scan
+- migration validation
+- generated file consistency
+- blast radius policy
+- ownership approval
 
 에이전트에게 “주의해라”라고 말하는 것은 약하다. CI에서 막아야 한다.
 
@@ -810,11 +810,11 @@ skipped
 
 Codebase-as-Harness의 기본 작업 루프는 SCOPE다.
 
-* Search: 먼저 찾는다.
-* Contract: 지켜야 할 약속을 정한다.
-* Operate: 최소 범위로 고친다.
-* Prove: 검증한다.
-* Explain: 근거를 남긴다.
+- Search: 먼저 찾는다.
+- Contract: 지켜야 할 약속을 정한다.
+- Operate: 최소 범위로 고친다.
+- Prove: 검증한다.
+- Explain: 근거를 남긴다.
 
 SCOPE는 에이전트에게 무작정 “고쳐줘”라고 시키지 않기 위한 절차다. 브라운필드에서는 수정 자체보다 수정 전 탐색과 수정 후 검증이 더 중요하다.
 
@@ -824,13 +824,13 @@ SCOPE는 에이전트에게 무작정 “고쳐줘”라고 시키지 않기 위
 
 산출물:
 
-* 관련 파일 목록
-* 권위 있는 정책 위치
-* 중복 가능 위치
-* 관련 테스트
-* 관련 문서
-* 예상 변경 범위
-* 불명확한 점
+- 관련 파일 목록
+- 권위 있는 정책 위치
+- 중복 가능 위치
+- 관련 테스트
+- 관련 문서
+- 예상 변경 범위
+- 불명확한 점
 
 요청 예시:
 
@@ -844,14 +844,14 @@ SCOPE는 에이전트에게 무작정 “고쳐줘”라고 시키지 않기 위
 
 산출물:
 
-* 보존해야 할 동작
-* 새로 만족해야 할 동작
-* 호환성 조건
-* 보안 조건
-* 데이터 조건
-* 관측성 조건
-* 실행할 테스트
-* 멈춤 조건
+- 보존해야 할 동작
+- 새로 만족해야 할 동작
+- 호환성 조건
+- 보안 조건
+- 데이터 조건
+- 관측성 조건
+- 실행할 테스트
+- 멈춤 조건
 
 요청 예시:
 
@@ -865,12 +865,12 @@ SCOPE는 에이전트에게 무작정 “고쳐줘”라고 시키지 않기 위
 
 규칙:
 
-* 기존 abstraction 우선
-* 중복 정책 금지
-* 계약에 없는 public API 변경 금지
-* migration 별도 처리
-* formatter-only diff 분리
-* blast radius budget 준수
+- 기존 abstraction 우선
+- 중복 정책 금지
+- 계약에 없는 public API 변경 금지
+- migration 별도 처리
+- formatter-only diff 분리
+- blast radius budget 준수
 
 요청 예시:
 
@@ -884,14 +884,14 @@ SCOPE는 에이전트에게 무작정 “고쳐줘”라고 시키지 않기 위
 
 검증에는 다음이 포함될 수 있다.
 
-* related unit test
-* integration test
-* contract test
-* typecheck
-* lint
-* schema compatibility
-* migration validation
-* security scan
+- related unit test
+- integration test
+- contract test
+- typecheck
+- lint
+- schema compatibility
+- migration validation
+- security scan
 
 요청 예시:
 
@@ -905,12 +905,12 @@ SCOPE는 에이전트에게 무작정 “고쳐줘”라고 시키지 않기 위
 
 산출물:
 
-* 무엇을 바꿨는가
-* 왜 그 위치를 바꿨는가
-* 어떤 계약을 만족하는가
-* 어떤 테스트를 실행했는가
-* 어떤 위험이 남아 있는가
-* 어떤 후속 작업이 필요한가
+- 무엇을 바꿨는가
+- 왜 그 위치를 바꿨는가
+- 어떤 계약을 만족하는가
+- 어떤 테스트를 실행했는가
+- 어떤 위험이 남아 있는가
+- 어떤 후속 작업이 필요한가
 
 요청 예시:
 
@@ -945,16 +945,16 @@ Agentability Score =
 
 ### 16.2 실무 평가 질문
 
-* 같은 도메인 개념이 같은 이름으로 불리는가?
-* 핵심 정책의 권위 있는 위치가 있는가?
-* 작은 변경의 관련 파일 수가 제한적인가?
-* 관련 테스트를 빠르게 찾고 실행할 수 있는가?
-* 테스트명이 비즈니스 규칙을 설명하는가?
-* 로그와 코드가 같은 도메인 언어를 쓰는가?
-* 아키텍처 경계가 자동으로 검증되는가?
-* 위험 변경의 escalation rule이 있는가?
-* generated file과 handwritten file이 분리되어 있는가?
-* 에이전트가 멈춰야 할 조건이 정의되어 있는가?
+- 같은 도메인 개념이 같은 이름으로 불리는가?
+- 핵심 정책의 권위 있는 위치가 있는가?
+- 작은 변경의 관련 파일 수가 제한적인가?
+- 관련 테스트를 빠르게 찾고 실행할 수 있는가?
+- 테스트명이 비즈니스 규칙을 설명하는가?
+- 로그와 코드가 같은 도메인 언어를 쓰는가?
+- 아키텍처 경계가 자동으로 검증되는가?
+- 위험 변경의 escalation rule이 있는가?
+- generated file과 handwritten file이 분리되어 있는가?
+- 에이전트가 멈춰야 할 조건이 정의되어 있는가?
 
 ### 16.3 결과 해석
 
@@ -968,46 +968,46 @@ Agentability가 높은 시스템에서는 모델 차이가 줄어든다. 평범�
 
 ### Level 1. 안전한 반복 작업
 
-* 문서 업데이트
-* 테스트명 개선
-* lint fix
-* 타입 annotation 추가
-* deprecated API 치환
-* 단순 로그명 정리
-* dead code 후보 탐색
+- 문서 업데이트
+- 테스트명 개선
+- lint fix
+- 타입 annotation 추가
+- deprecated API 치환
+- 단순 로그명 정리
+- dead code 후보 탐색
 
 에이전트에게 적극 위임할 수 있다.
 
 ### Level 2. 국소적 유지보수
 
-* 작은 버그 수정
-* 단일 모듈 내 정책 수정
-* adapter mapping 수정
-* 단일 API validation 수정
-* fixture 정리
+- 작은 버그 수정
+- 단일 모듈 내 정책 수정
+- adapter mapping 수정
+- 단일 API validation 수정
+- fixture 정리
 
 Change Contract와 관련 테스트가 있으면 위임 가능하다.
 
 ### Level 3. 중간 규모 변경
 
-* 여러 파일의 정책 이동
-* domain policy 추출
-* API schema 확장
-* 서비스 내부 구조 개편
-* 성능 개선
+- 여러 파일의 정책 이동
+- domain policy 추출
+- API schema 확장
+- 서비스 내부 구조 개편
+- 성능 개선
 
 에이전트는 초안과 기계적 변경을 맡고, 사람은 경계와 계약을 승인해야 한다.
 
 ### Level 4. 고위험 변경
 
-* 서비스 간 계약 변경
-* DB migration과 backfill
-* 권한 정책
-* 결제/정산
-* 개인정보
-* 데이터 삭제
-* 대규모 리팩터링
-* 장애 대응
+- 서비스 간 계약 변경
+- DB migration과 backfill
+- 권한 정책
+- 결제/정산
+- 개인정보
+- 데이터 삭제
+- 대규모 리팩터링
+- 장애 대응
 
 에이전트는 탐색, 영향 분석, 테스트 생성, 문서화에 사용한다. 핵심 결정은 사람이 해야 한다.
 
@@ -1038,14 +1038,14 @@ Change Contract와 관련 테스트가 있으면 위임 가능하다.
 
 리뷰어는 다음을 확인한다.
 
-* 올바른 정책 위치를 수정했는가?
-* 기존 정책을 중복하지 않았는가?
-* 변경 범위가 예산 안에 있는가?
-* 테스트가 계약을 충분히 검증하는가?
-* 테스트를 약화하지 않았는가?
-* public API나 데이터 계약을 몰래 바꾸지 않았는가?
-* 로그와 metric이 의미적으로 연결되어 있는가?
-* 에이전트가 놓친 위험은 없는가?
+- 올바른 정책 위치를 수정했는가?
+- 기존 정책을 중복하지 않았는가?
+- 변경 범위가 예산 안에 있는가?
+- 테스트가 계약을 충분히 검증하는가?
+- 테스트를 약화하지 않았는가?
+- public API나 데이터 계약을 몰래 바꾸지 않았는가?
+- 로그와 metric이 의미적으로 연결되어 있는가?
+- 에이전트가 놓친 위험은 없는가?
 
 ### 18.3 새로운 생산성 지표
 
@@ -1061,15 +1061,15 @@ Verified Change per Human Review Minute
 
 보조 지표:
 
-* PR review iteration count
-* post-merge defect rate
-* rollback rate
-* CI failure recovery time
-* agent retry count
-* files inspected per task
-* files changed per task
-* test coverage of Change Contract
-* blast radius budget violation rate
+- PR review iteration count
+- post-merge defect rate
+- rollback rate
+- CI failure recovery time
+- agent retry count
+- files inspected per task
+- files changed per task
+- test coverage of Change Contract
+- blast radius budget violation rate
 
 ---
 
@@ -1081,15 +1081,15 @@ Verified Change per Human Review Minute
 
 AI 도입 전 현재 상태를 측정한다.
 
-* 작업 유형별 lead time
-* review time
-* CI failure rate
-* rollback rate
-* hotfix rate
-* test flakiness
-* cross-service change frequency
-* post-merge defect
-* incident root cause
+- 작업 유형별 lead time
+- review time
+- CI failure rate
+- rollback rate
+- hotfix rate
+- test flakiness
+- cross-service change frequency
+- post-merge defect
+- incident root cause
 
 측정 없이 AI를 도입하면 효과를 판단할 수 없다.
 
@@ -1097,13 +1097,13 @@ AI 도입 전 현재 상태를 측정한다.
 
 위험이 낮은 작업부터 시작한다.
 
-* lint fix
-* deprecated API 치환
-* 테스트명 개선
-* 문서 업데이트
-* 타입 annotation 추가
-* 로그 필드명 통일
-* dead code 후보 탐색
+- lint fix
+- deprecated API 치환
+- 테스트명 개선
+- 문서 업데이트
+- 타입 annotation 추가
+- 로그 필드명 통일
+- dead code 후보 탐색
 
 목표는 에이전트 자체보다 workflow와 governance를 안정화하는 것이다.
 
@@ -1111,11 +1111,11 @@ AI 도입 전 현재 상태를 측정한다.
 
 주요 도메인 용어를 정리한다.
 
-* Domain Term Registry 작성
-* AGENTS.md 작성
-* 로그명과 테스트명 정리
-* preferred name 적용
-* legacy alias mapping
+- Domain Term Registry 작성
+- AGENTS.md 작성
+- 로그명과 테스트명 정리
+- preferred name 적용
+- legacy alias mapping
 
 이 단계는 에이전트의 bug localization 성공률을 높인다.
 
@@ -1123,14 +1123,14 @@ AI 도입 전 현재 상태를 측정한다.
 
 가장 중요하고 자주 바뀌는 도메인부터 계약화한다.
 
-* 결제
-* 구독
-* 주문
-* 권한
-* 개인정보
-* 알림
-* 정산
-* 추천/랭킹
+- 결제
+- 구독
+- 주문
+- 권한
+- 개인정보
+- 알림
+- 정산
+- 추천/랭킹
 
 각 도메인에 “변경하면 반드시 검증해야 하는 것”을 정의한다.
 
@@ -1138,10 +1138,10 @@ AI 도입 전 현재 상태를 측정한다.
 
 작업 유형별 blast radius budget을 도입한다.
 
-* bugfix 예산
-* refactor 예산
-* feature 예산
-* high-risk escalation rule
+- bugfix 예산
+- refactor 예산
+- feature 예산
+- high-risk escalation rule
 
 CI와 PR bot에서 위반을 감지한다.
 
@@ -1149,14 +1149,14 @@ CI와 PR bot에서 위반을 감지한다.
 
 이제 에이전트를 대규모 유지보수에 투입한다.
 
-* framework migration
-* API migration
-* type hardening
-* policy extraction
-* test characterization
-* observability standardization
-* security fix rollout
-* dead code removal
+- framework migration
+- API migration
+- type hardening
+- policy extraction
+- test characterization
+- observability standardization
+- security fix rollout
+- dead code removal
 
 이 단계에서는 에이전트의 코드 생성 능력이 큰 효과를 낸다. 단, contract와 budget 없이 진행하면 기술부채가 늘어난다.
 
@@ -1166,15 +1166,15 @@ CI와 PR bot에서 위반을 감지한다.
 
 개발자의 핵심 역할은 다음으로 이동한다.
 
-* 도메인 경계 정의
-* 변경 계약 설계
-* 테스트 oracle 설계
-* 아키텍처 제약 집행
-* 에이전트 적용 등급 판단
-* 위험 예산 설정
-* 운영 신호와 코드 연결
-* 리뷰 기준 설계
-* 실패 패턴을 도구와 구조에 반영
+- 도메인 경계 정의
+- 변경 계약 설계
+- 테스트 oracle 설계
+- 아키텍처 제약 집행
+- 에이전트 적용 등급 판단
+- 위험 예산 설정
+- 운영 신호와 코드 연결
+- 리뷰 기준 설계
+- 실패 패턴을 도구와 구조에 반영
 
 개발자는 단순 코더에서 **Context Governor**, 즉 맥락 관리자가 된다.
 
@@ -1186,19 +1186,19 @@ CI와 PR bot에서 위반을 감지한다.
 
 플랫폼 팀이 제공할 것:
 
-* 표준 AGENTS.md 템플릿
-* architecture manifest schema
-* Change Contract catalog
-* PR evidence bundle generator
-* blast radius checker
-* dependency boundary checker
-* semantic term registry tool
-* test selection tool
-* agent sandbox
-* secret access guard
-* generated file guard
-* migration guard
-* review dashboard
+- 표준 AGENTS.md 템플릿
+- architecture manifest schema
+- Change Contract catalog
+- PR evidence bundle generator
+- blast radius checker
+- dependency boundary checker
+- semantic term registry tool
+- test selection tool
+- agent sandbox
+- secret access guard
+- generated file guard
+- migration guard
+- review dashboard
 
 플랫폼 팀의 목표는 “AI 도구 구매”가 아니라 “에이전트가 안전하게 일할 수 있는 paved road”를 만드는 것이다.
 
@@ -1230,13 +1230,13 @@ AI 코딩 도구 라이선스를 사는 것은 시작일 뿐이다. 진짜 투�
 
 측정:
 
-* 에이전트가 읽은 파일 수
-* tool call 수
-* token 수
-* 수정 재시도 횟수
-* 리뷰 코멘트 수
-* 최종 merge 여부
-* post-merge defect
+- 에이전트가 읽은 파일 수
+- tool call 수
+- token 수
+- 수정 재시도 횟수
+- 리뷰 코멘트 수
+- 최종 merge 여부
+- post-merge defect
 
 ### 가설 2
 
@@ -1244,10 +1244,10 @@ Semantic Addressability를 개선하면 bug localization 성공률이 오른다.
 
 측정:
 
-* 첫 검색에서 관련 파일 발견률
-* 잘못된 파일 탐색 비율
-* 중복 구현 생성률
-* 수정 누락률
+- 첫 검색에서 관련 파일 발견률
+- 잘못된 파일 탐색 비율
+- 중복 구현 생성률
+- 수정 누락률
 
 ### 가설 3
 
@@ -1255,11 +1255,11 @@ Change Contract가 있는 작업은 단순 테스트만 있는 작업보다 리�
 
 측정:
 
-* review time
-* review iteration
-* CI failure count
-* rollback rate
-* post-merge defect
+- review time
+- review iteration
+- CI failure count
+- rollback rate
+- post-merge defect
 
 ### 가설 4
 
@@ -1267,11 +1267,11 @@ Blast Radius Budget을 강제하면 agent-generated PR의 merge 가능성이 높
 
 측정:
 
-* changed file count
-* diff line count
-* budget violation rate
-* merge lead time
-* reviewer rejection reason
+- changed file count
+- diff line count
+- budget violation rate
+- merge lead time
+- reviewer rejection reason
 
 ### 가설 5
 
@@ -1279,10 +1279,10 @@ Agent-readable architecture artifact는 AGENTS.md 단독보다 장기적으로 �
 
 측정:
 
-* dependency violation rate
-* wrong-layer modification rate
-* architecture review comment count
-* cross-context regression count
+- dependency violation rate
+- wrong-layer modification rate
+- architecture review comment count
+- cross-context regression count
 
 ## 24장. 실험 설계
 
@@ -1292,27 +1292,27 @@ Agent-readable architecture artifact는 AGENTS.md 단독보다 장기적으로 �
 
 전:
 
-* AGENTS.md 없음
-* 용어 불일치
-* 계약 없음
-* 관련 테스트 찾기 어려움
+- AGENTS.md 없음
+- 용어 불일치
+- 계약 없음
+- 관련 테스트 찾기 어려움
 
 후:
 
-* AGENTS.md 있음
-* Domain Term Registry 있음
-* Change Contract 있음
-* test command 명시
-* architecture manifest 있음
+- AGENTS.md 있음
+- Domain Term Registry 있음
+- Change Contract 있음
+- test command 명시
+- architecture manifest 있음
 
 비교:
 
-* 성공률
-* 소요 시간
-* 리뷰 시간
-* 변경 파일 수
-* CI 실패 수
-* post-merge defect
+- 성공률
+- 소요 시간
+- 리뷰 시간
+- 변경 파일 수
+- CI 실패 수
+- post-merge defect
 
 ### 24.2 작업 유형별 실험
 
@@ -1320,21 +1320,21 @@ Agent-readable architecture artifact는 AGENTS.md 단독보다 장기적으로 �
 
 예상 결과:
 
-* Level 1은 높은 자동화율
-* Level 2는 contract 유무에 따라 성공률 차이
-* Level 3은 사람 승인 지점이 중요
-* Level 4는 탐색과 검증 보조 중심
+- Level 1은 높은 자동화율
+- Level 2는 contract 유무에 따라 성공률 차이
+- Level 3은 사람 승인 지점이 중요
+- Level 4는 탐색과 검증 보조 중심
 
 ### 24.3 CSA와 실패율 상관 분석
 
 작업별 CSA proxy를 수집한다.
 
-* 읽은 파일 수
-* 변경 파일 수
-* 관련 서비스 수
-* 관련 테스트 수
-* 관련 도메인 용어 수
-* tool call 수
+- 읽은 파일 수
+- 변경 파일 수
+- 관련 서비스 수
+- 관련 테스트 수
+- 관련 도메인 용어 수
+- tool call 수
 
 CSA가 커질수록 실패율, 리뷰 시간, 재시도 횟수가 증가하는지 분석한다.
 
