@@ -1,5 +1,5 @@
 ---
-title: AI 에이전트 시대의 소프트웨어 엔지니어링
+title: AI 에이전트 시대의 브라운필드 엔지니어링
 date: 2026-05-21
 updatedAt: 2026-05-21
 slug: guideofsoftwareengineeringinagentera
@@ -7,7 +7,7 @@ category: tech
 ---
 # Codebase-as-Harness
 
-## AI 에이전트 시대의 소프트웨어 엔지니어링
+## AI 에이전트 시대의 브라운필드 엔지니어링
 
 사람이 읽기 좋은 코드에서, 에이전트도 안전하게 고칠 수 있는 환경으로
 
