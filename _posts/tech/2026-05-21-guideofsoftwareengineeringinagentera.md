@@ -1,5 +1,5 @@
 ---
-title: 에이전트 시대의 소프트웨어 엔지니어링
+title: AI 에이전트 시대의 소프트웨어 엔지니어링
 date: 2026-05-21
 updatedAt: 2026-05-21
 slug: guideofsoftwareengineeringinagentera
@@ -7,17 +7,17 @@ category: tech
 ---
 # Codebase-as-Harness
 
-## 에이전트 시대의 소프트웨어 엔지니어링
+## AI 에이전트 시대의 소프트웨어 엔지니어링
 
-사람이 읽기 좋은 코드에서, 에이전트도 안전하게 고칠 수 있는 시스템으로
+사람이 읽기 좋은 코드에서, 에이전트도 안전하게 고칠 수 있는 환경으로
 
 ---
 
 # 1부. 문제 정의
 
-## 1장. 코딩 에이전트가 잘하는 일과 못하는 일
+## 1장. AI 에이전트가 잘하는 일과 못하는 일
 
-코딩 에이전트는 빠르게 발전하고 있다. 과거의 코드 자동완성은 함수 몇 줄을 제안하는 수준이었다. 지금의 에이전트는 작업 지시를 받고, 저장소를 탐색하고, 관련 파일을 찾고, 코드를 고치고, 테스트를 실행하고, 실패를 다시 수정한다.
+AI 에이전트는 빠르게 발전하고 있다. 과거의 코드 자동완성은 함수 몇 줄을 제안하는 수준이었다. 지금의 에이전트는 작업 지시를 받고, 저장소를 탐색하고, 관련 파일을 찾고, 코드를 고치고, 테스트를 실행하고, 실패를 다시 수정한다.
 
 이 변화는 실제로 유용하다. 특히 다음과 같은 작업에서는 에이전트가 이미 강하다.
 
@@ -108,7 +108,7 @@ LLM은 저장소 전체의 진실을 본질적으로 알고 있지 않다. 모�
 
 ### 3.2 에이전트는 탐색-수정-검증 루프를 돈다
 
-현대 코딩 에이전트의 기본 동작은 대략 다음과 같다.
+현대 AI 에이전트의 기본 동작은 대략 다음과 같다.
 
 1. 요청을 해석한다.
 2. 관련 파일을 검색한다.
@@ -137,7 +137,7 @@ LLM은 저장소 전체의 진실을 본질적으로 알고 있지 않다. 모�
 )
 ```
 
-이 책은 특히 코드베이스 구조, 테스트의 신뢰도, 피드백의 명확성, 사람의 관리 방식에 집중한다.
+이 글은 특히 코드베이스 구조, 테스트의 신뢰도, 피드백의 명확성, 사람의 관리 방식에 집중한다.
 
 ### 3.3 긴 컨텍스트는 근본 해법이 아니다
 
@@ -159,7 +159,7 @@ LLM은 저장소 전체의 진실을 본질적으로 알고 있지 않다. 모�
 
 테스트가 없을 수 있다. 테스트가 잘못되었을 수 있다. 테스트가 구현 세부사항만 확인할 수 있다. 운영 데이터 분포를 반영하지 못할 수 있다. 보안, 성능, 개인정보, backward compatibility, 장애 대응 조건은 테스트에 없을 수 있다.
 
-따라서 브라운필드에서 필요한 것은 단순한 테스트 실행이 아니다. 필요한 것은 변경 유형별로 무엇을 검증해야 하는지 정의한 실행 가능한 약속이다. 이 책에서는 이를 **Change Contract**, 즉 **변경 계약**이라고 부른다.
+따라서 브라운필드에서 필요한 것은 단순한 테스트 실행이 아니다. 필요한 것은 변경 유형별로 무엇을 검증해야 하는지 정의한 실행 가능한 약속이다. 이 글에서는 이를 **Change Contract**, 즉 **변경 계약**이라고 부른다.
 
 ---
 
@@ -1180,29 +1180,7 @@ CI와 PR bot에서 위반을 감지한다.
 
 이것은 개발자가 덜 기술적이 된다는 뜻이 아니다. 오히려 더 기술적이다. 코드, 도메인, 테스트, 운영, 보안, 조직 구조를 모두 이해해야 한다.
 
-## 21장. 플랫폼 팀의 역할
-
-대기업에서는 개별 제품팀이 모든 하네스와 제약을 직접 만들 수 없다. 플랫폼 팀이 공통 기반을 제공해야 한다.
-
-플랫폼 팀이 제공할 것:
-
-- 표준 AGENTS.md 템플릿
-- architecture manifest schema
-- Change Contract catalog
-- PR evidence bundle generator
-- blast radius checker
-- dependency boundary checker
-- semantic term registry tool
-- test selection tool
-- agent sandbox
-- secret access guard
-- generated file guard
-- migration guard
-- review dashboard
-
-플랫폼 팀의 목표는 “AI 도구 구매”가 아니라 “에이전트가 안전하게 일할 수 있는 paved road”를 만드는 것이다.
-
-## 22장. 경영진을 위한 메시지
+## 21장. 경영진을 위한 메시지
 
 경영진은 AI를 도입하면 개발 속도가 몇 배가 될 것이라고 기대할 수 있다. 일부 작업에서는 맞다. 하지만 브라운필드에서는 무조건적이지 않다.
 
@@ -1217,160 +1195,6 @@ CI와 PR bot에서 위반을 감지한다.
 AI 코딩 도구 라이선스를 사는 것은 시작일 뿐이다. 진짜 투자는 코드베이스, 테스트, CI, 아키텍처 제약, 도메인 언어 정리에 들어가야 한다.
 
 ---
-
-# 6부. 연구 의제
-
-## 23장. 측정 가능한 가설
-
-이 방법론은 주장에 그치면 안 된다. 측정 가능한 연구 프로그램으로 발전해야 한다.
-
-### 가설 1
-
-브라운필드 생산성은 모델 성능보다 변경의 Context Surface Area에 더 민감하다.
-
-측정:
-
-- 에이전트가 읽은 파일 수
-- tool call 수
-- token 수
-- 수정 재시도 횟수
-- 리뷰 코멘트 수
-- 최종 merge 여부
-- post-merge defect
-
-### 가설 2
-
-Semantic Addressability를 개선하면 bug localization 성공률이 오른다.
-
-측정:
-
-- 첫 검색에서 관련 파일 발견률
-- 잘못된 파일 탐색 비율
-- 중복 구현 생성률
-- 수정 누락률
-
-### 가설 3
-
-Change Contract가 있는 작업은 단순 테스트만 있는 작업보다 리뷰 부담과 회귀율이 낮다.
-
-측정:
-
-- review time
-- review iteration
-- CI failure count
-- rollback rate
-- post-merge defect
-
-### 가설 4
-
-Blast Radius Budget을 강제하면 agent-generated PR의 merge 가능성이 높아진다.
-
-측정:
-
-- changed file count
-- diff line count
-- budget violation rate
-- merge lead time
-- reviewer rejection reason
-
-### 가설 5
-
-Agent-readable architecture artifact는 AGENTS.md 단독보다 장기적으로 더 큰 효과를 낸다.
-
-측정:
-
-- dependency violation rate
-- wrong-layer modification rate
-- architecture review comment count
-- cross-context regression count
-
-## 24장. 실험 설계
-
-### 24.1 저장소 단위 실험
-
-같은 유형의 작업을 agentability 개선 전후로 비교한다.
-
-전:
-
-- AGENTS.md 없음
-- 용어 불일치
-- 계약 없음
-- 관련 테스트 찾기 어려움
-
-후:
-
-- AGENTS.md 있음
-- Domain Term Registry 있음
-- Change Contract 있음
-- test command 명시
-- architecture manifest 있음
-
-비교:
-
-- 성공률
-- 소요 시간
-- 리뷰 시간
-- 변경 파일 수
-- CI 실패 수
-- post-merge defect
-
-### 24.2 작업 유형별 실험
-
-작업을 Level 1~4로 나누고 에이전트 효과를 측정한다.
-
-예상 결과:
-
-- Level 1은 높은 자동화율
-- Level 2는 contract 유무에 따라 성공률 차이
-- Level 3은 사람 승인 지점이 중요
-- Level 4는 탐색과 검증 보조 중심
-
-### 24.3 CSA와 실패율 상관 분석
-
-작업별 CSA proxy를 수집한다.
-
-- 읽은 파일 수
-- 변경 파일 수
-- 관련 서비스 수
-- 관련 테스트 수
-- 관련 도메인 용어 수
-- tool call 수
-
-CSA가 커질수록 실패율, 리뷰 시간, 재시도 횟수가 증가하는지 분석한다.
-
-## 25장. 용어 정리
-
-### Codebase-as-Harness
-
-코드베이스 자체를 에이전트가 일하기 좋은 작업장으로 설계하는 관점. 프롬프트나 도구만 개선하는 것이 아니라, 코드 구조·테스트·문서·로그·CI·아키텍처 제약까지 함께 정비한다.
-
-### Agentability
-
-코드베이스가 에이전트에 의해 안전하게 탐색, 수정, 검증, 리뷰될 수 있는 정도. 쉬운 말로 에이전트 친화도다.
-
-### Context Surface Area
-
-변경 하나를 안전하게 수행하기 위해 에이전트가 찾아보고 이해해야 하는 정보의 총량. 쉬운 말로 작업 맥락의 크기다.
-
-### Semantic Addressability
-
-도메인 개념과 정책이 일관된 이름을 통해 검색 가능한 성질. 쉬운 말로 의미 있는 이름으로 찾을 수 있는 정도다.
-
-### Change Contract
-
-특정 변경 유형이 만족해야 하는 도메인, API, 데이터, 보안, 운영 조건의 실행 가능한 계약. 쉬운 말로 변경할 때 지켜야 할 약속이다.
-
-### Agent-Readable Architecture
-
-아키텍처 경계와 제약을 에이전트와 자동화 시스템이 읽고 집행할 수 있는 형식으로 표현한 것. 쉬운 말로 에이전트가 읽을 수 있는 설계 지도다.
-
-### Blast Radius Budget
-
-작업 유형별 허용 변경 범위와 escalation 조건. 쉬운 말로 변경 범위 예산이다.
-
-### Evidence Bundle
-
-에이전트가 PR 또는 작업 결과에 첨부해야 하는 탐색, 판단, 검증 증거 묶음. 쉬운 말로 작업 근거 묶음이다.
 
 ---
 
