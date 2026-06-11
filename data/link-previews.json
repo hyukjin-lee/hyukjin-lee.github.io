@@ -87,21 +87,5 @@
     "image": "https://i.ytimg.com/vi/0-nPEj6euio/hqdefault.jpg",
     "siteName": "YouTube",
     "scrapedAt": "2026-05-25T13:30:23.825Z"
-  },
-  "https://blog.naver.com/aganipe/223783262857": {
-    "url": "https://blog.naver.com/aganipe/223783262857",
-    "title": "아름다운 숲 : 네이버 블로그",
-    "description": "",
-    "image": "",
-    "siteName": "blog.naver.com",
-    "scrapedAt": "2026-06-10T05:59:32.348Z"
-  },
-  "https://www.firenzedt.com/news/articleView.html?idxno=31194": {
-    "url": "https://www.firenzedt.com/news/articleView.html?idxno=31194",
-    "title": "부정선거론자를 위한 참교육 자료집",
-    "description": "확증편향은 믿고 싶은 것만 믿는 것을 말한다. 윤석열 계엄을 내란이 아니라고 우기는 정치세력은 한국의 여러 선거가 부정선거였다고 주장한다. 심지어 보수정당이 이긴 선거도 부정선거라고 얘기하고, 선거에서 당선된 대통령도 자신이 이긴 선거가 부정선거라고 주장한다. MBC 스트레이트 팀에서",
-    "image": "https://cdn.firenzedt.com/news/thumbnail/202502/31194_12690_5240_v150.jpg",
-    "siteName": "피렌체의 식탁",
-    "scrapedAt": "2026-06-10T05:59:37.194Z"
   }
 }
