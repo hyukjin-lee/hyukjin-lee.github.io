@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
+const { execFileSync } = require('child_process');
 const axios = require('axios');
 const { JSDOM } = require('jsdom');
 const matter = require('gray-matter');
@@ -7,6 +9,9 @@ const matter = require('gray-matter');
 const POSTS_DIR = path.join(__dirname, '..', '_posts');
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const LINK_PREVIEWS_FILE = path.join(DATA_DIR, 'link-previews.json');
+const SCREENSHOT_DIR = path.join(__dirname, '..', 'public', 'images', 'link-previews');
+const SCREENSHOT_PUBLIC_PATH = '/images/link-previews';
+const MIN_PREVIEW_IMAGE_BYTES = 2048;
 
 // URL 정규식 패턴
 const URL_REGEX = /(https?:\/\/[^\s<>"'`\]]+)/g;
@@ -120,6 +125,7 @@ async function scrapeYouTubeOEmbed(url) {
 
 async function isReachableImage(url) {
   if (!url) return false;
+  if (isLikelyPlaceholderImageUrl(url)) return false;
 
   try {
     const response = await axios.head(url, {
@@ -132,7 +138,19 @@ async function isReachableImage(url) {
     });
 
     const contentType = response.headers['content-type'] || '';
-    return contentType.startsWith('image/');
+    const contentLength = Number(response.headers['content-length'] || 0);
+    return contentType.startsWith('image/') && (
+      !contentLength || contentLength >= MIN_PREVIEW_IMAGE_BYTES
+    );
+  } catch {
+    return false;
+  }
+}
+
+function isLikelyPlaceholderImageUrl(url) {
+  try {
+    const { pathname } = new URL(url);
+    return /(?:blank|spacer|transparent|pixel|1x1)\.(?:png|gif|jpe?g|webp)$/i.test(pathname);
   } catch {
     return false;
   }
@@ -147,7 +165,98 @@ async function selectReachableImage(candidates) {
     }
   }
 
-  return uniqueCandidates[0] || '';
+  return '';
+}
+
+function findChromeExecutable() {
+  const envPath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH;
+  if (envPath && fs.existsSync(envPath)) return envPath;
+
+  const candidates = [
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+  ];
+
+  const existingCandidate = candidates.find(candidate => fs.existsSync(candidate));
+  if (existingCandidate) return existingCandidate;
+
+  for (const command of ['google-chrome-stable', 'google-chrome', 'chromium', 'chromium-browser']) {
+    try {
+      return execFileSync('which', [command], { encoding: 'utf8' }).trim();
+    } catch {
+      // Continue checking other known browser commands.
+    }
+  }
+
+  return '';
+}
+
+function screenshotFileNameForUrl(url) {
+  const hash = crypto.createHash('sha256').update(url).digest('hex').slice(0, 20);
+  return `${hash}.png`;
+}
+
+function isLocalScreenshotImage(image) {
+  return image?.startsWith(`${SCREENSHOT_PUBLIC_PATH}/`);
+}
+
+function hasLocalScreenshotFile(image) {
+  if (!isLocalScreenshotImage(image)) return false;
+  return fs.existsSync(path.join(__dirname, '..', 'public', image));
+}
+
+async function capturePageScreenshot(url) {
+  const executablePath = findChromeExecutable();
+  if (!executablePath) {
+    console.warn(`Warning: Chrome executable not found; skipping screenshot fallback for ${url}`);
+    return '';
+  }
+
+  if (!fs.existsSync(SCREENSHOT_DIR)) {
+    fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
+  }
+
+  const fileName = screenshotFileNameForUrl(url);
+  const filePath = path.join(SCREENSHOT_DIR, fileName);
+  const publicPath = `${SCREENSHOT_PUBLIC_PATH}/${fileName}`;
+
+  if (fs.existsSync(filePath)) {
+    return publicPath;
+  }
+
+  let browser;
+  try {
+    console.log(`Capturing screenshot fallback for: ${url}`);
+    const puppeteer = require('puppeteer-core');
+    browser = await puppeteer.launch({
+      executablePath,
+      headless: 'new',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--hide-scrollbars',
+      ],
+    });
+
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1200, height: 630, deviceScaleFactor: 1 });
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    await page.screenshot({ path: filePath, type: 'png' });
+    return publicPath;
+  } catch (error) {
+    console.warn(`Warning: Could not capture screenshot for ${url}: ${error.message}`);
+    return '';
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
 }
 
 function shouldRefreshPreview(url, preview) {
@@ -159,7 +268,9 @@ function shouldRefreshPreview(url, preview) {
   }
 
   if (preview.image?.includes('ingress-comporellon.ewp.live')) return true;
-  if (preview.image === '') return false;
+  if (preview.image && isLikelyPlaceholderImageUrl(preview.image)) return true;
+  if (isLocalScreenshotImage(preview.image) && !hasLocalScreenshotFile(preview.image)) return true;
+  if (preview.image === '') return true;
 
   return false;
 }
@@ -197,6 +308,7 @@ async function scrapeMetadata(url) {
       document.querySelector('meta[name="twitter:image"]')?.getAttribute('content'),
       document.querySelector('meta[property="og:image:secure_url"]')?.getAttribute('content'),
     ]);
+    const previewImage = image || await capturePageScreenshot(url);
 
     const siteName = 
       document.querySelector('meta[property="og:site_name"]')?.getAttribute('content') ||
@@ -206,7 +318,7 @@ async function scrapeMetadata(url) {
       url,
       title: title.trim(),
       description: description.trim(),
-      image: image.trim(),
+      image: previewImage.trim(),
       siteName: siteName.trim(),
       scrapedAt: new Date().toISOString()
     };
@@ -227,11 +339,13 @@ async function scrapeMetadata(url) {
     }
 
     console.error(`Error scraping ${url}:`, error.message);
+    const screenshotImage = await capturePageScreenshot(url);
+
     return {
       url,
       title: url,
       description: '',
-      image: '',
+      image: screenshotImage,
       siteName: new URL(url).hostname,
       error: error.message,
       scrapedAt: new Date().toISOString()

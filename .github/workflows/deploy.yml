@@ -33,14 +33,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
+
       - name: Generate link previews
+        env:
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
         run: npm run generate-link-previews
 
       - name: Commit generated metadata
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/link-previews.json
+          git add data/link-previews.json public/images/link-previews
           if ! git diff --cached --quiet; then
             git commit -m "Update link previews [skip ci]"
             git push
