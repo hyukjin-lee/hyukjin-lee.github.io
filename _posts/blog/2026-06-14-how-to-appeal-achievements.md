@@ -1,5 +1,5 @@
 ---
-title: "'개발자의 성과 어필' 고민 함께하기"
+title: "[새싹 Q&A] '개발자의 성과 어필' 고민 함께하기"
 date: 2026-02-24
 updatedAt: 2026-02-24
 slug: how-to-appeal-achievements
