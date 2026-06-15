@@ -1,5 +1,5 @@
 ---
-title: AI 활용 역량과 신입
+title: "[새싹 Q&A] AI 활용 역량과 신입"
 date: 2026-02-09
 updatedAt: 2026-02-09
 slug: what-skills-do-new-recruits-need-in-ai-age
