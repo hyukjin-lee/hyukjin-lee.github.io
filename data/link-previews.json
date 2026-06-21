@@ -111,5 +111,13 @@
     "image": "/images/link-previews/72bc0b7d211c31ecf523.png",
     "siteName": "Google Docs",
     "scrapedAt": "2026-06-19T13:57:42.436Z"
+  },
+  "https://www.youtube.com/watch?v=XQk8jNM4zD8": {
+    "url": "https://www.youtube.com/watch?v=XQk8jNM4zD8",
+    "title": "프로그래밍 강의를 손으로 써서 가르치다 발견한 사실 | CU Boulder, Tom Yeh",
+    "description": "YouTube - EO Korea",
+    "image": "https://i.ytimg.com/vi/XQk8jNM4zD8/hqdefault.jpg",
+    "siteName": "YouTube",
+    "scrapedAt": "2026-06-21T14:51:30.808Z"
   }
 }
