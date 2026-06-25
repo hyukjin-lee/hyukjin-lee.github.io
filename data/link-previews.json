@@ -119,5 +119,13 @@
     "image": "https://i.ytimg.com/vi/XQk8jNM4zD8/hqdefault.jpg",
     "siteName": "YouTube",
     "scrapedAt": "2026-06-21T14:51:30.808Z"
+  },
+  "https://www.youtube.com/live/TFmZw_TNfBE?si=Z3ltGYr8fNjFSG_k": {
+    "url": "https://www.youtube.com/live/TFmZw_TNfBE?si=Z3ltGYr8fNjFSG_k",
+    "title": "[PD수첩] \"AI, 이토록 다정한 배신자\" - 2026년 6월 23일 밤 10시 20분 방송",
+    "description": "YouTube - MBC PD수첩",
+    "image": "https://i.ytimg.com/vi/TFmZw_TNfBE/hqdefault.jpg",
+    "siteName": "YouTube",
+    "scrapedAt": "2026-06-25T10:49:28.235Z"
   }
 }
