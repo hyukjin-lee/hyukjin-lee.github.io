@@ -357,8 +357,8 @@ async function scrapeMetadata(url) {
 function collectAllUrls() {
   const allUrls = new Set();
   
-  // blog, tech, daily 디렉토리 스캔
-  const categories = ['blog', 'tech', 'daily'];
+  // life, work, log 디렉토리 스캔
+  const categories = ['life', 'work', 'log'];
   
   for (const category of categories) {
     const categoryDir = path.join(POSTS_DIR, category);

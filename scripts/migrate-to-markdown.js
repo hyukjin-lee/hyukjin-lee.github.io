@@ -22,16 +22,16 @@ title: "${attributes.title}"
 date: "${attributes.date}"
 updatedAt: "${attributes.updatedAt}"
 slug: "${attributes.slug}"
-category: "blog"
+category: "life"
 ---
 
 ${attributes.content}`;
 
       const filename = `${dateStr}-${attributes.slug}.md`;
-      const filepath = path.join(postsDir, 'blog', filename);
+      const filepath = path.join(postsDir, 'life', filename);
       
       fs.writeFileSync(filepath, frontmatter);
-      console.log(`✅ Created: _posts/blog/${filename}`);
+      console.log(`✅ Created: _posts/life/${filename}`);
     });
   }
 
@@ -51,16 +51,16 @@ title: "${attributes.title}"
 date: "${attributes.date}"
 updatedAt: "${attributes.updatedAt}"
 slug: "${attributes.slug}"
-category: "tech"
+category: "work"
 ---
 
 ${attributes.content}`;
 
       const filename = `${dateStr}-${attributes.slug}.md`;
-      const filepath = path.join(postsDir, 'tech', filename);
+      const filepath = path.join(postsDir, 'work', filename);
       
       fs.writeFileSync(filepath, frontmatter);
-      console.log(`✅ Created: _posts/tech/${filename}`);
+      console.log(`✅ Created: _posts/work/${filename}`);
     });
   }
 
@@ -80,16 +80,16 @@ title: "${attributes.title}"
 date: "${attributes.date}"
 updatedAt: "${attributes.updatedAt}"
 slug: "${attributes.slug}"
-category: "daily"
+category: "log"
 ---
 
 ${attributes.content}`;
 
       const filename = `${dateStr}-${attributes.slug}.md`;
-      const filepath = path.join(postsDir, 'daily', filename);
+      const filepath = path.join(postsDir, 'log', filename);
       
       fs.writeFileSync(filepath, frontmatter);
-      console.log(`✅ Created: _posts/daily/${filename}`);
+      console.log(`✅ Created: _posts/log/${filename}`);
     });
   }
 }

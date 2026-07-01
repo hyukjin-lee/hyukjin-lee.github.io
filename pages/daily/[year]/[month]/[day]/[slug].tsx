@@ -1,37 +1,18 @@
-import {useTheme} from "@mui/material";
-import * as React from "react";
-import {HeadTitle} from "src/common/view/presentation/components/molecules";
-import {Comment} from "src/common/view/presentation/components/organisms";
-import DailyDetail from "src/daily/view/presentation/components/templates/DailyDetail";
-import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
-import {DailyDetailResponse} from "src/daily/domain/DailyDetailResponse";
-import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
+import LegacyRedirect from "src/common/view/presentation/components/LegacyRedirect";
+import { MarkdownDataLoader as StaticDataLoader } from "src/data/markdownDataLoader";
 
 interface Props {
-  dailyDetail: DailyDetailResponse;
+  target: string;
 }
 
-const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { dailyDetail } = props;
-  const { slug } = dailyDetail;
-
-  const theme = useTheme();
-  return <div>
-    <HeadTitle title="Daily" />
-    <DailyDetail daily={dailyDetail} />
-    <Comment identifier={`daily-${slug}`} />
-    {/* eslint-disable-next-line react/no-unknown-property */}
-    <style jsx global>{`
-#comment-container {
-  max-width: ${theme.spacing(62.5)};
-}
-    `}</style>
-  </div>;
-};
+const LegacyDailyDetailPage = ({ target }: InferGetStaticPropsType<typeof getStaticProps>) => (
+  <LegacyRedirect target={target} />
+);
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = StaticDataLoader.getDailyPosts();
-  
+
   const paths = posts.map((post) => {
     const date = new Date(post.attributes.date);
     return {
@@ -51,30 +32,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const year = params?.year as string;
+  const month = params?.month as string;
+  const day = params?.day as string;
   const slug = params?.slug as string;
-  
-  const post = StaticDataLoader.getDailyPostBySlug(slug);
-  if (!post) {
-    return { notFound: true };
-  }
-
-  // DailyDetailResponse 형태로 변환
-  const dailyDetail: DailyDetailResponse = {
-    id: post.id.toString(),
-    seq: post.attributes.seq,
-    title: post.attributes.title,
-    content: post.attributes.content,
-    date: post.attributes.date,
-    slug: post.attributes.slug,
-    updatedAt: post.attributes.updatedAt,
-    linkPreviews: post.attributes.linkPreviews
-  };
 
   return {
     props: {
-      dailyDetail
+      target: `/log/${year}/${month}/${day}/${slug}`
     }
   };
 };
 
-export default DailyDetailPage;
+export default LegacyDailyDetailPage;

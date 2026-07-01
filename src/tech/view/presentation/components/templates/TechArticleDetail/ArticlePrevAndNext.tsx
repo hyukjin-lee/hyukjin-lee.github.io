@@ -64,7 +64,7 @@ const ArticlePrevAndNext = ({ prev, next }: Props) => {
       {prev.title && <Each label="Previous Article" article={prev} />}
       <hr className={classes.hrLower} />
 
-      <Link href="/tech">
+      <Link href="/work">
         <Button variant="outlined" style={{ textTransform: "capitalize" }}>
           Article List
         </Button>

@@ -15,9 +15,9 @@
 
 ```
 _posts/          ← 마크다운 포스트 파일들
-  blog/          ← 블로그 글 (깊은 생각, 에세이)
-  tech/          ← 기술 글 (개발, 설계, 기술 의견)
-  daily/         ← 일상 기록 (짧은 메모, 발견, 공유)
+  life/          ← 삶과 일에 대한 에세이, 경험 공유
+  work/          ← 일과 기술, 개발, 설계에 관한 글
+  log/           ← 짧은 기록, 발견, 인용, 링크 공유
 data/            ← 빌드 타임 캐시 (link-previews.json 등)
 scripts/         ← 빌드 보조 스크립트
 src/             ← Next.js 소스 (DDD 구조)
@@ -38,17 +38,14 @@ title: "포스트 제목"
 date: "YYYY-MM-DD"
 updatedAt: "YYYY-MM-DDTHH:MM:SS.000Z"
 slug: "url-safe-slug-in-english"
-category: "blog"   # blog | tech | daily
+category: "life"   # life | work | log
 ---
 ```
 
 ### id와 seq 규칙
 - `id`와 `seq` 모두 **카테고리별** 독립 번호 (삭제해도 리셋 안 함)
-- 현재 최댓값:
-  - blog: max_id=2, max_seq=2
-  - tech: max_id=3, max_seq=3
-  - daily: max_id=4, max_seq=5
-- 새 포스트 = max 값 + 1
+- frontmatter에 `id` 또는 `seq`가 없으면 빌드 시 기존 값보다 큰 번호로 자동 할당
+- 직접 입력할 때는 같은 카테고리의 기존 최대값 + 1 사용
 
 ### 파일명 규칙
 `YYYY-MM-DD-간략한-제목-or-slug.md`
@@ -81,9 +78,9 @@ npm run test                   # Jest 테스트
 
 ## 카테고리별 성격
 
-- **blog**: 깊게 생각한 에세이, 경험 공유, 삶과 일에 대한 사유
-- **tech**: 개발/기술/설계에 관한 글, 기술적 의견
-- **daily**: 짧은 일상 기록, 발견한 것, 인상적인 인용, 링크 공유
+- **life**: 깊게 생각한 에세이, 경험 공유, 삶과 일에 대한 사유
+- **work**: 개발/기술/설계에 관한 글, 기술적 의견
+- **log**: 짧은 일상 기록, 발견한 것, 인상적인 인용, 링크 공유
 
 ## 웹 CMS (Sveltia CMS)
 

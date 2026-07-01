@@ -12,7 +12,7 @@
     "build:static": "npm run fetch-data && npm run generate-link-previews && npm run build:export && npm run postbuild",
     "generate-rss": "node scripts/generate-rss.js",
     "generate-link-previews": "node scripts/generate-link-previews.js",
-    "postbuild": "next-sitemap --config next-sitemap.config.js",
+    "postbuild": "next-sitemap --config next-sitemap.config.js && if [ -d out ]; then cp public/rss.xml public/sitemap*.xml public/robots.txt out/; fi",
     "start": "NODE_ENV=production next start -p 8080",
     "start:local": "NODE_ENV=production next start",
     "lint": "eslint . --ext .ts,.tsx --fix && tsc --noEmit",

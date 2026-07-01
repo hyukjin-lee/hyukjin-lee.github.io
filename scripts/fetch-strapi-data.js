@@ -115,7 +115,7 @@ async function main() {
     console.log('\n🔧 Creating individual content files...');
     
     // Blog 개별 파일들
-    const blogDir = path.join(DATA_DIR, 'blog');
+    const blogDir = path.join(DATA_DIR, 'life');
     if (!fs.existsSync(blogDir)) fs.mkdirSync(blogDir, { recursive: true });
     
     for (const article of blogArticles) {
@@ -126,7 +126,7 @@ async function main() {
     }
 
     // Tech 개별 파일들
-    const techDir = path.join(DATA_DIR, 'tech');
+    const techDir = path.join(DATA_DIR, 'work');
     if (!fs.existsSync(techDir)) fs.mkdirSync(techDir, { recursive: true });
     
     for (const article of techArticles) {
@@ -137,7 +137,7 @@ async function main() {
     }
 
     // Daily 개별 파일들
-    const dailyDir = path.join(DATA_DIR, 'daily');
+    const dailyDir = path.join(DATA_DIR, 'log');
     if (!fs.existsSync(dailyDir)) fs.mkdirSync(dailyDir, { recursive: true });
     
     for (const post of dailyPosts) {

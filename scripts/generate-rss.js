@@ -17,7 +17,7 @@ async function generateRssFeed() {
     copyright: `${new Date().getFullYear()} hyukjin lee`,
   });
 
-  const postTypes = ['blog', 'tech', 'daily'];
+  const postTypes = ['life', 'work', 'log'];
   let allPosts = [];
 
   postTypes.forEach(type => {
@@ -30,15 +30,16 @@ async function generateRssFeed() {
       const fileContents = fs.readFileSync(filePath, 'utf8');
       const { data, content } = matter(fileContents);
       
-      const slug = filename.replace(/\.md$/, '');
-      const [year, month, day, ...rest] = slug.split('-');
-      const postUrl = `${site_url}/${type}/${year}/${month}/${rest.join('-')}`;
+      const fileSlug = filename.replace(/\.md$/, '');
+      const [year, month, day, ...rest] = fileSlug.split('-');
+      const postSlug = data.slug || rest.join('-');
+      const postUrl = `${site_url}/${type}/${year}/${month}/${day}/${postSlug}`;
 
       return {
         ...data,
         url: postUrl,
         guid: postUrl,
-        description: content,
+        description: content.replace(/[ \t]+$/gm, ''),
         date: new Date(data.date),
       };
     });

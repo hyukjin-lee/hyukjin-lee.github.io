@@ -22,7 +22,7 @@ export class StaticDataLoader {
   }
 
   static getBlogArticleBySlug(slug: string): BlogArticleStrapi | null {
-    const filePath = path.join(DATA_DIR, "blog", `${slug}.json`);
+    const filePath = path.join(DATA_DIR, "life", `${slug}.json`);
     if (!fs.existsSync(filePath)) return null;
     const data = fs.readFileSync(filePath, "utf8");
     return JSON.parse(data);
@@ -39,7 +39,7 @@ export class StaticDataLoader {
       id: article.id.toString(),
       seq: article.attributes.seq,
       date: article.attributes.date,
-      uri: `/blog${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
+      uri: `/life${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
       title: article.attributes.title
     }));
 
@@ -65,7 +65,7 @@ export class StaticDataLoader {
   }
 
   static getTechArticleBySlug(slug: string): TechArticleStrapi | null {
-    const filePath = path.join(DATA_DIR, "tech", `${slug}.json`);
+    const filePath = path.join(DATA_DIR, "work", `${slug}.json`);
     if (!fs.existsSync(filePath)) return null;
     const data = fs.readFileSync(filePath, "utf8");
     return JSON.parse(data);
@@ -82,7 +82,7 @@ export class StaticDataLoader {
       id: article.id.toString(),
       seq: article.attributes.seq,
       date: article.attributes.date,
-      uri: `/tech${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
+      uri: `/work${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
       title: article.attributes.title
     }));
 
@@ -108,7 +108,7 @@ export class StaticDataLoader {
   }
 
   static getDailyPostBySlug(slug: string): DailyStrapi | null {
-    const filePath = path.join(DATA_DIR, "daily", `${slug}.json`);
+    const filePath = path.join(DATA_DIR, "log", `${slug}.json`);
     if (!fs.existsSync(filePath)) return null;
     const data = fs.readFileSync(filePath, "utf8");
     return JSON.parse(data);
@@ -125,7 +125,7 @@ export class StaticDataLoader {
       id: post.id.toString(),
       seq: post.attributes.seq,
       date: post.attributes.date,
-      uri: `/daily${this.formatDatePath(post.attributes.date)}/${post.attributes.slug}`,
+      uri: `/log${this.formatDatePath(post.attributes.date)}/${post.attributes.slug}`,
       title: post.attributes.title,
       content: post.attributes.content
     }));
@@ -172,13 +172,13 @@ export class StaticDataLoader {
         id: prevArticle.id.toString(),
         date: prevArticle.attributes.date,
         title: prevArticle.attributes.title,
-        uri: `/blog${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
+        uri: `/life${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
       } : null,
       next: nextArticle ? {
         id: nextArticle.id.toString(),
         date: nextArticle.attributes.date,
         title: nextArticle.attributes.title,
-        uri: `/blog${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
+        uri: `/life${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
       } : null
     };
   }
@@ -203,13 +203,13 @@ export class StaticDataLoader {
         id: prevArticle.id.toString(),
         date: prevArticle.attributes.date,
         title: prevArticle.attributes.title,
-        uri: `/tech${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
+        uri: `/work${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
       } : null,
       next: nextArticle ? {
         id: nextArticle.id.toString(),
         date: nextArticle.attributes.date,
         title: nextArticle.attributes.title,
-        uri: `/tech${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
+        uri: `/work${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
       } : null
     };
   }

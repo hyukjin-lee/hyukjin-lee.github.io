@@ -30,7 +30,7 @@ const ArticleHead = ({ title, slug, date }: Props) => {
   const classes = useStyles();
   return <div className={classes.container}>
     <div className={classes.head}>
-      <Link href={"/tech" + formatDateTime(date, "/YYYY/MM/DD/") + slug} color="textPrimary" shallow={true}>
+      <Link href={"/work" + formatDateTime(date, "/YYYY/MM/DD/") + slug} color="textPrimary" shallow={true}>
         <Typography variant="h1">{title}</Typography>
       </Link>
     </div >

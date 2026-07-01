@@ -13,14 +13,14 @@ media_folder: public/images/uploads
 public_folder: /images/uploads
 
 collections:
-  - name: blog
-    label: "Blog"
-    label_singular: "Blog 글"
-    folder: _posts/blog
+  - name: life
+    label: "Life"
+    label_singular: "Life 글"
+    folder: _posts/life
     create: true
     delete: true
     slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
-    preview_path: "blog/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
+    preview_path: "life/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
     summary: "{{title}} ({{date}})"
     sort_field: date
     sort_direction: Descending
@@ -46,19 +46,19 @@ collections:
       - label: "카테고리"
         name: category
         widget: hidden
-        default: blog
+        default: life
       - label: "내용"
         name: body
         widget: markdown
 
-  - name: tech
-    label: "Tech"
-    label_singular: "Tech 글"
-    folder: _posts/tech
+  - name: work
+    label: "Work"
+    label_singular: "Work 글"
+    folder: _posts/work
     create: true
     delete: true
     slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
-    preview_path: "tech/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
+    preview_path: "work/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
     summary: "{{title}} ({{date}})"
     sort_field: date
     sort_direction: Descending
@@ -79,24 +79,24 @@ collections:
       - label: "Slug"
         name: slug
         widget: string
-        hint: "영문 소문자와 하이픈만 사용 (예: my-tech-post)"
+        hint: "영문 소문자와 하이픈만 사용 (예: my-work-post)"
         pattern: ['^[a-z0-9-]+$', "영문 소문자, 숫자, 하이픈만 허용"]
       - label: "카테고리"
         name: category
         widget: hidden
-        default: tech
+        default: work
       - label: "내용"
         name: body
         widget: markdown
 
-  - name: daily
-    label: "Daily"
-    label_singular: "Daily 글"
-    folder: _posts/daily
+  - name: log
+    label: "Log"
+    label_singular: "Log 글"
+    folder: _posts/log
     create: true
     delete: true
     slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
-    preview_path: "daily/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
+    preview_path: "log/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
     summary: "{{title}} ({{date}})"
     sort_field: date
     sort_direction: Descending
@@ -117,12 +117,12 @@ collections:
       - label: "Slug"
         name: slug
         widget: string
-        hint: "영문 소문자와 하이픈만 사용 (예: my-daily-note)"
+        hint: "영문 소문자와 하이픈만 사용 (예: my-log-note)"
         pattern: ['^[a-z0-9-]+$', "영문 소문자, 숫자, 하이픈만 허용"]
       - label: "카테고리"
         name: category
         widget: hidden
-        default: daily
+        default: log
       - label: "내용"
         name: body
         widget: markdown

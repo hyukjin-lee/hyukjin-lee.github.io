@@ -2,7 +2,7 @@
 module.exports = {
   siteUrl: process.env.SITE_URL || 'https://hyukjin-lee.github.io',
   generateRobotsTxt: true,
-  exclude: ['/404'],
+  exclude: ['/404', '/blog', '/blog/*', '/tech', '/tech/*', '/daily', '/daily/*'],
   additionalPaths: async (config) => {
     const result = []
     
@@ -10,9 +10,9 @@ module.exports = {
     result.push(
       await config.transform(config, '/'),
       await config.transform(config, '/about'),
-      await config.transform(config, '/blog'),
-      await config.transform(config, '/tech'),
-      await config.transform(config, '/daily')
+      await config.transform(config, '/life'),
+      await config.transform(config, '/work'),
+      await config.transform(config, '/log')
     )
     
     return result

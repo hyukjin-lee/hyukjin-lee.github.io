@@ -23,14 +23,14 @@ const items = [{
   href: ["/about", "/"],
   label: "About"
 }, {
-  href: ["/tech"],
-  label: "Tech"
+  href: ["/work"],
+  label: "Work"
 }, {
-  href: ["/blog"],
-  label: "Blog"
+  href: ["/life"],
+  label: "Life"
 }, {
-  href: ["/daily"],
-  label: "Daily"
+  href: ["/log"],
+  label: "Log"
 }];
 
 const TopBar = () => {

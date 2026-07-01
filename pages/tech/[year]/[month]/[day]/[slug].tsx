@@ -1,59 +1,18 @@
-import {NextSeo} from "next-seo";
-import * as React from "react";
-import {DOMAIN, Endpoints} from "src/common/constants/Constants";
-import {Comment} from "src/common/view/presentation/components/organisms";
-import {formatDateTime} from "src/util";
-import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
-import {
-  TechArticleDetailResponse,
-  TechArticlePrevOrNext
-} from "src/tech/domain/TechArticleDetailResponse";
-import {TechArticleDetail} from "src/tech/view/presentation/components/templates";
-import {useTheme} from "@mui/material";
-import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
+import LegacyRedirect from "src/common/view/presentation/components/LegacyRedirect";
+import { MarkdownDataLoader as StaticDataLoader } from "src/data/markdownDataLoader";
 
 interface Props {
-  techArticle: TechArticleDetailResponse;
-  prev: any | null;
-  next: any | null;
+  target: string;
 }
 
-const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { techArticle, prev, next } = props;
-  const { title, content, date, slug } = techArticle;
-  const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
-
-  const theme = useTheme();
-
-  // prev/next 데이터는 이미 올바른 형태로 변환되어 전달됨
-  const prevData: TechArticlePrevOrNext = prev || { id: "", date: "", title: "", uri: "" };
-  const nextData: TechArticlePrevOrNext = next || { id: "", date: "", title: "", uri: "" };
-
-  return <div>
-    <NextSeo
-      title={title}
-      description={content.substring(0, 512)}
-      canonical={`${DOMAIN}${Endpoints.tech}${subPath}`}
-    />
-
-    <TechArticleDetail
-      techArticle={{...techArticle, prev: prevData, next: nextData}}
-    />
-    <div style={{ marginTop: "40px", padding: "20px 0" }}>
-      <Comment identifier={`tech-${slug}`} />
-    </div>
-    {/* eslint-disable-next-line react/no-unknown-property */}
-    <style jsx global>{`
-#comment-container {
-  max-width: ${theme.spacing(100)};
-}
-    `}</style>
-  </div>;
-};
+const LegacyTechDetailPage = ({ target }: InferGetStaticPropsType<typeof getStaticProps>) => (
+  <LegacyRedirect target={target} />
+);
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const articles = StaticDataLoader.getTechArticles();
-  
+
   const paths = articles.map((article) => {
     const date = new Date(article.attributes.date);
     return {
@@ -73,37 +32,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const year = params?.year as string;
+  const month = params?.month as string;
+  const day = params?.day as string;
   const slug = params?.slug as string;
-  
-  const article = StaticDataLoader.getTechArticleBySlug(slug);
-  if (!article) {
-    return { notFound: true };
-  }
-
-  // TechArticleDetailResponse 형태로 변환
-  const techArticle: TechArticleDetailResponse = {
-    id: article.id.toString(),
-    seq: article.attributes.seq,
-    title: article.attributes.title,
-    content: article.attributes.content,
-    date: article.attributes.date,
-    slug: article.attributes.slug,
-    updatedAt: article.attributes.updatedAt,
-    prev: { id: "", date: "", title: "", uri: "" },
-    next: { id: "", date: "", title: "", uri: "" },
-    linkPreviews: article.attributes.linkPreviews
-  };
-
-  // prev/next 가져오기
-  const { prev, next } = StaticDataLoader.getTechPrevNext(article.attributes.slug);
 
   return {
     props: {
-      techArticle,
-      prev,
-      next
+      target: `/work/${year}/${month}/${day}/${slug}`
     }
   };
 };
 
-export default TechDetailPage;
+export default LegacyTechDetailPage;

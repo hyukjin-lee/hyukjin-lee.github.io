@@ -150,11 +150,11 @@ export class MarkdownDataLoader {
 
   // Blog 데이터 로더 (기존 인터페이스 유지)
   static getBlogArticles(): BlogArticleListStrapi[] {
-    return this.readMarkdownFiles("blog");
+    return this.readMarkdownFiles("life");
   }
 
   static getBlogArticleBySlug(slug: string): BlogArticleStrapi | null {
-    return this.readMarkdownFiles("blog").find(a => a.attributes.slug === slug) ?? null;
+    return this.readMarkdownFiles("life").find(a => a.attributes.slug === slug) ?? null;
   }
 
   static getBlogArticlesPaginated(page: number, pageSize = 10): StrapiResponse<any> {
@@ -168,7 +168,7 @@ export class MarkdownDataLoader {
       id: article.id.toString(),
       seq: article.attributes.seq,
       date: article.attributes.date,
-      uri: `/blog${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
+      uri: `/life${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
       title: article.attributes.title
     }));
 
@@ -187,11 +187,11 @@ export class MarkdownDataLoader {
 
   // Tech 데이터 로더 (기존 인터페이스 유지)
   static getTechArticles(): TechArticleListStrapi[] {
-    return this.readMarkdownFiles("tech");
+    return this.readMarkdownFiles("work");
   }
 
   static getTechArticleBySlug(slug: string): TechArticleStrapi | null {
-    return this.readMarkdownFiles("tech").find(a => a.attributes.slug === slug) ?? null;
+    return this.readMarkdownFiles("work").find(a => a.attributes.slug === slug) ?? null;
   }
 
   static getTechArticlesPaginated(page: number, pageSize = 10): StrapiResponse<any> {
@@ -205,7 +205,7 @@ export class MarkdownDataLoader {
       id: article.id.toString(),
       seq: article.attributes.seq,
       date: article.attributes.date,
-      uri: `/tech${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
+      uri: `/work${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
       title: article.attributes.title
     }));
 
@@ -224,11 +224,11 @@ export class MarkdownDataLoader {
 
   // Daily 데이터 로더 (기존 인터페이스 유지)
   static getDailyPosts(): DailyListStrapi[] {
-    return this.readMarkdownFiles("daily");
+    return this.readMarkdownFiles("log");
   }
 
   static getDailyPostBySlug(slug: string): DailyStrapi | null {
-    return this.readMarkdownFiles("daily").find(p => p.attributes.slug === slug) ?? null;
+    return this.readMarkdownFiles("log").find(p => p.attributes.slug === slug) ?? null;
   }
 
   static getDailyPostsPaginated(page: number, pageSize = 10): StrapiResponse<any> {
@@ -242,7 +242,7 @@ export class MarkdownDataLoader {
       id: post.id.toString(),
       seq: post.attributes.seq,
       date: post.attributes.date,
-      uri: `/daily${this.formatDatePath(post.attributes.date)}/${post.attributes.slug}`,
+      uri: `/log${this.formatDatePath(post.attributes.date)}/${post.attributes.slug}`,
       title: post.attributes.title,
       content: post.attributes.content,
       linkPreviews: post.attributes.linkPreviews
@@ -298,13 +298,13 @@ export class MarkdownDataLoader {
         id: prevArticle.id.toString(),
         date: prevArticle.attributes.date,
         title: prevArticle.attributes.title,
-        uri: `/blog${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
+        uri: `/life${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
       } : null,
       next: nextArticle ? {
         id: nextArticle.id.toString(),
         date: nextArticle.attributes.date,
         title: nextArticle.attributes.title,
-        uri: `/blog${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
+        uri: `/life${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
       } : null
     };
   }
@@ -321,13 +321,13 @@ export class MarkdownDataLoader {
         id: prevArticle.id.toString(),
         date: prevArticle.attributes.date,
         title: prevArticle.attributes.title,
-        uri: `/tech${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
+        uri: `/work${this.formatDatePath(prevArticle.attributes.date)}/${prevArticle.attributes.slug}`
       } : null,
       next: nextArticle ? {
         id: nextArticle.id.toString(),
         date: nextArticle.attributes.date,
         title: nextArticle.attributes.title,
-        uri: `/tech${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
+        uri: `/work${this.formatDatePath(nextArticle.attributes.date)}/${nextArticle.attributes.slug}`
       } : null
     };
   }
