@@ -5,39 +5,39 @@ import {Comment} from "src/common/view/presentation/components/organisms";
 import {formatDateTime} from "src/util";
 import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
 import {
-  TechArticleDetailResponse,
-  TechArticlePrevOrNext
-} from "src/tech/domain/TechArticleDetailResponse";
-import {TechArticleDetail} from "src/tech/view/presentation/components/templates";
+  WorkArticleDetailResponse,
+  WorkArticlePrevOrNext
+} from "src/work/domain/WorkArticleDetailResponse";
+import {WorkArticleDetail} from "src/work/view/presentation/components/templates";
 import {useTheme} from "@mui/material";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
-  techArticle: TechArticleDetailResponse;
+  workArticle: WorkArticleDetailResponse;
   prev: any | null;
   next: any | null;
 }
 
-const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { techArticle, prev, next } = props;
-  const { title, content, date, slug } = techArticle;
+const WorkDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { workArticle, prev, next } = props;
+  const { title, content, date, slug } = workArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
   const theme = useTheme();
 
   // prev/next 데이터는 이미 올바른 형태로 변환되어 전달됨
-  const prevData: TechArticlePrevOrNext = prev || { id: "", date: "", title: "", uri: "" };
-  const nextData: TechArticlePrevOrNext = next || { id: "", date: "", title: "", uri: "" };
+  const prevData: WorkArticlePrevOrNext = prev || { id: "", date: "", title: "", uri: "" };
+  const nextData: WorkArticlePrevOrNext = next || { id: "", date: "", title: "", uri: "" };
 
   return <div>
     <NextSeo
       title={title}
       description={content.substring(0, 512)}
-      canonical={`${DOMAIN}${Endpoints.tech}${subPath}`}
+      canonical={`${DOMAIN}${Endpoints.work}${subPath}`}
     />
 
-    <TechArticleDetail
-      techArticle={{...techArticle, prev: prevData, next: nextData}}
+    <WorkArticleDetail
+      workArticle={{...workArticle, prev: prevData, next: nextData}}
     />
     <div style={{ marginTop: "40px", padding: "20px 0" }}>
       <Comment identifier={`tech-${slug}`} />
@@ -52,7 +52,7 @@ const TechDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const articles = StaticDataLoader.getTechArticles();
+  const articles = StaticDataLoader.getWorkArticles();
   
   const paths = articles.map((article) => {
     const date = new Date(article.attributes.date);
@@ -75,13 +75,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
   
-  const article = StaticDataLoader.getTechArticleBySlug(slug);
+  const article = StaticDataLoader.getWorkArticleBySlug(slug);
   if (!article) {
     return { notFound: true };
   }
 
-  // TechArticleDetailResponse 형태로 변환
-  const techArticle: TechArticleDetailResponse = {
+  // WorkArticleDetailResponse 형태로 변환
+  const workArticle: WorkArticleDetailResponse = {
     id: article.id.toString(),
     seq: article.attributes.seq,
     title: article.attributes.title,
@@ -95,15 +95,15 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 
   // prev/next 가져오기
-  const { prev, next } = StaticDataLoader.getTechPrevNext(article.attributes.slug);
+  const { prev, next } = StaticDataLoader.getWorkPrevNext(article.attributes.slug);
 
   return {
     props: {
-      techArticle,
+      workArticle,
       prev,
       next
     }
   };
 };
 
-export default TechDetailPage;
+export default WorkDetailPage;

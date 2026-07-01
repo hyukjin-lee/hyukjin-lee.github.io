@@ -1,5 +1,5 @@
 import LegacyRedirect from "src/common/view/presentation/components/LegacyRedirect";
 
-const LegacyDailyIndexPage = () => <LegacyRedirect target="/log" />;
+const LegacyLogIndexPage = () => <LegacyRedirect target="/log" />;
 
-export default LegacyDailyIndexPage;
+export default LegacyLogIndexPage;

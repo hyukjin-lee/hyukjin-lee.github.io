@@ -2,23 +2,23 @@ import {useTheme} from "@mui/material";
 import * as React from "react";
 import {HeadTitle} from "src/common/view/presentation/components/molecules";
 import {Comment} from "src/common/view/presentation/components/organisms";
-import DailyDetail from "src/daily/view/presentation/components/templates/DailyDetail";
+import LogDetail from "src/log/view/presentation/components/templates/LogDetail";
 import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
-import {DailyDetailResponse} from "src/daily/domain/DailyDetailResponse";
+import {LogDetailResponse} from "src/log/domain/LogDetailResponse";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
-  dailyDetail: DailyDetailResponse;
+  logDetail: LogDetailResponse;
 }
 
-const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { dailyDetail } = props;
-  const { slug } = dailyDetail;
+const LogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { logDetail } = props;
+  const { slug } = logDetail;
 
   const theme = useTheme();
   return <div>
     <HeadTitle title="Log" />
-    <DailyDetail daily={dailyDetail} />
+    <LogDetail log={logDetail} />
     <Comment identifier={`daily-${slug}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
     <style jsx global>{`
@@ -30,7 +30,7 @@ const DailyDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) 
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = StaticDataLoader.getDailyPosts();
+  const posts = StaticDataLoader.getLogPosts();
   
   const paths = posts.map((post) => {
     const date = new Date(post.attributes.date);
@@ -53,13 +53,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
   
-  const post = StaticDataLoader.getDailyPostBySlug(slug);
+  const post = StaticDataLoader.getLogPostBySlug(slug);
   if (!post) {
     return { notFound: true };
   }
 
-  // DailyDetailResponse 형태로 변환
-  const dailyDetail: DailyDetailResponse = {
+  // LogDetailResponse 형태로 변환
+  const logDetail: LogDetailResponse = {
     id: post.id.toString(),
     seq: post.attributes.seq,
     title: post.attributes.title,
@@ -72,9 +72,9 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
 
   return {
     props: {
-      dailyDetail
+      logDetail
     }
   };
 };
 
-export default DailyDetailPage;
+export default LogDetailPage;

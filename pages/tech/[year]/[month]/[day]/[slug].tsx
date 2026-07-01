@@ -6,12 +6,12 @@ interface Props {
   target: string;
 }
 
-const LegacyTechDetailPage = ({ target }: InferGetStaticPropsType<typeof getStaticProps>) => (
+const LegacyWorkDetailPage = ({ target }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <LegacyRedirect target={target} />
 );
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const articles = StaticDataLoader.getTechArticles();
+  const articles = StaticDataLoader.getWorkArticles();
 
   const paths = articles.map((article) => {
     const date = new Date(article.attributes.date);
@@ -44,4 +44,4 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 };
 
-export default LegacyTechDetailPage;
+export default LegacyWorkDetailPage;

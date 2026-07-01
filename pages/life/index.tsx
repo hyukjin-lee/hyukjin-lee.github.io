@@ -1,6 +1,6 @@
 import * as React from "react";
-import BlogArticleList from "src/blog/view/presentation/components/templates/BlogArticleList";
-import {BlogArticleListProps} from "src/blog/view/presentation/components/templates/BlogArticleList/BlogArticleList";
+import LifeArticleList from "src/life/view/presentation/components/templates/LifeArticleList";
+import {LifeArticleListProps} from "src/life/view/presentation/components/templates/LifeArticleList/LifeArticleList";
 import {HeadTitle, PageTitle} from "src/common/view/presentation/components/molecules";
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
@@ -8,23 +8,23 @@ import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
-  blogData: any;
+  lifeData: any;
   currentPage: number;
 }
 
-const BlogArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { blogData } = props;
+const LifeArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { lifeData } = props;
 
-  const listProps: BlogArticleListProps = {
-    blogArticles: blogData.data || [],
-    pagination: blogData.meta.pagination,
+  const listProps: LifeArticleListProps = {
+    lifeArticles: lifeData.data || [],
+    pagination: lifeData.meta.pagination,
   };
 
   return <div style={pageContainerStyle}>
     <div style={pageContainerStyle}>
       <HeadTitle title="Life" />
       <PageTitle title="articles" />
-      <BlogArticleList {...listProps} />
+      <LifeArticleList {...listProps} />
       <div /> {/* Loading 컴포넌트를 가운데로 맞추기 위한 empty div */}
     </div>
     <div style={{display: "flex", justifyContent: "center"}}>
@@ -37,14 +37,14 @@ const BlogArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProp
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const page = 1; // 첫 페이지만 정적 생성
-  const blogData = StaticDataLoader.getBlogArticlesPaginated(page);
+  const lifeData = StaticDataLoader.getLifeArticlesPaginated(page);
 
   return {
     props: {
-      blogData,
+      lifeData,
       currentPage: page
     }
   };
 };
 
-export default BlogArticleListPage;
+export default LifeArticleListPage;

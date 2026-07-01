@@ -9,7 +9,7 @@ async function generateRssFeed() {
 
   const feed = new RSS({
     title: 'terrace',
-    description: 'hyukjin lee\'s dev blog',
+    description: 'hyukjin lee\'s site',
     feed_url: `${site_url}/rss.xml`,
     site_url: site_url,
     language: 'ko',

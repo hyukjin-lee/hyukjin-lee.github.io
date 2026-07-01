@@ -64,32 +64,32 @@ async function main() {
   console.log('🚀 Starting data extraction from Strapi...');
 
   try {
-    // Blog articles 추출
-    console.log('\n📝 Fetching blog articles...');
-    const blogArticles = await fetchAllPages('/blog-articles');
+    // Life articles 추출
+    console.log('\n📝 Fetching life articles...');
+    const lifeArticles = await fetchAllPages('/blog-articles');
     fs.writeFileSync(
       path.join(DATA_DIR, 'blog-articles.json'),
-      JSON.stringify(blogArticles, null, 2)
+      JSON.stringify(lifeArticles, null, 2)
     );
-    console.log(`✅ Saved ${blogArticles.length} blog articles`);
+    console.log(`✅ Saved ${lifeArticles.length} life articles`);
 
-    // Tech articles 추출
-    console.log('\n💻 Fetching tech articles...');
-    const techArticles = await fetchAllPages('/tech-articles');
+    // Work articles 추출
+    console.log('\n💻 Fetching work articles...');
+    const workArticles = await fetchAllPages('/tech-articles');
     fs.writeFileSync(
       path.join(DATA_DIR, 'tech-articles.json'),
-      JSON.stringify(techArticles, null, 2)
+      JSON.stringify(workArticles, null, 2)
     );
-    console.log(`✅ Saved ${techArticles.length} tech articles`);
+    console.log(`✅ Saved ${workArticles.length} work articles`);
 
-    // Daily posts 추출
-    console.log('\n📅 Fetching daily posts...');
-    const dailyPosts = await fetchAllPages('/dailies');
+    // Log posts 추출
+    console.log('\n📅 Fetching log posts...');
+    const logPosts = await fetchAllPages('/dailies');
     fs.writeFileSync(
       path.join(DATA_DIR, 'dailies.json'),
-      JSON.stringify(dailyPosts, null, 2)
+      JSON.stringify(logPosts, null, 2)
     );
-    console.log(`✅ Saved ${dailyPosts.length} daily posts`);
+    console.log(`✅ Saved ${logPosts.length} log posts`);
 
     // Musings 추출
     console.log('\n💭 Fetching musings...');
@@ -114,35 +114,35 @@ async function main() {
     // 각 콘텐츠 타입별로 개별 파일들도 생성 (getStaticPaths용)
     console.log('\n🔧 Creating individual content files...');
     
-    // Blog 개별 파일들
-    const blogDir = path.join(DATA_DIR, 'life');
-    if (!fs.existsSync(blogDir)) fs.mkdirSync(blogDir, { recursive: true });
+    // Life 개별 파일들
+    const lifeDir = path.join(DATA_DIR, 'life');
+    if (!fs.existsSync(lifeDir)) fs.mkdirSync(lifeDir, { recursive: true });
     
-    for (const article of blogArticles) {
+    for (const article of lifeArticles) {
       fs.writeFileSync(
-        path.join(blogDir, `${article.attributes.slug}.json`),
+        path.join(lifeDir, `${article.attributes.slug}.json`),
         JSON.stringify(article, null, 2)
       );
     }
 
-    // Tech 개별 파일들
-    const techDir = path.join(DATA_DIR, 'work');
-    if (!fs.existsSync(techDir)) fs.mkdirSync(techDir, { recursive: true });
+    // Work 개별 파일들
+    const workDir = path.join(DATA_DIR, 'work');
+    if (!fs.existsSync(workDir)) fs.mkdirSync(workDir, { recursive: true });
     
-    for (const article of techArticles) {
+    for (const article of workArticles) {
       fs.writeFileSync(
-        path.join(techDir, `${article.attributes.slug}.json`),
+        path.join(workDir, `${article.attributes.slug}.json`),
         JSON.stringify(article, null, 2)
       );
     }
 
-    // Daily 개별 파일들
-    const dailyDir = path.join(DATA_DIR, 'log');
-    if (!fs.existsSync(dailyDir)) fs.mkdirSync(dailyDir, { recursive: true });
+    // Log 개별 파일들
+    const logDir = path.join(DATA_DIR, 'log');
+    if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
     
-    for (const post of dailyPosts) {
+    for (const post of logPosts) {
       fs.writeFileSync(
-        path.join(dailyDir, `${post.attributes.slug}.json`),
+        path.join(logDir, `${post.attributes.slug}.json`),
         JSON.stringify(post, null, 2)
       );
     }

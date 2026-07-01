@@ -5,29 +5,29 @@ import {Comment} from "src/common/view/presentation/components/organisms";
 import {formatDateTime} from "src/util";
 import {GetStaticProps, GetStaticPaths, InferGetStaticPropsType} from "next";
 import {
-  BlogArticleDetailResponse,
-  BlogArticlePrevOrNext
-} from "src/blog/domain/BlogArticleDetailResponse";
-import {BlogArticleDetail} from "src/blog/view/presentation/components/templates";
+  LifeArticleDetailResponse,
+  LifeArticlePrevOrNext
+} from "src/life/domain/LifeArticleDetailResponse";
+import {LifeArticleDetail} from "src/life/view/presentation/components/templates";
 import {useTheme} from "@mui/material";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
-  blogArticle: BlogArticleDetailResponse;
+  lifeArticle: LifeArticleDetailResponse;
   prev: any | null;
   next: any | null;
 }
 
-const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { blogArticle, prev, next } = props;
-  const { title, content, date, slug } = blogArticle;
+const LifeDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { lifeArticle, prev, next } = props;
+  const { title, content, date, slug } = lifeArticle;
   const subPath = `${formatDateTime(date, "/YYYY/MM/DD")}/${slug}`;
 
   const theme = useTheme();
 
   // prev/next 데이터는 이미 올바른 형태로 변환되어 전달됨
-  const prevData: BlogArticlePrevOrNext = prev || { id: "", date: "", title: "", uri: "" };
-  const nextData: BlogArticlePrevOrNext = next || { id: "", date: "", title: "", uri: "" };
+  const prevData: LifeArticlePrevOrNext = prev || { id: "", date: "", title: "", uri: "" };
+  const nextData: LifeArticlePrevOrNext = next || { id: "", date: "", title: "", uri: "" };
 
   // 더 나은 description 생성 (마크다운 제거)
   const cleanDescription = content
@@ -41,18 +41,18 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
     .substring(0, 160); // Google 권장 길이
 
   const publishedTime = new Date(date).toISOString();
-  const modifiedTime = new Date(blogArticle.updatedAt || date).toISOString();
+  const modifiedTime = new Date(lifeArticle.updatedAt || date).toISOString();
 
   return <div>
     <NextSeo
       title={title}
       description={cleanDescription}
-      canonical={`${DOMAIN}${Endpoints.blog}${subPath}`}
+      canonical={`${DOMAIN}${Endpoints.life}${subPath}`}
       openGraph={{
         type: "article",
         title: title,
         description: cleanDescription,
-        url: `${DOMAIN}${Endpoints.blog}${subPath}`,
+        url: `${DOMAIN}${Endpoints.life}${subPath}`,
         article: {
           publishedTime: publishedTime,
           modifiedTime: modifiedTime,
@@ -93,8 +93,8 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
       ]}
     />
 
-    <BlogArticleDetail
-      blogArticle={{...blogArticle, prev: prevData, next: nextData}}
+    <LifeArticleDetail
+      lifeArticle={{...lifeArticle, prev: prevData, next: nextData}}
     />
     <Comment identifier={`blog-${slug}`} />
     {/* eslint-disable-next-line react/no-unknown-property */}
@@ -107,7 +107,7 @@ const BlogDetailPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const articles = StaticDataLoader.getBlogArticles();
+  const articles = StaticDataLoader.getLifeArticles();
   
   const paths = articles.map((article) => {
     const date = new Date(article.attributes.date);
@@ -130,13 +130,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug as string;
   
-  const article = StaticDataLoader.getBlogArticleBySlug(slug);
+  const article = StaticDataLoader.getLifeArticleBySlug(slug);
   if (!article) {
     return { notFound: true };
   }
 
-  // BlogArticleDetailResponse 형태로 변환
-  const blogArticle: BlogArticleDetailResponse = {
+  // LifeArticleDetailResponse 형태로 변환
+  const lifeArticle: LifeArticleDetailResponse = {
     id: article.id.toString(),
     seq: article.attributes.seq,
     title: article.attributes.title,
@@ -150,15 +150,15 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 
   // prev/next 가져오기
-  const { prev, next } = StaticDataLoader.getBlogPrevNext(article.attributes.slug);
+  const { prev, next } = StaticDataLoader.getLifePrevNext(article.attributes.slug);
 
   return {
     props: {
-      blogArticle,
+      lifeArticle,
       prev,
       next
     }
   };
 };
 
-export default BlogDetailPage;
+export default LifeDetailPage;

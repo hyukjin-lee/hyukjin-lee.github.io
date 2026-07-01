@@ -1,6 +1,6 @@
 import * as React from "react";
-import TechArticleList from "src/tech/view/presentation/components/templates/TechArticleList";
-import {TechArticleListProps} from "src/tech/view/presentation/components/templates/TechArticleList/TechArticleList";
+import WorkArticleList from "src/work/view/presentation/components/templates/WorkArticleList";
+import {WorkArticleListProps} from "src/work/view/presentation/components/templates/WorkArticleList/WorkArticleList";
 import {HeadTitle, PageTitle} from "src/common/view/presentation/components/molecules";
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
@@ -8,23 +8,23 @@ import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
-  techData: any;
+  workData: any;
   currentPage: number;
 }
 
-const TechArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { techData } = props;
+const WorkArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { workData } = props;
 
-  const listProps: TechArticleListProps = {
-    techArticles: techData.data || [],
-    pagination: techData.meta.pagination,
+  const listProps: WorkArticleListProps = {
+    workArticles: workData.data || [],
+    pagination: workData.meta.pagination,
   };
 
   return <div style={pageContainerStyle}>
     <div style={pageContainerStyle}>
       <HeadTitle title="Work" />
       <PageTitle title="articles" />
-      <TechArticleList {...listProps} />
+      <WorkArticleList {...listProps} />
       <div /> {/* Loading 컴포넌트를 가운데로 맞추기 위한 empty div */}
     </div>
     <div style={{display: "flex", justifyContent: "center"}}>
@@ -37,14 +37,14 @@ const TechArticleListPage = (props: InferGetStaticPropsType<typeof getStaticProp
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const page = 1; // 첫 페이지만 정적 생성
-  const techData = StaticDataLoader.getTechArticlesPaginated(page);
+  const workData = StaticDataLoader.getWorkArticlesPaginated(page);
 
   return {
     props: {
-      techData,
+      workData,
       currentPage: page
     }
   };
 };
 
-export default TechArticleListPage;
+export default WorkArticleListPage;

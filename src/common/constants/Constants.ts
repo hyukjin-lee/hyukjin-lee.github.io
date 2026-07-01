@@ -5,20 +5,20 @@ export const Endpoints = {
 
   about: "/about",
 
-  tech: "/work",
-  "tech.detail": "/work/detail",
-  "tech.create": "/work/create",
-  "tech.update": "/work/update",
+  work: "/work",
+  "work.detail": "/work/detail",
+  "work.create": "/work/create",
+  "work.update": "/work/update",
 
-  blog: "/life",
-  "blog.detail": "/life/detail",
-  "blog.create": "/life/create",
-  "blog.update": "/life/update",
+  life: "/life",
+  "life.detail": "/life/detail",
+  "life.create": "/life/create",
+  "life.update": "/life/update",
 
-  daily: "/log",
-  "daily.detail": "/log/detail",
-  "daily.create": "/log/create",
-  "daily.update": "/log/update",
+  log: "/log",
+  "log.detail": "/log/detail",
+  "log.create": "/log/create",
+  "log.update": "/log/update",
 
   musings: "/musings",
   places: "/places",

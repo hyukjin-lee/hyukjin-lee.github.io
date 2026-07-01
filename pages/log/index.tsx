@@ -1,30 +1,30 @@
 import * as React from "react";
 import {HeadTitle, PageTitle} from "src/common/view/presentation/components/molecules";
-import DailyList from "src/daily/view/presentation/components/templates/DailyList";
+import LogList from "src/log/view/presentation/components/templates/LogList";
 import {pageContainerStyle} from "src/common/view/presentation/styles/pageContainerStyle";
 import MyPagination from "src/common/view/presentation/components/organisms/MyPagination";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
-import {DailyListProps} from "src/daily/view/presentation/components/templates/DailyList/DailyList";
+import {LogListProps} from "src/log/view/presentation/components/templates/LogList/LogList";
 import {MarkdownDataLoader as StaticDataLoader} from "src/data/markdownDataLoader";
 
 interface Props {
-  dailyData: any;
+  logData: any;
   currentPage: number;
 }
 
-const DailyListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { dailyData } = props;
+const LogListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const { logData } = props;
 
-  const listProps: DailyListProps = {
-    dailys: dailyData.data || [],
+  const listProps: LogListProps = {
+    logs: logData.data || [],
   };
-  const pagination = dailyData.meta.pagination;
+  const pagination = logData.meta.pagination;
 
   return <div style={pageContainerStyle}>
     <div style={pageContainerStyle}>
       <HeadTitle title="Log" />
       <PageTitle title="log" />
-      <DailyList {...listProps} />
+      <LogList {...listProps} />
       <div /> {/* Loading 컴포넌트를 가운데로 맞추기 위한 empty div */}
     </div>
     <div style={{display: "flex", justifyContent: "center"}}>
@@ -37,14 +37,14 @@ const DailyListPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =>
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const page = 1; // 첫 페이지만 정적 생성
-  const dailyData = StaticDataLoader.getDailyPostsPaginated(page);
+  const logData = StaticDataLoader.getLogPostsPaginated(page);
 
   return {
     props: {
-      dailyData,
+      logData,
       currentPage: page
     }
   };
 };
 
-export default DailyListPage;
+export default LogListPage;

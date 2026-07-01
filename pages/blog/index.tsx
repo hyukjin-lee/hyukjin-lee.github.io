@@ -1,5 +1,5 @@
 import LegacyRedirect from "src/common/view/presentation/components/LegacyRedirect";
 
-const LegacyBlogIndexPage = () => <LegacyRedirect target="/life" />;
+const LegacyLifeIndexPage = () => <LegacyRedirect target="/life" />;
 
-export default LegacyBlogIndexPage;
+export default LegacyLifeIndexPage;

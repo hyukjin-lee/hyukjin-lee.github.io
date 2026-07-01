@@ -1,12 +1,12 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { BlogArticleListStrapi } from "../blog/application/port/outgoing/BlogArticleListStrapi";
-import { BlogArticleStrapi } from "../blog/application/port/outgoing/BlogArticleStrapi";
-import { TechArticleListStrapi } from "../tech/application/port/outgoing/TechArticleListStrapi";
-import { TechArticleStrapi } from "../tech/application/port/outgoing/TechArticleStrapi";
-import { DailyListStrapi } from "../daily/application/port/outgoing/DailyListStrapi";
-import { DailyStrapi } from "../daily/application/port/outgoing/DailyStrapi";
+import { LifeArticleListStrapi } from "../life/application/port/outgoing/LifeArticleListStrapi";
+import { LifeArticleStrapi } from "../life/application/port/outgoing/LifeArticleStrapi";
+import { WorkArticleListStrapi } from "../work/application/port/outgoing/WorkArticleListStrapi";
+import { WorkArticleStrapi } from "../work/application/port/outgoing/WorkArticleStrapi";
+import { LogListStrapi } from "../log/application/port/outgoing/LogListStrapi";
+import { LogStrapi } from "../log/application/port/outgoing/LogStrapi";
 import { StrapiResponse } from "../common/domain/StrapiResponse";
 import { StrapiPagination } from "../common/domain/StrapiPagination";
 
@@ -148,22 +148,22 @@ export class MarkdownDataLoader {
     }));
   }
 
-  // Blog 데이터 로더 (기존 인터페이스 유지)
-  static getBlogArticles(): BlogArticleListStrapi[] {
+  // Life 데이터 로더 (기존 인터페이스 유지)
+  static getLifeArticles(): LifeArticleListStrapi[] {
     return this.readMarkdownFiles("life");
   }
 
-  static getBlogArticleBySlug(slug: string): BlogArticleStrapi | null {
+  static getLifeArticleBySlug(slug: string): LifeArticleStrapi | null {
     return this.readMarkdownFiles("life").find(a => a.attributes.slug === slug) ?? null;
   }
 
-  static getBlogArticlesPaginated(page: number, pageSize = 10): StrapiResponse<any> {
-    const allArticles = this.getBlogArticles();
+  static getLifeArticlesPaginated(page: number, pageSize = 10): StrapiResponse<any> {
+    const allArticles = this.getLifeArticles();
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const rawData = allArticles.slice(startIndex, endIndex);
 
-    // BlogArticleListResponse 형태로 변환
+    // LifeArticleListResponse 형태로 변환
     const paginatedData = rawData.map(article => ({
       id: article.id.toString(),
       seq: article.attributes.seq,
@@ -185,22 +185,22 @@ export class MarkdownDataLoader {
     };
   }
 
-  // Tech 데이터 로더 (기존 인터페이스 유지)
-  static getTechArticles(): TechArticleListStrapi[] {
+  // Work 데이터 로더 (기존 인터페이스 유지)
+  static getWorkArticles(): WorkArticleListStrapi[] {
     return this.readMarkdownFiles("work");
   }
 
-  static getTechArticleBySlug(slug: string): TechArticleStrapi | null {
+  static getWorkArticleBySlug(slug: string): WorkArticleStrapi | null {
     return this.readMarkdownFiles("work").find(a => a.attributes.slug === slug) ?? null;
   }
 
-  static getTechArticlesPaginated(page: number, pageSize = 10): StrapiResponse<any> {
-    const allArticles = this.getTechArticles();
+  static getWorkArticlesPaginated(page: number, pageSize = 10): StrapiResponse<any> {
+    const allArticles = this.getWorkArticles();
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const rawData = allArticles.slice(startIndex, endIndex);
 
-    // TechArticleListResponse 형태로 변환
+    // WorkArticleListResponse 형태로 변환
     const paginatedData = rawData.map(article => ({
       id: article.id.toString(),
       seq: article.attributes.seq,
@@ -222,22 +222,22 @@ export class MarkdownDataLoader {
     };
   }
 
-  // Daily 데이터 로더 (기존 인터페이스 유지)
-  static getDailyPosts(): DailyListStrapi[] {
+  // Log 데이터 로더 (기존 인터페이스 유지)
+  static getLogPosts(): LogListStrapi[] {
     return this.readMarkdownFiles("log");
   }
 
-  static getDailyPostBySlug(slug: string): DailyStrapi | null {
+  static getLogPostBySlug(slug: string): LogStrapi | null {
     return this.readMarkdownFiles("log").find(p => p.attributes.slug === slug) ?? null;
   }
 
-  static getDailyPostsPaginated(page: number, pageSize = 10): StrapiResponse<any> {
-    const allPosts = this.getDailyPosts();
+  static getLogPostsPaginated(page: number, pageSize = 10): StrapiResponse<any> {
+    const allPosts = this.getLogPosts();
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const rawData = allPosts.slice(startIndex, endIndex);
 
-    // DailyListResponse 형태로 변환
+    // LogListResponse 형태로 변환
     const paginatedData = rawData.map(post => ({
       id: post.id.toString(),
       seq: post.attributes.seq,
@@ -286,8 +286,8 @@ export class MarkdownDataLoader {
   }
 
   // Prev/Next 헬퍼 함수들 (기존과 동일)
-  static getBlogPrevNext(slug: string): { prev: any | null, next: any | null } {
-    const allArticles = this.getBlogArticles();
+  static getLifePrevNext(slug: string): { prev: any | null, next: any | null } {
+    const allArticles = this.getLifeArticles();
     const currentIndex = allArticles.findIndex(article => article.attributes.slug === slug);
     
     const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
@@ -309,8 +309,8 @@ export class MarkdownDataLoader {
     };
   }
 
-  static getTechPrevNext(slug: string): { prev: any | null, next: any | null } {
-    const allArticles = this.getTechArticles();
+  static getWorkPrevNext(slug: string): { prev: any | null, next: any | null } {
+    const allArticles = this.getWorkArticles();
     const currentIndex = allArticles.findIndex(article => article.attributes.slug === slug);
     
     const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
@@ -333,16 +333,16 @@ export class MarkdownDataLoader {
   }
 
   // Path 생성 헬퍼 (기존과 동일)
-  static getAllBlogPaths(): string[] {
-    return this.getBlogArticles().map(article => article.attributes.slug);
+  static getAllLifePaths(): string[] {
+    return this.getLifeArticles().map(article => article.attributes.slug);
   }
 
-  static getAllTechPaths(): string[] {
-    return this.getTechArticles().map(article => article.attributes.slug);
+  static getAllWorkPaths(): string[] {
+    return this.getWorkArticles().map(article => article.attributes.slug);
   }
 
-  static getAllDailyPaths(): string[] {
-    return this.getDailyPosts().map(post => post.attributes.slug);
+  static getAllLogPaths(): string[] {
+    return this.getLogPosts().map(post => post.attributes.slug);
   }
 
   // 날짜 포맷 헬퍼 (기존과 동일)

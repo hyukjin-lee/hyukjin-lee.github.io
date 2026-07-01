@@ -6,12 +6,12 @@ interface Props {
   target: string;
 }
 
-const LegacyDailyDetailPage = ({ target }: InferGetStaticPropsType<typeof getStaticProps>) => (
+const LegacyLogDetailPage = ({ target }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <LegacyRedirect target={target} />
 );
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = StaticDataLoader.getDailyPosts();
+  const posts = StaticDataLoader.getLogPosts();
 
   const paths = posts.map((post) => {
     const date = new Date(post.attributes.date);
@@ -44,4 +44,4 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   };
 };
 
-export default LegacyDailyDetailPage;
+export default LegacyLogDetailPage;

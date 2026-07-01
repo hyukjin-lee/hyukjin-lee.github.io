@@ -6,11 +6,11 @@ function convertStrapiToMarkdown() {
   const dataDir = path.join(__dirname, '..', 'data');
   const postsDir = path.join(__dirname, '..', '_posts');
 
-  // Blog 데이터 변환
+  // Life 데이터 변환
   if (fs.existsSync(path.join(dataDir, 'blog-articles.json'))) {
-    const blogData = JSON.parse(fs.readFileSync(path.join(dataDir, 'blog-articles.json'), 'utf8'));
+    const lifeData = JSON.parse(fs.readFileSync(path.join(dataDir, 'blog-articles.json'), 'utf8'));
     
-    blogData.forEach(article => {
+    lifeData.forEach(article => {
       const { attributes } = article;
       const date = new Date(attributes.date);
       const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
@@ -35,11 +35,11 @@ ${attributes.content}`;
     });
   }
 
-  // Tech 데이터 변환
+  // Work 데이터 변환
   if (fs.existsSync(path.join(dataDir, 'tech-articles.json'))) {
-    const techData = JSON.parse(fs.readFileSync(path.join(dataDir, 'tech-articles.json'), 'utf8'));
+    const workData = JSON.parse(fs.readFileSync(path.join(dataDir, 'tech-articles.json'), 'utf8'));
     
-    techData.forEach(article => {
+    workData.forEach(article => {
       const { attributes } = article;
       const date = new Date(attributes.date);
       const dateStr = date.toISOString().split('T')[0];
@@ -64,11 +64,11 @@ ${attributes.content}`;
     });
   }
 
-  // Daily 데이터 변환
+  // Log 데이터 변환
   if (fs.existsSync(path.join(dataDir, 'dailies.json'))) {
-    const dailyData = JSON.parse(fs.readFileSync(path.join(dataDir, 'dailies.json'), 'utf8'));
+    const logData = JSON.parse(fs.readFileSync(path.join(dataDir, 'dailies.json'), 'utf8'));
     
-    dailyData.forEach(post => {
+    logData.forEach(post => {
       const { attributes } = post;
       const date = new Date(attributes.date);
       const dateStr = date.toISOString().split('T')[0];
