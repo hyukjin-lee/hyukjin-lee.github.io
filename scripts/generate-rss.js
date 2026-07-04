@@ -30,9 +30,11 @@ async function generateRssFeed() {
       const fileContents = fs.readFileSync(filePath, 'utf8');
       const { data, content } = matter(fileContents);
       
-      const fileSlug = filename.replace(/\.md$/, '');
-      const [year, month, day, ...rest] = fileSlug.split('-');
-      const postSlug = data.slug || rest.join('-');
+      const date = data.date instanceof Date ? data.date : new Date(data.date);
+      const year = date.getFullYear().toString();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      const postSlug = data.slug || filename.replace(/\.md$/, '').split('-').slice(3).join('-');
       const postUrl = `${site_url}/${type}/${year}/${month}/${day}/${postSlug}`;
 
       return {
@@ -40,7 +42,7 @@ async function generateRssFeed() {
         url: postUrl,
         guid: postUrl,
         description: content.replace(/[ \t]+$/gm, ''),
-        date: new Date(data.date),
+        date,
       };
     });
     allPosts.push(...posts);
