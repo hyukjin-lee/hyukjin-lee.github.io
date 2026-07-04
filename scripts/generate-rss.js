@@ -24,7 +24,7 @@ async function generateRssFeed() {
     const postDir = path.join(process.cwd(), `_posts/${type}`);
     if (!fs.existsSync(postDir)) return;
 
-    const filenames = fs.readdirSync(postDir);
+    const filenames = fs.readdirSync(postDir).filter(filename => filename.endsWith('.md'));
     const posts = filenames.map(filename => {
       const filePath = path.join(postDir, filename);
       const fileContents = fs.readFileSync(filePath, 'utf8');

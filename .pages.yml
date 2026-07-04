@@ -3,47 +3,47 @@ media:
   output: /images/uploads
 
 content:
-  - name: blog
-    label: Blog
+  - name: life
+    label: Life
     type: collection
-    path: _posts/blog
+    path: _posts/life
     filename: "{year}-{month}-{day}-{fields.slug}.md"
     view:
-      fields: [title, date]
+      fields: [title, date, updatedAt, slug]
     fields:
       - { name: title, label: "제목", type: string, required: true }
       - { name: date, label: "날짜", type: date }
       - { name: updatedAt, label: "수정일", type: date }
       - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
-      - { name: category, label: "카테고리", type: string, hidden: true, default: "blog" }
+      - { name: category, label: "카테고리", type: string, hidden: true, default: "life" }
       - { name: body, label: "내용", type: rich-text }
 
-  - name: tech
-    label: Tech
+  - name: work
+    label: Work
     type: collection
-    path: _posts/tech
+    path: _posts/work
     filename: "{year}-{month}-{day}-{fields.slug}.md"
     view:
-      fields: [title, date]
+      fields: [title, date, updatedAt, slug]
     fields:
       - { name: title, label: "제목", type: string, required: true }
       - { name: date, label: "날짜", type: date }
       - { name: updatedAt, label: "수정일", type: date }
       - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
-      - { name: category, label: "카테고리", type: string, hidden: true, default: "tech" }
+      - { name: category, label: "카테고리", type: string, hidden: true, default: "work" }
       - { name: body, label: "내용", type: rich-text }
 
-  - name: daily
-    label: Daily
+  - name: log
+    label: Log
     type: collection
-    path: _posts/daily
+    path: _posts/log
     filename: "{year}-{month}-{day}-{fields.slug}.md"
     view:
-      fields: [title, date]
+      fields: [title, date, updatedAt, slug]
     fields:
       - { name: title, label: "제목", type: string, required: true }
       - { name: date, label: "날짜", type: date }
       - { name: updatedAt, label: "수정일", type: date }
       - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
-      - { name: category, label: "카테고리", type: string, hidden: true, default: "daily" }
+      - { name: category, label: "카테고리", type: string, hidden: true, default: "log" }
       - { name: body, label: "내용", type: rich-text }
