@@ -31,6 +31,8 @@ export class WorkService implements WorkFindAllUseCase, WorkGetUseCase, WorkGetP
         date: it.attributes.date,
         updatedAt: it.attributes.updatedAt,
         title: it.attributes.title,
+        workTopic: it.attributes.workTopic,
+        workType: it.attributes.workType,
         slug: it.attributes.slug,
         content: it.attributes.content,
         prev: this.defaultPrevOrNext,
@@ -46,6 +48,8 @@ export class WorkService implements WorkFindAllUseCase, WorkGetUseCase, WorkGetP
           date: it.attributes.date,
           uri: WorkArticle.createUri({date: it.attributes.date, slug: it.attributes.slug}),
           title: it.attributes.title,
+          workTopic: it.attributes.workTopic,
+          workType: it.attributes.workType,
         })),
         meta: data.meta,
       }));

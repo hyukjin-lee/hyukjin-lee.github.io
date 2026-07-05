@@ -24,13 +24,34 @@ content:
     path: _posts/work
     filename: "{year}-{month}-{day}-{fields.slug}.md"
     view:
-      fields: [title, date, updatedAt, slug]
+      fields: [title, workTopic, workType, date, updatedAt, slug]
     fields:
       - { name: title, label: "제목", type: string, required: true }
       - { name: date, label: "날짜", type: date }
       - { name: updatedAt, label: "수정일", type: date }
       - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
       - { name: category, label: "카테고리", type: string, hidden: true, default: "work" }
+      - name: workTopic
+        label: "Work 주제"
+        type: select
+        required: true
+        options:
+          values:
+            - { name: ai, label: "AI" }
+            - { name: engineering, label: "Engineering" }
+            - { name: career, label: "Career" }
+      - name: workType
+        label: "Work 형식"
+        type: select
+        required: true
+        options:
+          values:
+            - { name: deep-dive, label: "Deep Dive" }
+            - { name: essay, label: "Essay" }
+            - { name: guide, label: "Guide" }
+            - { name: explainer, label: "Explainer" }
+            - { name: qna, label: "Q&A" }
+            - { name: coach, label: "Coach" }
       - { name: body, label: "내용", type: rich-text }
 
   - name: log

@@ -85,6 +85,8 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     id: article.id.toString(),
     seq: article.attributes.seq,
     title: article.attributes.title,
+    workTopic: article.attributes.workTopic,
+    workType: article.attributes.workType,
     content: article.attributes.content,
     date: article.attributes.date,
     slug: article.attributes.slug,

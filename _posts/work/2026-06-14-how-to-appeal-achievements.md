@@ -1,9 +1,11 @@
 ---
-title: "[새싹 Q&A] 개발자의 성과 어필"
+title: 개발자의 성과 어필
 date: 2026-02-24
 updatedAt: 2026-02-24
 slug: how-to-appeal-achievements
 category: work
+workTopic: career
+workType: qna
 ---
 > 새싹 디스코드에서 '개발자의 성과 어필'이라는 주제로 함께 고민을 나눴다. '어디에 집중해야하나' '평가자가 비개발자라면?' '수익 기여는 개발자의 성과라고 볼 수 있나?'
 

@@ -59,7 +59,7 @@ collections:
     delete: true
     slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
     preview_path: "work/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
-    summary: "{{title}} ({{date}})"
+    summary: "{{title}} · {{workTopic}}/{{workType}} ({{date}})"
     sort_field: date
     sort_direction: Descending
     fields:
@@ -85,6 +85,25 @@ collections:
         name: category
         widget: hidden
         default: work
+      - label: "Work 주제"
+        name: workTopic
+        widget: select
+        required: true
+        options:
+          - { label: "AI", value: "ai" }
+          - { label: "Engineering", value: "engineering" }
+          - { label: "Career", value: "career" }
+      - label: "Work 형식"
+        name: workType
+        widget: select
+        required: true
+        options:
+          - { label: "Deep Dive", value: "deep-dive" }
+          - { label: "Essay", value: "essay" }
+          - { label: "Guide", value: "guide" }
+          - { label: "Explainer", value: "explainer" }
+          - { label: "Q&A", value: "qna" }
+          - { label: "Coach", value: "coach" }
       - label: "내용"
         name: body
         widget: markdown

@@ -39,6 +39,8 @@ date: "YYYY-MM-DD"
 updatedAt: "YYYY-MM-DDTHH:MM:SS.000Z"
 slug: "url-safe-slug-in-english"
 category: "life"   # life | work | log
+workTopic: "career" # work 전용: ai | engineering | career
+workType: "essay"   # work 전용: deep-dive | essay | guide | explainer | qna | coach
 ---
 ```
 
@@ -81,6 +83,11 @@ npm run test                   # Jest 테스트
 - **life**: 깊게 생각한 에세이, 경험 공유, 삶과 일에 대한 사유
 - **work**: 개발/기술/설계에 관한 글, 기술적 의견
 - **log**: 짧은 일상 기록, 발견한 것, 인상적인 인용, 링크 공유
+
+### Work 글 보조 분류
+- `workTopic`: 큰 주제. `ai`, `engineering`, `career` 중 하나
+- `workType`: 글 형식. `deep-dive`, `essay`, `guide`, `explainer`, `qna`, `coach` 중 하나
+- 제목에는 `[Coach]`, `[새싹 Q&A]` 같은 prefix를 붙이지 않고, frontmatter 값으로만 구분
 
 ## 웹 CMS (Sveltia CMS)
 
