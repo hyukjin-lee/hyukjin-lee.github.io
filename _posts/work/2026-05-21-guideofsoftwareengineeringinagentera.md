@@ -4,8 +4,7 @@ date: 2026-05-21
 updatedAt: 2026-05-21
 slug: guideofsoftwareengineeringinagentera
 category: work
-workTopic: engineering
-workType: guide
+workType: article
 ---
 # Codebase-as-Harness
 

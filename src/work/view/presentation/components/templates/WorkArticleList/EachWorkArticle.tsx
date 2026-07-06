@@ -30,17 +30,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     color: theme.palette.text.secondary,
     display: "flex",
     fontSize: "0.78em",
-    gap: theme.spacing(0.75),
     justifyContent: "center",
     marginBottom: theme.spacing(0.25),
     userSelect: "none"
-  },
-  metaDot: {
-    borderRadius: "50%",
-    display: "inline-block",
-    flex: "0 0 auto",
-    height: 7,
-    width: 7
   },
   date: {
     color: theme.palette.text.primary
@@ -52,14 +44,13 @@ interface Props {
 }
 
 const EachWorkArticle = ({ workArticle }: Props) => {
-  const { title, date, uri, workTopic, workType } = workArticle;
+  const { title, date, uri, workType } = workArticle;
   const classes = useStyles();
-  const meta = getWorkArticleMeta(workTopic, workType);
+  const meta = getWorkArticleMeta(workType);
 
   return <Link href={uri}>
     <div className={classes.container}>
       {meta && <div className={classes.meta}>
-        <span className={classes.metaDot} style={{ backgroundColor: meta.color }} />
         <span>{meta.label}</span>
       </div>}
       <div className={classes.title}>{title}</div>

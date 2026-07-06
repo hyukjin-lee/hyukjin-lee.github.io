@@ -1,41 +1,21 @@
 export interface WorkArticleMeta {
   label: string;
-  color: string;
 }
 
-const topicLabels: Record<string, string> = {
-  ai: "AI",
-  engineering: "Engineering",
-  career: "Career",
-};
-
-const typeLabels: Record<string, string> = {
-  "deep-dive": "Deep Dive",
-  essay: "Essay",
-  guide: "Guide",
-  explainer: "Explainer",
+export const workArticleTypeLabels: Record<string, string> = {
   qna: "Q&A",
+  article: "Article",
   coach: "Coach",
 };
 
-const topicColors: Record<string, string> = {
-  ai: "#3B82F6",
-  engineering: "#14B8A6",
-  career: "#F59E0B",
-};
+export const workArticleTypeValues = Object.keys(workArticleTypeLabels);
 
-export const getWorkArticleMeta = (
-  workTopic?: string,
-  workType?: string
-): WorkArticleMeta | null => {
-  const topicLabel = workTopic ? topicLabels[workTopic] : undefined;
-  const typeLabel = workType ? typeLabels[workType] : undefined;
-  const labels = [topicLabel, typeLabel].filter(Boolean);
+export const getWorkArticleMeta = (workType?: string): WorkArticleMeta | null => {
+  const label = workType ? workArticleTypeLabels[workType] : undefined;
 
-  if (labels.length === 0) return null;
+  if (!label) return null;
 
   return {
-    label: labels.join(" · "),
-    color: workTopic ? topicColors[workTopic] ?? "#8A8A8A" : "#8A8A8A",
+    label,
   };
 };

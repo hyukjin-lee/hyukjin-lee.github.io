@@ -4,6 +4,5 @@ export interface WorkArticleListResponse {
   date: string;
   uri: string;
   title: string;
-  workTopic?: string;
   workType?: string;
 }

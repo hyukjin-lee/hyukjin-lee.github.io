@@ -20,11 +20,11 @@ export interface WorkArticleDetailProps {
 
 const WorkArticleDetail = ({ workArticle }: WorkArticleDetailProps) => {
   const classes = useStyles();
-  const { title, slug, content, date, prev, next, linkPreviews, workTopic, workType } = workArticle;
+  const { title, slug, content, date, prev, next, linkPreviews, workType } = workArticle;
   return <>
     <HeadTitle title={title} />
     <div className={classes.container}>
-      <ArticleHead title={title} slug={slug} date={date} workTopic={workTopic} workType={workType} />
+      <ArticleHead title={title} slug={slug} date={date} workType={workType} />
       <ArticleContent content={content} linkPreviews={linkPreviews} />
       <ArticlePrevAndNext prev={prev} next={next} />
     </div>

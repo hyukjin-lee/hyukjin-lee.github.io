@@ -12,7 +12,7 @@ export class WorkPersistenceAdapter
 {
   constructor(private readonly axios: AxiosInstance) {}
 
-  private readonly listFields = ["seq", "title", "slug", "date", "workTopic", "workType"];
+  private readonly listFields = ["seq", "title", "slug", "date", "workType"];
   private readonly defaultPrevOrNext: WorkArticleListStrapi = {
     id: -1,
     attributes: {
@@ -21,7 +21,6 @@ export class WorkPersistenceAdapter
       updatedAt: "",
       slug: "",
       title: "",
-      workTopic: "",
       workType: "",
     },
   };

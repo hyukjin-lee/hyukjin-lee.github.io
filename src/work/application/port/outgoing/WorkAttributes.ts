@@ -4,7 +4,6 @@ export interface WorkAttributes {
   updatedAt: string;
   slug: string;
   title: string;
-  workTopic?: string;
   workType?: string;
   content: string;
   linkPreviews?: Record<string, any>;

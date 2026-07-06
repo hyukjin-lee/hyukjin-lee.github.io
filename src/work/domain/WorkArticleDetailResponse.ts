@@ -11,7 +11,6 @@ export interface WorkArticleDetailResponse {
   date: string;
   updatedAt: string;
   title: string;
-  workTopic?: string;
   workType?: string;
   slug: string;
   content: string;

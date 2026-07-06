@@ -4,7 +4,6 @@ date: 2026-02-09
 updatedAt: 2026-02-09
 slug: what-skills-do-new-recruits-need-in-ai-age
 category: work
-workTopic: career
 workType: qna
 ---
 > 취준생 후배님의 질문과 나의 답변 기록

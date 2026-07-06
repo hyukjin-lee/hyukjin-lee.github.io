@@ -84,7 +84,6 @@ export class StaticDataLoader {
       date: article.attributes.date,
       uri: `/work${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
       title: article.attributes.title,
-      workTopic: article.attributes.workTopic,
       workType: article.attributes.workType
     }));
 
