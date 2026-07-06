@@ -11,6 +11,7 @@ export interface LifeArticleDetailResponse {
   date: string;
   updatedAt: string;
   title: string;
+  lifeType?: string;
   slug: string;
   content: string;
   prev: LifeArticlePrevOrNext;

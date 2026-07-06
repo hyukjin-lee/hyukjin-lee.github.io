@@ -31,6 +31,7 @@ export class LifeService implements LifeFindAllUseCase, LifeGetUseCase, LifeGetP
         date: it.attributes.date,
         updatedAt: it.attributes.updatedAt,
         title: it.attributes.title,
+        lifeType: it.attributes.lifeType,
         slug: it.attributes.slug,
         content: it.attributes.content,
         prev: this.defaultPrevOrNext,
@@ -46,6 +47,7 @@ export class LifeService implements LifeFindAllUseCase, LifeGetUseCase, LifeGetP
           date: it.attributes.date,
           uri: LifeArticle.createUri({date: it.attributes.date, slug: it.attributes.slug}),
           title: it.attributes.title,
+          lifeType: it.attributes.lifeType,
         })),
         meta: data.meta,
       }));

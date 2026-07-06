@@ -12,7 +12,7 @@ export class LifePersistenceAdapter
 {
   constructor(private readonly axios: AxiosInstance) {}
 
-  private readonly listFields = ["seq", "title", "slug", "date"];
+  private readonly listFields = ["seq", "title", "slug", "date", "lifeType"];
   private readonly defaultPrevOrNext: LifeArticleListStrapi = {
     id: -1,
     attributes: {
@@ -21,6 +21,7 @@ export class LifePersistenceAdapter
       updatedAt: "",
       slug: "",
       title: "",
+      lifeType: "",
     },
   };
 

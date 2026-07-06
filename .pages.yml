@@ -9,13 +9,22 @@ content:
     path: _posts/life
     filename: "{year}-{month}-{day}-{fields.slug}.md"
     view:
-      fields: [title, date, updatedAt, slug]
+      fields: [title, lifeType, date, updatedAt, slug]
     fields:
       - { name: title, label: "제목", type: string, required: true }
       - { name: date, label: "날짜", type: date }
       - { name: updatedAt, label: "수정일", type: date }
       - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
       - { name: category, label: "카테고리", type: string, hidden: true, default: "life" }
+      - name: lifeType
+        label: "Life 분류"
+        type: select
+        required: true
+        options:
+          values:
+            - { name: travelogue, label: "여행기" }
+            - { name: blog, label: "블로그" }
+            - { name: thought, label: "생각" }
       - { name: body, label: "내용", type: rich-text }
 
   - name: work

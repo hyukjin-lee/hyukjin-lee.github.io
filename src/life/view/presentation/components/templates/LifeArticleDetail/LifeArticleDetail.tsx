@@ -20,11 +20,11 @@ export interface LifeArticleDetailProps {
 
 const LifeArticleDetail = ({ lifeArticle }: LifeArticleDetailProps) => {
   const classes = useStyles();
-  const { title, slug, content, date, prev, next, linkPreviews } = lifeArticle;
+  const { title, slug, content, date, prev, next, linkPreviews, lifeType } = lifeArticle;
   return <>
     <HeadTitle title={title} />
     <div className={classes.container}>
-      <ArticleHead title={title} slug={slug} date={date} />
+      <ArticleHead title={title} slug={slug} date={date} lifeType={lifeType} />
       <ArticleContent content={content} linkPreviews={linkPreviews} />
       <ArticlePrevAndNext prev={prev} next={next} />
     </div>

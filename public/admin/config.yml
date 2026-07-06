@@ -21,7 +21,7 @@ collections:
     delete: true
     slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
     preview_path: "life/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
-    summary: "{{title}} ({{date}})"
+    summary: "{{title}} · {{lifeType}} ({{date}})"
     sort_field: date
     sort_direction: Descending
     fields:
@@ -47,6 +47,14 @@ collections:
         name: category
         widget: hidden
         default: life
+      - label: "Life 분류"
+        name: lifeType
+        widget: select
+        required: true
+        options:
+          - { label: "여행기", value: "travelogue" }
+          - { label: "블로그", value: "blog" }
+          - { label: "생각", value: "thought" }
       - label: "내용"
         name: body
         widget: markdown

@@ -39,6 +39,7 @@ date: "YYYY-MM-DD"
 updatedAt: "YYYY-MM-DDTHH:MM:SS.000Z"
 slug: "url-safe-slug-in-english"
 category: "life"   # life | work | log
+lifeType: "thought" # life 전용: travelogue | blog | thought
 workType: "article" # work 전용: qna | article | coach
 ---
 ```
@@ -82,6 +83,10 @@ npm run test                   # Jest 테스트
 - **life**: 깊게 생각한 에세이, 경험 공유, 삶과 일에 대한 사유
 - **work**: 개발/기술/설계에 관한 글, 기술적 의견
 - **log**: 짧은 일상 기록, 발견한 것, 인상적인 인용, 링크 공유
+
+### Life 글 보조 분류
+- `lifeType`: 글 분류. `travelogue`, `blog`, `thought` 중 하나
+- 제목에는 `[여행기]` 같은 prefix를 붙이지 않고, frontmatter 값으로만 구분
 
 ### Work 글 보조 분류
 - `workType`: 글 분류. `qna`, `article`, `coach` 중 하나

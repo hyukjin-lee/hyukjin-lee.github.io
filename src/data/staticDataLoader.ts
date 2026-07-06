@@ -40,7 +40,8 @@ export class StaticDataLoader {
       seq: article.attributes.seq,
       date: article.attributes.date,
       uri: `/life${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
-      title: article.attributes.title
+      title: article.attributes.title,
+      lifeType: article.attributes.lifeType
     }));
 
     const pagination: StrapiPagination = {

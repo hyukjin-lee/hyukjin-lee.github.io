@@ -3,6 +3,7 @@ import * as React from "react";
 import { Link } from "src/common/view/presentation/components/molecules";
 import { formatDateTime } from "src/util";
 import {Theme, Typography} from "@mui/material";
+import {getLifeArticleMeta} from "../lifeArticleMeta";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   container: {
@@ -17,6 +18,15 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   date: {
     fontSize: theme.typography.subtitle1.fontSize,
     userSelect: "none"
+  },
+  meta: {
+    alignItems: "center",
+    color: theme.palette.text.secondary,
+    display: "flex",
+    fontSize: theme.typography.subtitle1.fontSize,
+    justifyContent: "center",
+    marginBottom: theme.spacing(0.75),
+    userSelect: "none"
   }
 }));
 
@@ -24,11 +34,17 @@ interface Props {
   title: string;
   slug: string;
   date: string;
+  lifeType?: string;
 }
 
-const ArticleHead = ({ title, slug, date }: Props) => {
+const ArticleHead = ({ title, slug, date, lifeType }: Props) => {
   const classes = useStyles();
+  const meta = getLifeArticleMeta(lifeType);
+
   return <div className={classes.container}>
+    {meta && <div className={classes.meta}>
+      <span>{meta.label}</span>
+    </div>}
     <div className={classes.head}>
       <Link href={"/life" + formatDateTime(date, "/YYYY/MM/DD/") + slug} color="textPrimary" shallow={true}>
         <Typography variant="h1">{title}</Typography>

@@ -115,6 +115,7 @@ export class MarkdownDataLoader {
           updatedAt: MarkdownDataLoader.toDateString(frontmatter.updatedAt),
           slug: frontmatter.slug,
           title: frontmatter.title,
+          lifeType: frontmatter.lifeType,
           workType: frontmatter.workType,
           content: content.trim(),
           linkPreviews: this.getLinkPreviewsForContent(content.trim())
@@ -170,7 +171,8 @@ export class MarkdownDataLoader {
       seq: article.attributes.seq,
       date: article.attributes.date,
       uri: `/life${this.formatDatePath(article.attributes.date)}/${article.attributes.slug}`,
-      title: article.attributes.title
+      title: article.attributes.title,
+      lifeType: article.attributes.lifeType
     }));
 
     const pagination: StrapiPagination = {

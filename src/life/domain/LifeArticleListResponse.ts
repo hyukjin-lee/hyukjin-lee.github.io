@@ -4,4 +4,5 @@ export interface LifeArticleListResponse {
   date: string;
   uri: string;
   title: string;
+  lifeType?: string;
 }
