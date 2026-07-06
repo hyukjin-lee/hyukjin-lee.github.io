@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     alignItems: "center",
     color: theme.palette.text.secondary,
     display: "flex",
-    fontSize: theme.typography.subtitle2.fontSize,
+    fontSize: theme.typography.subtitle1.fontSize,
     justifyContent: "center",
     marginBottom: theme.spacing(0.75),
     userSelect: "none"

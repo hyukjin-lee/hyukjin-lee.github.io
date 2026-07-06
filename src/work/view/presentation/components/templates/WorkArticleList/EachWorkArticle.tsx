@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     alignItems: "center",
     color: theme.palette.text.secondary,
     display: "flex",
-    fontSize: "0.78em",
     justifyContent: "center",
     marginBottom: theme.spacing(0.25),
     userSelect: "none"
