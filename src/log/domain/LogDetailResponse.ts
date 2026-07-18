@@ -3,7 +3,7 @@ export interface LogDetailResponse {
   seq: number;
   date: string;
   updatedAt: string;
-  title: string;
+  title?: string;
   slug: string;
   content: string;
   linkPreviews?: Record<string, any>;

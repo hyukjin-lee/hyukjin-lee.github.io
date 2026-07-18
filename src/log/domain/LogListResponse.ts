@@ -3,7 +3,7 @@ export interface LogListResponse {
   seq: number;
   date: string;
   uri: string;
-  title: string;
+  title?: string;
   content: string;
   linkPreviews?: Record<string, any>;
 }

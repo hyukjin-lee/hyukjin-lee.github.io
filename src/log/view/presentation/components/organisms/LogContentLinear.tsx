@@ -284,6 +284,7 @@ const LogContentLinear: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const hasTitle = Boolean(title?.trim());
   const previewContent = React.useMemo(() => getPreviewContent(content), [content]);
   const shouldCollapse = previewContent.isTruncated;
   const displayContent = shouldCollapse && !expanded
@@ -312,10 +313,14 @@ const LogContentLinear: React.FC<Props> = ({
         <Typography className={classes.date}>
           {formatDate(date)}
         </Typography>
-        <Typography className={classes.separator}>•</Typography>
-        <Typography className={classes.title}>
-          {title}
-        </Typography>
+        {hasTitle && (
+          <>
+            <Typography className={classes.separator}>•</Typography>
+            <Typography className={classes.title}>
+              {title}
+            </Typography>
+          </>
+        )}
       </Box>
       
       <Box className={classes.content}>

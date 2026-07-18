@@ -113,13 +113,14 @@ collections:
     delete: true
     slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
     preview_path: "log/{{year}}/{{month}}/{{day}}/{{fields.slug}}"
-    summary: "{{title}} ({{date}})"
+    summary: "{{date}} · {{slug}}"
     sort_field: date
     sort_direction: Descending
     fields:
       - label: "제목"
         name: title
         widget: string
+        required: false
       - label: "날짜"
         name: date
         widget: datetime

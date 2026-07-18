@@ -11,7 +11,7 @@ import {styled, TextField, Theme, Typography, useTheme} from "@mui/material";
 
 export interface LogRequestDto {
   seq: number;
-  title: string;
+  title?: string;
   slug: string;
   content: string;
 }
@@ -59,7 +59,7 @@ const LogForm = ({ isUpdating, initialValues, onSubmit }: Props) => {
     onSubmit={onSubmit}
     validationSchema={Yup.object().shape({
       seq: Yup.number().moreThan(0, "양수를 입력하세요."),
-      title: Yup.string().required("제목을 입력하세요."),
+      title: Yup.string(),
       slug: Yup.string().required("슬러그를 입력하세요."),
       content: Yup.string().required("내용을 입력하세요."),
     })}
@@ -100,7 +100,6 @@ const LogForm = ({ isUpdating, initialValues, onSubmit }: Props) => {
               type="text"
               name="title"
               fullWidth
-              required
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.title}

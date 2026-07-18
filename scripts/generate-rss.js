@@ -52,7 +52,7 @@ async function generateRssFeed() {
 
   allPosts.forEach(post => {
     feed.item({
-      title: post.title,
+      title: post.title || `${post.date.toISOString().slice(0, 10)} log`,
       guid: post.url,
       url: post.url,
       date: post.date,

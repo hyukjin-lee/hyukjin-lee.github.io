@@ -35,9 +35,10 @@ const LogDetail = ({ log }: LogDetailProps) => {
     content,
     linkPreviews
   } = log;
+  const headTitle = title?.trim() || `Log ${date}`;
 
   return <>
-    <HeadTitle title={title} />
+    <HeadTitle title={headTitle} />
     <div className={classes.container}>
       <div className={classes.contentWrapper}>
         <LogContentLinear 

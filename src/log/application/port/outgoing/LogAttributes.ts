@@ -3,7 +3,7 @@ export interface LogAttributes {
   date: string;
   updatedAt: string;
   slug: string;
-  title: string;
+  title?: string;
   content: string;
   linkPreviews?: Record<string, any>;
 }
