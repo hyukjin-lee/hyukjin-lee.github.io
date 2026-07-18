@@ -59,7 +59,7 @@ content:
     view:
       fields: [title, date, updatedAt, slug]
     fields:
-      - { name: title, label: "제목", type: string, required: true }
+      - { name: title, label: "제목", type: string, required: false }
       - { name: date, label: "날짜", type: date }
       - { name: updatedAt, label: "수정일", type: date }
       - { name: slug, label: "Slug (영문 소문자 + 하이픈)", type: string, required: true }
