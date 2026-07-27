@@ -1,7 +1,7 @@
 ---
 title: AI 에이전트 시대의 브라운필드 엔지니어링
-date: 2026-05-21
-updatedAt: 2026-05-21
+date: 2026-05-11
+updatedAt: 2026-05-11
 slug: guideofsoftwareengineeringinagentera
 category: work
 workType: article
