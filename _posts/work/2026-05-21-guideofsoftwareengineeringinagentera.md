@@ -131,7 +131,7 @@ bounded_contexts:
     verification:
       unit: pnpm test services/billing
       contract: pnpm test:contract billing
-      타입 검사: pnpm 타입 검사
+      
 
     risky_paths:
       - services/billing/migrations
