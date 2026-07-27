@@ -21,10 +21,6 @@ export class AboutInMemoryAdapter implements AboutLoadPort {
       label: "Résumé",
       href: "https://drive.google.com/file/d/1WEeIOUoRfsky16DXRx6rKV2nJqDKbY5c/view?usp=sharing"
     }, {
-      icon: "Code",
-      label: "github/hyukjin-lee",
-      href: "https://github.com/hyukjin-lee"
-    }, {
       icon: "Email",
       label: "gogokow27@gmail.com",
       href: "mailto:gogokow27@gmail.com"
